@@ -1,1 +1,1 @@
-start trunk\projects\SpacePirate\proj.win32\SpacePirate.sln
+start ProjectFiles\projects\SpacePirate\proj.win32\SpacePirate.sln
