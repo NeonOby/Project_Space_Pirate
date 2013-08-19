@@ -1,10 +1,10 @@
 Project Space Pirate
 
 2D Sidescrolling Platform Shooter
-s
+
 Team:
 Programmer:
-Stephan
+Stefan
 Manuel
 Tobias
 
