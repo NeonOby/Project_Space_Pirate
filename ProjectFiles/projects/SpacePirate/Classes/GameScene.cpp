@@ -19,6 +19,12 @@ Scene* GameScene::scene()
     return scene;
 }
 
+void MethodForManuel(){
+	//Hier kannst du machen was du willst:
+	//Die Methode wird einmal in der init() aufgerufen
+
+}
+
 // on "init" you need to initialize your instance
 bool GameScene::init()
 {
@@ -33,6 +39,9 @@ bool GameScene::init()
     Point origin = Director::getInstance()->getVisibleOrigin();
 
 	//Try to play sound here
+
+	MethodForManuel();
+
 
 	// start the sound engine with default parameters
 	   ISoundEngine* engine = createIrrKlangDevice();
