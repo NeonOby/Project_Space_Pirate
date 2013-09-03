@@ -1,6 +1,8 @@
 #include "GameScene.h"
+#include "irrKlang.h"
 
 USING_NS_CC;
+using namespace irrklang;
 
 Scene* GameScene::scene()
 {
@@ -30,6 +32,17 @@ bool GameScene::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Point origin = Director::getInstance()->getVisibleOrigin();
 
+	//Try to play sound here
+
+	// start the sound engine with default parameters
+	   ISoundEngine* engine = createIrrKlangDevice();
+
+	   if (!engine)
+		  return 0; // error starting up the engine
+
+	   engine->play2D("Jason.mp3", true);
+
+	   //ende Sound playing
 
 	//Hey was geht denn ? :D
 
