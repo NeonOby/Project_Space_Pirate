@@ -22,7 +22,17 @@ Scene* GameScene::scene()
 void MethodForManuel(){
 	//Hier kannst du machen was du willst:
 	//Die Methode wird einmal in der init() aufgerufen
+	// start the sound engine with default parameters
+	
+	ISoundEngine* engine = createIrrKlangDevice();
 
+	if (!engine){
+		return 0; // error starting up the engine
+	}
+
+	engine->play2D("Jason.mp3", true);
+	
+	//ende Sound playing
 }
 
 // on "init" you need to initialize your instance
@@ -41,19 +51,6 @@ bool GameScene::init()
 	//Try to play sound here
 
 	MethodForManuel();
-
-
-	// start the sound engine with default parameters
-	/*
-	ISoundEngine* engine = createIrrKlangDevice();
-
-	if (!engine)
-		return 0; // error starting up the engine
-
-	engine->play2D("Jason.mp3", true);
-	*/
-	//ende Sound playing
-
 
 
 	Sprite* sprite = Sprite::create("Level/Jungle/Himmel.PNG");
