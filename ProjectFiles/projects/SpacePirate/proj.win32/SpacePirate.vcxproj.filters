@@ -42,7 +42,7 @@
     <ClCompile Include="..\Classes\DropAble.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="Classes\Manuel\SoundManager.cpp">
+    <ClCompile Include="..\Classes\Manuel\SoundManager.cpp">
       <Filter>Classes\Manu</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,7 +101,7 @@
     <ClInclude Include="..\Classes\DestroyAble.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="Classes\Manuel\SoundManager.h">
+    <ClInclude Include="..\Classes\Manuel\SoundManager.h">
       <Filter>Classes\Manu</Filter>
     </ClInclude>
   </ItemGroup>
