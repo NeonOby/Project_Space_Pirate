@@ -44,20 +44,16 @@ bool GameScene::init()
 
 
 	// start the sound engine with default parameters
-	   ISoundEngine* engine = createIrrKlangDevice();
+	/*
+	ISoundEngine* engine = createIrrKlangDevice();
 
-	   if (!engine)
-		  return 0; // error starting up the engine
+	if (!engine)
+		return 0; // error starting up the engine
 
-	   engine->play2D("Jason.mp3", true);
+	engine->play2D("Jason.mp3", true);
+	*/
+	//ende Sound playing
 
-	   //ende Sound playing
-
-	//Hey was geht denn ? :D
-
-	Sprite * tmpSprite;
-
-	//Para Layer 2 (Ganz Hinten)
 
 
 	Sprite* sprite = Sprite::create("Level/Jungle/Himmel.PNG");
@@ -114,17 +110,6 @@ bool GameScene::init()
 
     // add the label as a child to this layer
     this->addChild(label, 1);
-
-	/*
-    // add "HelloWorld" splash screen"
-    Sprite* sprite = Sprite::create("HelloWorld.png");
-
-    // position the sprite on the center of the screen
-    sprite->setPosition(Point(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-    // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
-    */
 
 	this->schedule(schedule_selector(GameScene::update), 0.005F);
 

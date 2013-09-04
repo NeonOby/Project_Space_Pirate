@@ -137,10 +137,10 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\Impulse.cpp" />
     <ClCompile Include="..\Classes\MainMenuScene.cpp" />
+    <ClCompile Include="..\Classes\Manuel\SoundManager.cpp" />
     <ClCompile Include="..\Classes\MyContactListener.cpp" />
     <ClCompile Include="..\Classes\ParallaxLayer.cpp" />
     <ClCompile Include="..\Classes\Part.cpp" />
-    <ClCompile Include="Classes\Manuel\SoundManager.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,12 +156,12 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClInclude Include="..\Classes\Impulse.h" />
     <ClInclude Include="..\Classes\Konstanten.h" />
     <ClInclude Include="..\Classes\MainMenuScene.h" />
+    <ClInclude Include="..\Classes\Manuel\SoundManager.h" />
     <ClInclude Include="..\Classes\MouseListener.h" />
     <ClInclude Include="..\Classes\MoveAble.h" />
     <ClInclude Include="..\Classes\MyContactListener.h" />
     <ClInclude Include="..\Classes\ParallaxLayer.h" />
     <ClInclude Include="..\Classes\Part.h" />
-    <ClInclude Include="Classes\Manuel\SoundManager.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

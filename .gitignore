@@ -2,6 +2,11 @@
 ## Eclipse
 #################
 
+*.tlog
+CL.read.*.tlog
+CL.write.*.tlog
+
+
 *.pydevproject
 .project
 .metadata
