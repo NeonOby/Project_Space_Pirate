@@ -5,6 +5,10 @@
 *.tlog
 *.idb
 *.lastbuildstate
+*.lib
+*.unsuccessfulbuild
+
+SpacePirate.exe
 
 
 *.pydevproject
