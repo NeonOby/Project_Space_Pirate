@@ -164,6 +164,8 @@ bool GameScene::init()
 
 void GameScene::update(float dt){
 
+	//Test
+
 	//Update World, Box2D updates position, rotation, calculates things etc.
 	_world->Step(dt, 10, 10);
 
