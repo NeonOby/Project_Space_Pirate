@@ -104,17 +104,18 @@ bool GameScene::init()
 	ballShapeDef.shape = &circle;
 	ballShapeDef.density = 1.0f;
 	ballShapeDef.friction = 0.2f;
-	ballShapeDef.restitution = 0.8f;
+	ballShapeDef.restitution = 0.0f;
 	_body->CreateFixture(&ballShapeDef);
 
+
+	//Floor Body only (no Sprite yet)
 	b2Body *_body2;
 
 	b2BodyDef ballBodyDef2;
-	ballBodyDef2.type = b2_staticBody;
+	//ballBodyDef2.type = b2_staticBody;
 	ballBodyDef2.position.Set(0/PTM_RATIO, 0/PTM_RATIO);
 	_body2 = _world->CreateBody(&ballBodyDef2);
 
-	
 	b2PolygonShape shapeDef;
 	shapeDef.SetAsBox(1080/PTM_RATIO, 100/PTM_RATIO);
  
@@ -122,16 +123,13 @@ bool GameScene::init()
 	ballShapeDef2.shape = &shapeDef;
 	ballShapeDef2.density = 1.0f;
 	ballShapeDef2.friction = 0.2f;
-	ballShapeDef2.restitution = 0.8f;
+	ballShapeDef2.restitution = 0.0f;
 	_body2->CreateFixture(&ballShapeDef2);
  
 	
-
+	//Its the DEBUG Layer for Box2D which draws Debug Thingies
 	level->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
 
     // add a "close" icon to exit the progress. it's an autorelease object
     MenuItemImage *closeItem = MenuItemImage::create(
@@ -145,7 +143,7 @@ bool GameScene::init()
     // create menu, it's an autorelease object
     Menu* menu = Menu::create(closeItem, NULL);
     menu->setPosition(Point::ZERO);
-    this->addChild(menu, 1);
+    this->addChild(menu, 5);
 
     
     LabelTTF* label = LabelTTF::create("Hello World", "Arial", 24);
@@ -166,8 +164,20 @@ bool GameScene::init()
 
 void GameScene::update(float dt){
 
+	//Update World, Box2D updates position, rotation, calculates things etc.
 	_world->Step(dt, 10, 10);
-    for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {    
+
+	//Update Position of every Sprite to its b2Body Referenz
+	//Why?
+	/*
+	Box2D does NOT update Position of CocosSprites,
+	it does only update Position of its own Bodys (b2Body),
+	which are present in the world
+
+	That means, that we have to update Position, Rotation
+	and if its changed by Box2D scale of sprites
+	*/
+    for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
         if (b->GetUserData() != NULL) {
             CCSprite *ballData = (CCSprite *)b->GetUserData();
             ballData->setPosition(Point(b->GetPosition().x * PTM_RATIO,
@@ -176,6 +186,7 @@ void GameScene::update(float dt){
         }        
     }
 
+	//Get KeyInput, will be outcoded in InputManager
 	if(GetAsyncKeyState(VK_RIGHT)){
 		parallaxLayer->move(dt, -1);
 		level->setPositionX(level->getPositionX()-dt*speed);
@@ -184,71 +195,6 @@ void GameScene::update(float dt){
 		level->setPositionX(level->getPositionX()+dt*speed);
 	}
 
-	/*
-	if(GetAsyncKeyState(VK_RIGHT)){
-		paralax1->setPositionX(paralax1->getPositionX()-dt*0.75F*speed);
-		paralax2->setPositionX(paralax2->getPositionX()-dt*0.5F*speed);
-
-		level->setPositionX(level->getPositionX()-dt*speed);
-
-
-		//Wir suchen die Position des ersten ParalaxSprites in Relation zum Ursprung (Unten Links vom Screen)
-		//Deshalb MÜSSEN wir "convertToWorldSpace" verwenden, da das Bild nicht direkt in der Scene (dem MainLayer) liegt
-		//sondern in einem extra Paralax-Layer
-		if(paralax2->convertToWorldSpace(paralax21->getPosition()).x + paralax21->getContentSize().width/2 <= 0){
-			//paralax21 Links außerhalb vom sichtbaren Bereich
-			//Verschiebe paralax21 Sprite rechts hinter das paralax22
-			paralax21->setPositionX(paralax22->getPositionX() + paralax21->getContentSize().width);
-		}
-		if(paralax2->convertToWorldSpace(paralax22->getPosition()).x + paralax22->getContentSize().width/2 <= 0){
-			//paralax22 Links außerhalb vom sichtbaren Bereich
-			//Verschiebe paralax22 Sprite rechts hinter das paralax21
-			paralax22->setPositionX(paralax21->getPositionX() + paralax22->getContentSize().width);
-		}
-
-		if(paralax1->convertToWorldSpace(paralax11->getPosition()).x + paralax11->getContentSize().width/2 <= 0){
-			//paralax11 rechts außerhalb vom sichtbaren Bereich
-			//Verschiebe paralax11 Sprite rechts hinter das paralax12
-			paralax11->setPositionX(paralax12->getPositionX() + paralax11->getContentSize().width);
-		}
-		if(paralax1->convertToWorldSpace(paralax12->getPosition()).x + paralax12->getContentSize().width/2 <= 0){
-			//paralax12 rechts außerhalb vom sichtbaren Bereich
-			//Verschiebe paralax12 Sprite rechts hinter das paralax11
-			paralax12->setPositionX(paralax11->getPositionX() + paralax12->getContentSize().width);
-		}
-	}else if(GetAsyncKeyState(VK_LEFT)){
-		paralax1->setPositionX(paralax1->getPositionX()+dt*0.75F*speed);
-		paralax2->setPositionX(paralax2->getPositionX()+dt*0.5F*speed);
-
-		level->setPositionX(level->getPositionX()+dt*speed);
-
-		//Wir suchen die Position des ersten ParalaxSprites in Relation zum Ursprung (Unten Links vom Screen)
-		//Deshalb MÜSSEN wir "convertToWorldSpace" verwenden, da das Bild nicht direkt in der Scene (dem MainLayer) liegt
-		//sondern in einem extra Paralax-Layer
-		if(paralax2->convertToWorldSpace(paralax21->getPosition()).x - paralax21->getContentSize().width/2 >= Director::getInstance()->getVisibleSize().width){
-			//paralax21 rinks außerhalb vom sichtbaren Bereich
-			//Verschiebe paralax21 Sprite links vor das paralax22
-			paralax21->setPositionX(paralax22->getPositionX() - paralax21->getContentSize().width);
-		}
-		if(paralax2->convertToWorldSpace(paralax22->getPosition()).x - paralax22->getContentSize().width/2 >= Director::getInstance()->getVisibleSize().width){
-			//paralax22 rechts außerhalb vom sichtbaren Bereich
-			//Verschiebe paralax22 Sprite links vor das paralax21
-			paralax22->setPositionX(paralax21->getPositionX() - paralax22->getContentSize().width);
-		}
-
-
-		if(paralax1->convertToWorldSpace(paralax11->getPosition()).x - paralax11->getContentSize().width/2 >= Director::getInstance()->getVisibleSize().width){
-			//paralax11 rinks außerhalb vom sichtbaren Bereich
-			//Verschiebe paralax11 Sprite links vor das paralax12
-			paralax11->setPositionX(paralax12->getPositionX() - paralax11->getContentSize().width);
-		}
-		if(paralax1->convertToWorldSpace(paralax12->getPosition()).x - paralax12->getContentSize().width/2 >= Director::getInstance()->getVisibleSize().width){
-			//paralax12 rechts außerhalb vom sichtbaren Bereich
-			//Verschiebe paralax12 Sprite links vor das paralax11
-			paralax12->setPositionX(paralax11->getPositionX() - paralax12->getContentSize().width);
-		}
-	}
-	*/
 }
 
 void GameScene::menuCloseCallback(Object* pSender)
