@@ -10,6 +10,9 @@
     <Filter Include="Classes\Manu">
       <UniqueIdentifier>{59ec0e97-8854-4f08-b2c7-9c3737fd7a6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Physic">
+      <UniqueIdentifier>{3849b819-2c83-4bc5-9f94-13ef6f06af34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -44,6 +47,12 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Manuel\SoundManager.cpp">
       <Filter>Classes\Manu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Physic\B2DebugDrawLayer.cpp">
+      <Filter>Classes\Physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Physic\GLES-Render.cpp">
+      <Filter>Classes\Physic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,5 +113,16 @@
     <ClInclude Include="..\Classes\Manuel\SoundManager.h">
       <Filter>Classes\Manu</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Physic\B2DebugDrawLayer.h">
+      <Filter>Classes\Physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Physic\GLES-Render.h">
+      <Filter>Classes\Physic</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Classes\Physic\README.md">
+      <Filter>Classes\Physic</Filter>
+    </None>
   </ItemGroup>
 </Project>

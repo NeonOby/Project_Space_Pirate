@@ -141,6 +141,8 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClCompile Include="..\Classes\MyContactListener.cpp" />
     <ClCompile Include="..\Classes\ParallaxLayer.cpp" />
     <ClCompile Include="..\Classes\Part.cpp" />
+    <ClCompile Include="..\Classes\Physic\B2DebugDrawLayer.cpp" />
+    <ClCompile Include="..\Classes\Physic\GLES-Render.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +164,8 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClInclude Include="..\Classes\MyContactListener.h" />
     <ClInclude Include="..\Classes\ParallaxLayer.h" />
     <ClInclude Include="..\Classes\Part.h" />
+    <ClInclude Include="..\Classes\Physic\B2DebugDrawLayer.h" />
+    <ClInclude Include="..\Classes\Physic\GLES-Render.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +189,9 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
       <Project>{207bc7a9-ccf1-4f2f-a04d-45f72242ae25}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Classes\Physic\README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

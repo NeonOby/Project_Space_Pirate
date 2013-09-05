@@ -8,3 +8,13 @@ static SoundManager* getInstance(){
 	}
 	return instance;
 }
+
+static void PlayBackgroundMusic(){
+	ISoundEngine* engine = createIrrKlangDevice();
+
+	if (!engine){
+		return; // error starting up the engine
+	}
+
+	engine->play2D("Jason.mp3", true);
+}

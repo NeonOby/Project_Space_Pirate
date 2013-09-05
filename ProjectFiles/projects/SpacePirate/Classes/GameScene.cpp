@@ -1,8 +1,14 @@
 #include "GameScene.h"
 #include "irrKlang.h"
+#include "Box2D/Box2D.h"
+#include "Physic/B2DebugDrawLayer.h"
 
 USING_NS_CC;
 using namespace irrklang;
+
+#define PTM_RATIO 64.0
+
+b2World *_world;
 
 Scene* GameScene::scene()
 {
@@ -19,22 +25,6 @@ Scene* GameScene::scene()
     return scene;
 }
 
-void MethodForManuel(){
-	//Hier kannst du machen was du willst:
-	//Die Methode wird einmal in der init() aufgerufen
-	// start the sound engine with default parameters
-	
-	ISoundEngine* engine = createIrrKlangDevice();
-
-	if (!engine){
-		return 0; // error starting up the engine
-	}
-
-	engine->play2D("Jason.mp3", true);
-	
-	//ende Sound playing
-}
-
 // on "init" you need to initialize your instance
 bool GameScene::init()
 {
@@ -49,9 +39,6 @@ bool GameScene::init()
     Point origin = Director::getInstance()->getVisibleOrigin();
 
 	//Try to play sound here
-
-	MethodForManuel();
-
 
 	Sprite* sprite = Sprite::create("Level/Jungle/Himmel.PNG");
 
@@ -79,6 +66,67 @@ bool GameScene::init()
 	}
 
 	this->addChild(level, 2);
+
+	//create World and add something
+
+
+	//The world, world has Gravity etc.
+	
+	//The Body of the Sprite, which is the collision shape if you want so
+	b2Body *_body;
+	//The sprite of the ball, it moves, rotates, scales with the shape (_ball is not controlled by physic)
+	CCSprite *_ball;
+
+	_ball = Sprite::create("Game/Dirt.PNG");
+	_ball->setPosition(Point(200,200));
+	level->addChild(_ball);
+
+	// Define the gravity vector.
+	b2Vec2 gravity;
+	gravity.Set(0.0f, -9.0f);//No gravity
+ 
+	// create a world object, which will hold and simulate the rigid bodies.
+	_world = new b2World(gravity);
+	//World is generated, now add some things
+
+
+	b2BodyDef ballBodyDef;
+	ballBodyDef.type = b2_dynamicBody;
+	ballBodyDef.position.Set(100/PTM_RATIO, 300/PTM_RATIO);
+	ballBodyDef.userData = _ball;
+	_body = _world->CreateBody(&ballBodyDef);
+
+	b2CircleShape circle;
+	circle.m_radius = 26.0/PTM_RATIO;
+ 
+	b2FixtureDef ballShapeDef;
+	ballShapeDef.shape = &circle;
+	ballShapeDef.density = 1.0f;
+	ballShapeDef.friction = 0.2f;
+	ballShapeDef.restitution = 0.8f;
+	_body->CreateFixture(&ballShapeDef);
+
+	b2Body *_body2;
+
+	b2BodyDef ballBodyDef2;
+	ballBodyDef2.type = b2_staticBody;
+	ballBodyDef2.position.Set(0/PTM_RATIO, 0/PTM_RATIO);
+	_body2 = _world->CreateBody(&ballBodyDef2);
+
+	
+	b2PolygonShape shapeDef;
+	shapeDef.SetAsBox(1080/PTM_RATIO, 100/PTM_RATIO);
+ 
+	b2FixtureDef ballShapeDef2;
+	ballShapeDef2.shape = &shapeDef;
+	ballShapeDef2.density = 1.0f;
+	ballShapeDef2.friction = 0.2f;
+	ballShapeDef2.restitution = 0.8f;
+	_body2->CreateFixture(&ballShapeDef2);
+ 
+	
+
+	level->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
 
     /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
@@ -113,7 +161,20 @@ bool GameScene::init()
     return true;
 }
 
+
+
 void GameScene::update(float dt){
+
+	_world->Step(dt, 10, 10);
+    for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {    
+        if (b->GetUserData() != NULL) {
+            CCSprite *ballData = (CCSprite *)b->GetUserData();
+            ballData->setPosition(Point(b->GetPosition().x * PTM_RATIO,
+                                    b->GetPosition().y * PTM_RATIO));
+            ballData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
+        }        
+    }
+
 	if(GetAsyncKeyState(VK_RIGHT)){
 		parallaxLayer->move(dt, -1);
 		level->setPositionX(level->getPositionX()-dt*speed);
