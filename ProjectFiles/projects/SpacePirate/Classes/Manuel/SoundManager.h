@@ -9,6 +9,8 @@ class SoundManager{
 private:
 
 public:
-	
+	static void playBackgroundMusic();
+	static void playLaserGun();
+	static void playSlice();
 };
 #endif

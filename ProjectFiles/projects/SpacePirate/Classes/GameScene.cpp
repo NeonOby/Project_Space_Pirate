@@ -2,6 +2,7 @@
 #include "irrKlang.h"
 #include "Box2D/Box2D.h"
 #include "Physic/B2DebugDrawLayer.h"
+#include "Manuel/SoundManager.h"
 
 USING_NS_CC;
 using namespace irrklang;
