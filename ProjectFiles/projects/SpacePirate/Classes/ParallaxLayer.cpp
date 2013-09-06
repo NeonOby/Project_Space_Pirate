@@ -12,12 +12,12 @@ const int midground2count = 2;
 const char* midground2Sprites[] = {"Level/Jungle/Midground2.PNG","Level/Jungle/Midground2.PNG"};
 
 //Die Bildsequenz in deren Reihenfolge die Backgrounds angezeigt werden, NULL = von vorne anfangen
-const int backgroundSequence[] = {0, 1, NULL};
+const int backgroundSequence[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1};
 //Das selbe für den midground
-const int midground1Sequence[] = {0, 1, NULL};
-const int midground2Sequence[] = {0, 1, NULL};
+const int midground1Sequence[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1};
+const int midground2Sequence[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1};
 
-const float speed = 200.0f;
+const float speed = 5.0f;
 
 /*
 Test
@@ -58,10 +58,14 @@ bool ParallaxLayer::init(){
 	midground1Layer = Layer::create();
 	InitSprites(midground1Layer, midground1Sprites, midground1count, MidGround1Sprites, VisibleMidground1Sprites, midground1Sequence);
 	this->addChild(midground1Layer, 1);
+
+	midground2Layer = Layer::create();
+	InitSprites(midground2Layer, midground2Sprites, midground2count, MidGround2Sprites, VisibleMidground2Sprites, midground2Sequence);
+	this->addChild(midground2Layer, 2);
 }
 
 
-static const float scale = 0.5f;
+static const float scale = 1.0f;
 
 //Wir iterieren durch ALLE verfügbaren Sprites und laden sie schonmal in den RAM
 //Angezeigt werden aber nur die ersten 2 der Sequenz
@@ -90,25 +94,31 @@ void ParallaxLayer::InitSprites(Layer* layer, const char** spriteNames, const in
 		spriteArray = new Sprite*[spriteCount];
 		for(int i=0;i<spriteCount;i++){
 			spriteArray[i] = Sprite::create(spriteNames[i]);
-			spriteArray[i]->setScale(scale);
-			if(i==0)
-				position.operator+(Point(spriteArray[i]->getContentSize().width/2*scale,0));
-			else
-				position.operator+(Point((spriteArray[i-1]->getContentSize().width/2+spriteArray[i]->getContentSize().width/2)*scale,0));
-
-			spriteArray[i]->setPosition(position);
-
-			//Den ersten und zweiten Sprite aus der Sequenz können wir gleich hinzufügen
-			//D.h. nicht wenn i = 0,1. Sondern wenn die Sequenz stimmt
-			if(i==sequence[0]){
-				visibleSpriteArray[0] = spriteArray[i];
-				layer->addChild(spriteArray[i]);
-			}
-			if(i==sequence[1]){
-				visibleSpriteArray[1] = spriteArray[i];
-				layer->addChild(spriteArray[i]);
-			}
 		}
+
+		position = Point(0, Director::getInstance()->getVisibleSize().height/2);
+		int lastID = -1;
+		int currentID = 0;
+		int ImageID = sequence[currentID];
+		
+		while(ImageID != -1){
+			position.x += spriteArray[ImageID]->getContentSize().width/2*scale;
+			if(currentID!=0){
+				position.x += spriteArray[lastID]->getContentSize().width/2*scale;
+			}
+
+			Sprite* tmpSprite = Sprite::createWithTexture(spriteArray[ImageID]->getTexture());
+			tmpSprite->setScale(scale);
+			tmpSprite->setPosition(position);
+
+			
+			layer->addChild(tmpSprite);
+
+			lastID = ImageID;
+			currentID++;
+			ImageID = sequence[currentID];
+		}
+		
 	}
 }
 
@@ -116,14 +126,12 @@ void ParallaxLayer::InitSprites(Layer* layer, const char** spriteNames, const in
 
 void ParallaxLayer::move(float dt, int direction){
 	
-	backgroundLayer->setPositionX(backgroundLayer->getPositionX() + dt * direction * speed * 0.5f);
+	backgroundLayer->setPositionX(backgroundLayer->getPositionX() - dt * direction  * 50.0f);
 
-	/*
-	MidGround1Sprites[0]->setPositionX(MidGround1Sprites[0]->getPositionX() + dt * direction * speed * 0.75f);
-	MidGround1Sprites[1]->setPositionX(MidGround1Sprites[1]->getPositionX() + dt * direction * speed * 0.75f);
+	midground1Layer->setPositionX(midground1Layer->getPositionX() - dt * direction  * 40.0f);
 
-	MidGround2Sprites[0]->setPositionX(MidGround2Sprites[0]->getPositionX() + dt * direction * speed * 0.9f);
-	MidGround2Sprites[1]->setPositionX(MidGround2Sprites[1]->getPositionX() + dt * direction * speed * 0.9f);
-	*/
+	//Has to move abit against the move direction !!
+	midground2Layer->setPositionX(midground2Layer->getPositionX() - dt * direction  * 30.0f);
+
 }
 

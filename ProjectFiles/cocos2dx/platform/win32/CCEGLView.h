@@ -52,6 +52,11 @@ public:
     void setMenuResource(LPCWSTR menu);
     void setWndProc(CUSTOM_WND_PROC proc);
 
+	bool enterFullscreen(int fullscreenWidth=0, int fullscreenHeight=0);
+    bool exitFullscreen(int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY);
+    int getFullscreenWidth();
+    int getFullscreenHeight();
+
 private:
     virtual bool Create();
     bool initGL();

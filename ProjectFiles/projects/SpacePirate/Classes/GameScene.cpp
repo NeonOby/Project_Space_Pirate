@@ -10,6 +10,8 @@ using namespace irrklang;
 #define PTM_RATIO 64.0
 
 b2World *_world;
+//The Body of the Sprite, which is the collision shape if you want so
+b2Body *_Player;
 
 Scene* GameScene::scene()
 {
@@ -35,27 +37,30 @@ bool GameScene::init()
     {
         return false;
     }
+
+	//Init Variables:
+	jumping = false;
+	level = new Layer();
+	blocks = new Sprite*[200];
     
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Point origin = Director::getInstance()->getVisibleOrigin();
 
 	//Try to play sound here
 
-	Sprite* sprite = Sprite::create("Level/Jungle/Himmel.PNG");
+	himmel = Sprite::create("Level/Jungle/Himmel.PNG");
 
     // position the sprite on the center of the screen
-    sprite->setPosition(Point(sprite->getContentSize().width/2*0.5f, sprite->getContentSize().height/2*0.5f));
+    himmel->setPosition(Point(himmel->getContentSize().width/2*0.5f, himmel->getContentSize().height/2*0.5f));
 
     // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
+    this->addChild(himmel, 0);
 
 	parallaxLayer = ParallaxLayer::create();
 
 	this->addChild(parallaxLayer, 1);
 
-	level = new Layer();
-
-	blocks = new Sprite*[200];
+	
 
 	for(int i=0; i< 200;i++){
 		blocks[i] = Sprite::create("Game/Dirt.PNG");
@@ -73,8 +78,7 @@ bool GameScene::init()
 
 	//The world, world has Gravity etc.
 	
-	//The Body of the Sprite, which is the collision shape if you want so
-	b2Body *_body;
+	
 	//The sprite of the ball, it moves, rotates, scales with the shape (_ball is not controlled by physic)
 	CCSprite *_ball;
 
@@ -95,17 +99,31 @@ bool GameScene::init()
 	ballBodyDef.type = b2_dynamicBody;
 	ballBodyDef.position.Set(100/PTM_RATIO, 300/PTM_RATIO);
 	ballBodyDef.userData = _ball;
-	_body = _world->CreateBody(&ballBodyDef);
+	_Player = _world->CreateBody(&ballBodyDef);
 
 	b2CircleShape circle;
-	circle.m_radius = 26.0/PTM_RATIO;
+	circle.m_radius = 16.0/PTM_RATIO;
  
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &circle;
-	ballShapeDef.density = 1.0f;
-	ballShapeDef.friction = 0.2f;
+	ballShapeDef.density = 5.0f;
+	ballShapeDef.friction = 0.3f;
 	ballShapeDef.restitution = 0.0f;
-	_body->CreateFixture(&ballShapeDef);
+	_Player->CreateFixture(&ballShapeDef);
+
+	b2PolygonShape shapeDef2;
+	b2Vec2 position;
+	position.Set(0.0f, (16.0f + 24.0f)/PTM_RATIO);//No gravity
+	shapeDef2.SetAsBox(16/PTM_RATIO, 40/PTM_RATIO, position, 0);
+
+	b2FixtureDef ballShapeDef2;
+	ballShapeDef2.shape = &shapeDef2;
+	ballShapeDef2.density = 10.0f;
+	ballShapeDef2.friction = 0.0f;
+	ballShapeDef2.restitution = 0.0f;
+	_Player->CreateFixture(&ballShapeDef2);
+
+	_Player->SetFixedRotation(true);
 
 
 	//Floor Body only (no Sprite yet)
@@ -117,15 +135,19 @@ bool GameScene::init()
 	_body2 = _world->CreateBody(&ballBodyDef2);
 
 	b2PolygonShape shapeDef;
-	shapeDef.SetAsBox(1080/PTM_RATIO, 100/PTM_RATIO);
+	shapeDef.SetAsBox(10000/PTM_RATIO, 100/PTM_RATIO);
  
-	b2FixtureDef ballShapeDef2;
-	ballShapeDef2.shape = &shapeDef;
-	ballShapeDef2.density = 1.0f;
-	ballShapeDef2.friction = 0.2f;
-	ballShapeDef2.restitution = 0.0f;
-	_body2->CreateFixture(&ballShapeDef2);
- 
+	b2FixtureDef ballShapeDef3;
+	ballShapeDef3.shape = &shapeDef;
+	ballShapeDef3.density = 1.0f;
+	ballShapeDef3.friction = 0.3f;
+	ballShapeDef3.restitution = 0.0f;
+	_body2->CreateFixture(&ballShapeDef3);
+
+
+	createPlatform(200,256,128,16);
+	createPlatform(400,456,128,16);
+	createPlatform(600,656,128,16);
 	
 	//Its the DEBUG Layer for Box2D which draws Debug Thingies
 	level->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
@@ -157,9 +179,33 @@ bool GameScene::init()
 
 	this->schedule(schedule_selector(GameScene::update), 0.005F);
 
+	//This follows the Player !!
+	//this->runAction(Follow::create(_ball));
+
     return true;
 }
 
+void GameScene::createPlatform(float x, float y, float width, float height){
+	//Floor2 Body only (no Sprite yet)
+	b2Body *_body;
+
+	b2BodyDef ballBodyDef;
+	//ballBodyDef2.type = b2_staticBody;
+	ballBodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
+	_body = _world->CreateBody(&ballBodyDef);
+
+	b2PolygonShape shapeDef;
+	shapeDef.SetAsBox(width/PTM_RATIO, height/PTM_RATIO);
+ 
+	b2FixtureDef ballShapeDef;
+	ballShapeDef.shape = &shapeDef;
+	ballShapeDef.density = 1.0f;
+	ballShapeDef.friction = 0.3f;
+	ballShapeDef.restitution = 0.0f;
+	_body->CreateFixture(&ballShapeDef);
+}
+
+float diffToCenter = 150.0f;
 
 
 void GameScene::update(float dt){
@@ -185,22 +231,71 @@ void GameScene::update(float dt){
             ballData->setPosition(Point(b->GetPosition().x * PTM_RATIO,
                                     b->GetPosition().y * PTM_RATIO));
             ballData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
-        }        
-    }
+        }
+	}
+
+	//Jump
+	if(!jumping && GetAsyncKeyState(VK_SPACE)){
+		_Player->ApplyLinearImpulse(b2Vec2(0.0f, 60.0f), _Player->GetWorldCenter());
+		jumping = true;
+	}else{
+		//Get if hes not falling anymore:
+		if(_Player->GetLinearVelocity().y == 0){
+			jumping = false;
+		}
+	}
+
+	Sprite *Player = (Sprite *)_Player->GetUserData();
+	float maxSpeed = 8.0f;
+	float speed = 6.0f;
+	if(jumping){
+		speed *= 0.5f;
+		maxSpeed *= 0.5f;
+	}
 
 	//Get KeyInput, will be outcoded in InputManager
 	if(GetAsyncKeyState(VK_RIGHT)){
-		parallaxLayer->move(dt, -1);
-		level->setPositionX(level->getPositionX()-dt*speed);
+		_Player->SetLinearDamping(0.0f);
+		if(_Player->GetLinearVelocity().x < maxSpeed){
+			_Player->ApplyLinearImpulse(b2Vec2(speed,0.0f), _Player->GetWorldCenter());
+			if(_Player->GetLinearVelocity().x > maxSpeed){
+				_Player->SetLinearVelocity(b2Vec2(maxSpeed, _Player->GetLinearVelocity().y));
+			}
+		}
+			
 	}else if(GetAsyncKeyState(VK_LEFT)){
-		parallaxLayer->move(dt, 1);
-		level->setPositionX(level->getPositionX()+dt*speed);
+		_Player->SetLinearDamping(0.0f);
+		if(_Player->GetLinearVelocity().x > -maxSpeed){
+			_Player->ApplyLinearImpulse(b2Vec2(-speed,0.0f), _Player->GetWorldCenter());
+			if(_Player->GetLinearVelocity().x < -maxSpeed){
+				_Player->SetLinearVelocity(b2Vec2(-maxSpeed, _Player->GetLinearVelocity().y));
+			}
+		}
+	}else{
+		//No Button drückt, brems !!
+		if(!jumping){
+			_Player->SetLinearDamping(5.0f);
+		}else{
+			_Player->SetLinearDamping(0.7f);
+		}
 	}
+
+	//Update MainLayer Position to scroll with player:
+
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Point playerPos = level->convertToWorldSpace(Player->getPosition());
+
+	float playerDiffToCenter = (visibleSize.width/2-playerPos.x)*0.06f;
+
+	this->setPositionX(this->getPositionX()+playerDiffToCenter);
+	parallaxLayer->move(dt, playerDiffToCenter);
+
+	himmel->setPositionX(himmel->getPositionX() - playerDiffToCenter);
 
 }
 
-void GameScene::menuCloseCallback(Object* pSender)
-{
+void GameScene::menuCloseCallback(Object* pSender){
+
     Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
