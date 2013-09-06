@@ -747,4 +747,63 @@ EGLView* EGLView::sharedOpenGLView()
     return EGLView::getInstance();
 }
 
+//My own Fullscreen thingy:
+int EGLView::getFullscreenWidth()
+{
+    return GetDeviceCaps(_DC, HORZRES);
+}
+
+int EGLView::getFullscreenHeight()
+{
+    return GetDeviceCaps(_DC, VERTRES);
+}
+
+bool EGLView::enterFullscreen(int fullscreenWidth, int fullscreenHeight)
+{
+    DEVMODE fullscreenSettings;
+    bool isChangeSuccessful;
+
+    if(fullscreenWidth == 0 || fullscreenHeight == 0)
+    {
+        fullscreenWidth  = GetDeviceCaps(_DC, HORZRES);
+        fullscreenHeight = GetDeviceCaps(_DC, VERTRES);
+    }
+
+    int colourBits       = GetDeviceCaps(_DC, BITSPIXEL);
+    int refreshRate      = GetDeviceCaps(_DC, VREFRESH);
+
+    EnumDisplaySettings(NULL, 0, &fullscreenSettings);
+    fullscreenSettings.dmPelsWidth        = fullscreenWidth;
+    fullscreenSettings.dmPelsHeight       = fullscreenHeight;
+    fullscreenSettings.dmBitsPerPel       = colourBits;
+    fullscreenSettings.dmDisplayFrequency = refreshRate;
+    fullscreenSettings.dmFields           = DM_PELSWIDTH |
+                                            DM_PELSHEIGHT |
+                                            DM_BITSPERPEL |
+                                            DM_DISPLAYFREQUENCY;
+
+    SetWindowLongPtr(_wnd, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
+    SetWindowLongPtr(_wnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+    SetWindowPos(_wnd, HWND_TOPMOST, 0, 0, fullscreenWidth, fullscreenHeight, SWP_SHOWWINDOW);
+    isChangeSuccessful = ChangeDisplaySettings(&fullscreenSettings, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL;
+    ShowWindow(_wnd, SW_MAXIMIZE);
+
+    resize(fullscreenWidth, fullscreenHeight);
+
+    return isChangeSuccessful;
+}
+
+bool EGLView::exitFullscreen(int windowX, int windowY, int windowedWidth, int windowedHeight, int windowedPaddingX, int windowedPaddingY)
+{
+    bool isChangeSuccessful;
+
+    SetWindowLongPtr(_wnd, GWL_EXSTYLE, WS_EX_LEFT);
+    SetWindowLongPtr(_wnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+    isChangeSuccessful = ChangeDisplaySettings(NULL, CDS_RESET) == DISP_CHANGE_SUCCESSFUL;
+    SetWindowPos(_wnd, HWND_NOTOPMOST, windowX, windowY, windowedWidth + windowedPaddingX, windowedHeight + windowedPaddingY, SWP_SHOWWINDOW);
+    ShowWindow(_wnd, SW_RESTORE);
+
+    return isChangeSuccessful;
+}
+
 NS_CC_END

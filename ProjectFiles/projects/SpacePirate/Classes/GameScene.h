@@ -14,6 +14,11 @@ private:
 
 	cocos2d::Sprite** blocks;
 
+	cocos2d::Sprite* himmel;
+
+	void createPlatform(float x, float y, float width, float height);
+
+	bool jumping;
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();

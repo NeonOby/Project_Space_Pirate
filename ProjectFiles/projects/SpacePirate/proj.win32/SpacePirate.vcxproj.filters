@@ -7,11 +7,11 @@
     <Filter Include="Classes">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Manu">
+      <UniqueIdentifier>{59ec0e97-8854-4f08-b2c7-9c3737fd7a6f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Classes\Physic">
       <UniqueIdentifier>{3849b819-2c83-4bc5-9f94-13ef6f06af34}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Classes\Manuel">
-      <UniqueIdentifier>{59ec0e97-8854-4f08-b2c7-9c3737fd7a6f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,7 +46,7 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Manuel\SoundManager.cpp">
-      <Filter>Classes\Manuel</Filter>
+      <Filter>Classes\Manu</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Physic\B2DebugDrawLayer.cpp">
       <Filter>Classes\Physic</Filter>
@@ -111,7 +111,7 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Manuel\SoundManager.h">
-      <Filter>Classes\Manuel</Filter>
+      <Filter>Classes\Manu</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Physic\B2DebugDrawLayer.h">
       <Filter>Classes\Physic</Filter>
