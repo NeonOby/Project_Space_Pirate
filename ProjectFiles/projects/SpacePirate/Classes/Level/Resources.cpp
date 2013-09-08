@@ -27,9 +27,9 @@ USING_NS_CC;
 Init
 ====================================== 
 */
-Resources::Resources() 
+Resources::Resources()
 {
-
+	mTextureVector = vector <string>();
 }
 
 
@@ -41,27 +41,25 @@ End
 void Resources::Free() 
 {
 	// Free all the loaded tiles
-	FreeTileset();
-
-	// Note, the font bitmap and cursor are freed in Main.cpp calling to mI->End()
+	mTextureVector.clear();
 }
 
 
 /* 
-======================================									
+======================================
 Load Resources
-====================================== 
+======================================
 */
 bool Resources::LoadResources (char *pTilesetFile)
 {
-	if (!LoadEditorElements())							return false;
 	if (!LoadTileset (pTilesetFile))					return false;
 
 	return true;
 }
 
-
-
+char *Resources::GetImagePath(int index){
+	return (char*)mTextureVector.at(index).c_str();
+}
 
 /* 
 ======================================									
@@ -71,15 +69,15 @@ Parse file and load backdrop images (tiles)
 bool Resources::LoadTileset (char *pTilesetFile)
 {
 	// If there is a tileset already, free it
-	
+	mTextureVector.clear();
 
-	strcpy (mTilesetPath, pTilesetFile);
-
-	TiXmlDocument mXmlDoc (mTilesetPath);
+	TiXmlDocument mXmlDoc ((char*)pTilesetFile);
 
 	// Fatal error, cannot load
 	if (!mXmlDoc.LoadFile())
 	{
+		log("mXmlDoc can't load");
+		
 		return false;
 	}
 
@@ -110,10 +108,10 @@ bool Resources::LoadTileset (char *pTilesetFile)
 
 	if (!mXSurface)
 	{
-		// No surfaces to parse
+		// No surfaces to parse9
 		return false;
 	}
-	
+
 	// Parse all the surfaces
 	char mFileName [1024];
 	mFileName [0] = 0;
@@ -138,10 +136,10 @@ bool Resources::LoadTileset (char *pTilesetFile)
 		// Path to the image
 		if (mXSurface->Attribute("image"))
 		{
-			strcpy (mFileName, mXSurface->Attribute("image"));	
 
+			strcpy(mFileName, (char *)mXSurface->Attribute("image"));
 			// Load Image into Texture2D oder SpriteCache wie auch immer
-			mTextureVector.push_back (mFileName);
+			mTextureVector.push_back ((string)mFileName);
 			
 		}
 		else

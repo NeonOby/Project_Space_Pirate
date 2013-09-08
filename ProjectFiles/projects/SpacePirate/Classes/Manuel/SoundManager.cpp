@@ -2,15 +2,7 @@
 
 static SoundManager* instance;
 
-enum SchussSoundss{
-	LASER_GUN = 0,
-	GRENADE = 1
-};
 
-enum SchreiSoundss{
-	LASER_GUN = 0,
-	GRENADE = 1
-};
 
 
 const char* SchussSounds[] = {"Laser.mp3","Granade.mp3","Jason.mp3"};
@@ -31,10 +23,6 @@ SoundManager::SoundManager() {
 
 void SoundManager::playSound(SchussSoundss id){
 	createIrrKlangDevice()->play2D(SchussSounds[id]);
-}
-
-void playSound(SchreiSoundss id){
-
 }
 
 void SoundManager::playBackgroundMusic(){

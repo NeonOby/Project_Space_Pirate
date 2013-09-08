@@ -5,10 +5,23 @@
 
 using namespace irrklang;
 
+enum SchussSoundss{
+	LASER_GUN = 0,
+	GRENADE = 1
+};
+
+enum SchreiSoundss{
+	LASER_GUN2 = 0,
+	GRENADE2 = 1
+};
+
 class SoundManager{
 private:
 	ISoundEngine* engine;
 public:
+
+
+
 	static void playBackgroundMusic();
 	static void playLaserGun();
 	static void playSlice();
