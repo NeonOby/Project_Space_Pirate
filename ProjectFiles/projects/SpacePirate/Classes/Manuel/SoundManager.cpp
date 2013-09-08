@@ -2,11 +2,39 @@
 
 static SoundManager* instance;
 
+enum SchussSoundss{
+	LASER_GUN = 0,
+	GRENADE = 1
+};
+
+enum SchreiSoundss{
+	LASER_GUN = 0,
+	GRENADE = 1
+};
+
+
+const char* SchussSounds[] = {"Laser.mp3","Granade.mp3","Jason.mp3"};
+
 static SoundManager* getInstance(){
 	if(!instance){
 		instance = new SoundManager();
 	}
 	return instance;
+}
+
+SoundManager::SoundManager() {
+	engine = createIrrKlangDevice();
+	engine->addSoundSourceFromFile("Jason.mp3", irrklang::ESM_AUTO_DETECT, true);
+
+	playSound(SchussSoundss::LASER_GUN);
+}
+
+void SoundManager::playSound(SchussSoundss id){
+	createIrrKlangDevice()->play2D(SchussSounds[id]);
+}
+
+void playSound(SchreiSoundss id){
+
 }
 
 void SoundManager::playBackgroundMusic(){
@@ -17,6 +45,7 @@ void SoundManager::playBackgroundMusic(){
 	}
 
 	engine->play2D("Jason.mp3", true);
+	
 }
 
 void SoundManager::playLaserGun(){

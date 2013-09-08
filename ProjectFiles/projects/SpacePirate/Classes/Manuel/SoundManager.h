@@ -7,10 +7,14 @@ using namespace irrklang;
 
 class SoundManager{
 private:
-
+	ISoundEngine* engine;
 public:
 	static void playBackgroundMusic();
 	static void playLaserGun();
 	static void playSlice();
+
+	static void playSound(SchussSoundss id);
+
+	SoundManager();
 };
 #endif
