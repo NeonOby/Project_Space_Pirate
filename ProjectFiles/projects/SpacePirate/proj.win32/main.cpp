@@ -1,7 +1,7 @@
 #include "main.h"
 #include "AppDelegate.h"
 #include "CCEGLView.h"
-
+#include "TinyXML/tinyxml.h"
 USING_NS_CC;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance,
@@ -17,6 +17,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     EGLView* eglView = EGLView::getInstance();
     eglView->setViewName("SpacePirate");
     eglView->setFrameSize(1920, 1080);
+
 
     return Application::getInstance()->run();
 }

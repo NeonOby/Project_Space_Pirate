@@ -4,6 +4,8 @@
 #include "Physic/B2DebugDrawLayer.h"
 #include "Manuel/SoundManager.h"
 
+#include "Level/LevelMap.h"
+
 USING_NS_CC;
 using namespace irrklang;
 
@@ -61,7 +63,7 @@ bool GameScene::init()
 	this->addChild(parallaxLayer, 1);
 
 	
-
+	
 	for(int i=0; i< 200;i++){
 		blocks[i] = Sprite::create("Game/Dirt.PNG");
 
@@ -73,6 +75,15 @@ bool GameScene::init()
 
 	this->addChild(level, 2);
 
+	LevelMap map = LevelMap();
+	map.SetLayerArray(level,level,level);
+	if(map.LoadMap("resources/maps/map6.xml")){
+			log("loading map finished: success");
+	}else{
+			log("loading map finished: Error");
+	}
+
+
 	//create World and add something
 
 
@@ -80,7 +91,7 @@ bool GameScene::init()
 	
 	
 	//The sprite of the ball, it moves, rotates, scales with the shape (_ball is not controlled by physic)
-	CCSprite *_ball;
+	Sprite *_ball;
 
 	_ball = Sprite::create("Game/Dirt.PNG");
 	_ball->setPosition(Point(200,200));
@@ -227,7 +238,7 @@ void GameScene::update(float dt){
 	*/
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
         if (b->GetUserData() != NULL) {
-            CCSprite *ballData = (CCSprite *)b->GetUserData();
+            Sprite *ballData = (Sprite *)b->GetUserData();
             ballData->setPosition(Point(b->GetPosition().x * PTM_RATIO,
                                     b->GetPosition().y * PTM_RATIO));
             ballData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
@@ -285,12 +296,19 @@ void GameScene::update(float dt){
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Point playerPos = level->convertToWorldSpace(Player->getPosition());
 
-	float playerDiffToCenter = (visibleSize.width/2-playerPos.x)*0.06f;
+	float playerDiffToCenterX = (visibleSize.width/2-playerPos.x)*0.06f;
+	float playerDiffToCenterY = (visibleSize.height/2-playerPos.y)*0.06f;
 
-	this->setPositionX(this->getPositionX()+playerDiffToCenter);
-	parallaxLayer->move(dt, playerDiffToCenter);
+	this->setPositionX(this->getPositionX()+playerDiffToCenterX);
+	parallaxLayer->move(dt, playerDiffToCenterX);
 
-	himmel->setPositionX(himmel->getPositionX() - playerDiffToCenter);
+	himmel->setPositionX(himmel->getPositionX() - playerDiffToCenterX);
+
+	//Selbe für y
+	this->setPositionY(this->getPositionY()+playerDiffToCenterY);
+	//parallaxLayer->move(dt, playerDiffToCenterX);
+
+	himmel->setPositionY(himmel->getPositionY() - playerDiffToCenterY);
 
 }
 

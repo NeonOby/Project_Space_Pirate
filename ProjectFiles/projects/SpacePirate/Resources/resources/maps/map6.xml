@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<map>
+    <tileset tileset_file="resources/tileset_01.xml" />
+    <nodes>
+        <node surface_id="0" x="266" y="148" z="0" layer="3" angle="0.000000" scale="1.000000" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
+        <node surface_id="0" x="175" y="-321" z="0" layer="3" angle="0.000000" scale="1.000000" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
+        <node surface_id="0" x="177" y="-233" z="0" layer="3" angle="0.000000" scale="1.000000" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
+        <node surface_id="0" x="59" y="-139" z="0" layer="3" angle="0.000000" scale="1.000000" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
+        <node surface_id="0" x="232" y="-121" z="0" layer="3" angle="0.000000" scale="1.000000" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
+        <node surface_id="0" x="372" y="-183" z="0" layer="3" angle="0.000000" scale="1.000000" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
+        <node surface_id="1" x="65" y="63" z="0" layer="3" angle="0.000000" scale="1.000000" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
+        <node surface_id="14" x="79" y="-73" z="0" layer="3" angle="0.000000" scale="0.269815" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
+    </nodes>
+</map>

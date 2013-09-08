@@ -67,7 +67,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\cocos2dx;$(ProjectDir)..\..\..\cocos2dx\include;$(ProjectDir)..\..\..\cocos2dx\kazmath\include;$(ProjectDir)..\..\..\cocos2dx\platform\win32;$(ProjectDir)..\..\..\cocos2dx\platform\third_party\win32;$(ProjectDir)..\..\..\cocos2dx\platform\third_party\win32\OGLES;$(ProjectDir)..\..\..\external;$(ProjectDir)..\..\..\external\chipmunk\include\chipmunk;$(ProjectDir)..\..\..\CocosDenshion\include;$(ProjectDir)..\..\..\extensions;..\Classes;..;..\proj.win32;$(ProjectDir)..\..\..\irrKlang-1.4.0\include;$(ProjectDir)..\..\..\TinyXml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\cocos2dx;$(ProjectDir)..\..\..\cocos2dx\include;$(ProjectDir)..\..\..\cocos2dx\kazmath\include;$(ProjectDir)..\..\..\cocos2dx\platform\win32;$(ProjectDir)..\..\..\cocos2dx\platform\third_party\win32;$(ProjectDir)..\..\..\cocos2dx\platform\third_party\win32\OGLES;$(ProjectDir)..\..\..\external;$(ProjectDir)..\..\..\external\chipmunk\include\chipmunk;$(ProjectDir)..\..\..\CocosDenshion\include;$(ProjectDir)..\..\..\extensions;..\Classes;..;..\proj.win32;$(ProjectDir)..\..\..\irrKlang-1.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USE_MATH_DEFINES;GL_GLEXT_PROTOTYPES;CC_ENABLE_CHIPMUNK_INTEGRATION=1;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -136,7 +136,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\Impulse.cpp" />
-    <ClCompile Include="..\Classes\Level\Map.cpp" />
+    <ClCompile Include="..\Classes\Level\LevelMap.cpp" />
     <ClCompile Include="..\Classes\Level\Resources.cpp" />
     <ClCompile Include="..\Classes\MainMenuScene.cpp" />
     <ClCompile Include="..\Classes\Manuel\SoundManager.cpp" />
@@ -145,6 +145,10 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClCompile Include="..\Classes\Part.cpp" />
     <ClCompile Include="..\Classes\Physic\B2DebugDrawLayer.cpp" />
     <ClCompile Include="..\Classes\Physic\GLES-Render.cpp" />
+    <ClCompile Include="..\Classes\TinyXML\tinystr.cpp" />
+    <ClCompile Include="..\Classes\TinyXML\tinyxml.cpp" />
+    <ClCompile Include="..\Classes\TinyXML\tinyxmlerror.cpp" />
+    <ClCompile Include="..\Classes\TinyXML\tinyxmlparser.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -159,7 +163,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClInclude Include="..\Classes\ImageFiles.h" />
     <ClInclude Include="..\Classes\Impulse.h" />
     <ClInclude Include="..\Classes\Konstanten.h" />
-    <ClInclude Include="..\Classes\Level\Map.h" />
+    <ClInclude Include="..\Classes\Level\LevelMap.h" />
     <ClInclude Include="..\Classes\Level\Resources.h" />
     <ClInclude Include="..\Classes\MainMenuScene.h" />
     <ClInclude Include="..\Classes\Manuel\SoundManager.h" />
@@ -170,6 +174,8 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClInclude Include="..\Classes\Part.h" />
     <ClInclude Include="..\Classes\Physic\B2DebugDrawLayer.h" />
     <ClInclude Include="..\Classes\Physic\GLES-Render.h" />
+    <ClInclude Include="..\Classes\TinyXML\tinystr.h" />
+    <ClInclude Include="..\Classes\TinyXML\tinyxml.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
