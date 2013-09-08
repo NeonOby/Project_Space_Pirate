@@ -7,11 +7,14 @@
     <Filter Include="Classes">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Classes\Manu">
-      <UniqueIdentifier>{59ec0e97-8854-4f08-b2c7-9c3737fd7a6f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Classes\Physic">
       <UniqueIdentifier>{3849b819-2c83-4bc5-9f94-13ef6f06af34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Manuel">
+      <UniqueIdentifier>{59ec0e97-8854-4f08-b2c7-9c3737fd7a6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Level">
+      <UniqueIdentifier>{2a4e7cd6-07e6-47d7-8b49-5f2059cbcaab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -46,13 +49,19 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Manuel\SoundManager.cpp">
-      <Filter>Classes\Manu</Filter>
+      <Filter>Classes\Manuel</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Physic\B2DebugDrawLayer.cpp">
       <Filter>Classes\Physic</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Physic\GLES-Render.cpp">
       <Filter>Classes\Physic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Level\Map.cpp">
+      <Filter>Classes\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Level\Resources.cpp">
+      <Filter>Classes\Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -111,13 +120,19 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Manuel\SoundManager.h">
-      <Filter>Classes\Manu</Filter>
+      <Filter>Classes\Manuel</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Physic\B2DebugDrawLayer.h">
       <Filter>Classes\Physic</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Physic\GLES-Render.h">
       <Filter>Classes\Physic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Level\Map.h">
+      <Filter>Classes\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Level\Resources.h">
+      <Filter>Classes\Level</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
