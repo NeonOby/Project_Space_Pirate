@@ -21,7 +21,7 @@
 
 // ------ Includes -----
 
-#include "tinyxml.h"
+#include "TinyXML/tinyxml.h"
 #include "cocos2d.h"
 #include <vector>
 using namespace std; 
@@ -35,21 +35,18 @@ class Resources
 {
 public:
 
-	Resources											();	
+	Resources											();
 	void Free											();
 
 	bool					LoadResources				(char *pResourceFile);
 	bool					LoadTileset					(char *pTilesetFile);
 
+	char					*GetImagePath				(int index);
 private:
 
-	vector <char*> mTextureVector;
+	vector <string> mTextureVector;
 
 	char *mTilesetPath;
-	// ----- Methods -----
-
-	bool LoadEditorElements		();
-	void FreeTileset			();
 };
 
 #endif // _RESOURCES_

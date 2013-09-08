@@ -16,6 +16,9 @@
     <Filter Include="Classes\Level">
       <UniqueIdentifier>{2a4e7cd6-07e6-47d7-8b49-5f2059cbcaab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\TinyXML">
+      <UniqueIdentifier>{5f22f3f4-31dc-49ea-8e88-9d2f9a3ee1be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -57,11 +60,23 @@
     <ClCompile Include="..\Classes\Physic\GLES-Render.cpp">
       <Filter>Classes\Physic</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Level\Map.cpp">
-      <Filter>Classes\Level</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Level\Resources.cpp">
       <Filter>Classes\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Level\LevelMap.cpp">
+      <Filter>Classes\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TinyXML\tinystr.cpp">
+      <Filter>Classes\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TinyXML\tinyxml.cpp">
+      <Filter>Classes\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TinyXML\tinyxmlerror.cpp">
+      <Filter>Classes\TinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\TinyXML\tinyxmlparser.cpp">
+      <Filter>Classes\TinyXML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,11 +143,17 @@
     <ClInclude Include="..\Classes\Physic\GLES-Render.h">
       <Filter>Classes\Physic</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Level\Map.h">
-      <Filter>Classes\Level</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Level\Resources.h">
       <Filter>Classes\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Level\LevelMap.h">
+      <Filter>Classes\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TinyXML\tinystr.h">
+      <Filter>Classes\TinyXML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\TinyXML\tinyxml.h">
+      <Filter>Classes\TinyXML</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
