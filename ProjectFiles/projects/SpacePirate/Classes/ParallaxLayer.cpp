@@ -52,18 +52,26 @@ bool ParallaxLayer::init(){
 	//Load All Sprites into Memory?
 
 	backgroundLayer = Layer::create();
-	InitSprites(backgroundLayer, backgroundSprites, backgroundcount, BackGroundSprites, VisibleBackgroundSprites, backgroundSequence);
-	this->addChild(backgroundLayer, 0);
-
 	midground1Layer = Layer::create();
-	InitSprites(midground1Layer, midground1Sprites, midground1count, MidGround1Sprites, VisibleMidground1Sprites, midground1Sequence);
-	this->addChild(midground1Layer, 1);
-
 	midground2Layer = Layer::create();
-	InitSprites(midground2Layer, midground2Sprites, midground2count, MidGround2Sprites, VisibleMidground2Sprites, midground2Sequence);
+
+	this->addChild(backgroundLayer, 0);
+	this->addChild(midground1Layer, 1);
 	this->addChild(midground2Layer, 2);
+
+	return true;
+	InitSprites(backgroundLayer, backgroundSprites, backgroundcount, BackGroundSprites, VisibleBackgroundSprites, backgroundSequence);
+	InitSprites(midground1Layer, midground1Sprites, midground1count, MidGround1Sprites, VisibleMidground1Sprites, midground1Sequence);
+	InitSprites(midground2Layer, midground2Sprites, midground2count, MidGround2Sprites, VisibleMidground2Sprites, midground2Sequence);
+	
 }
 
+Layer* ParallaxLayer::getLayer(int i){
+	if(i==0) return backgroundLayer;
+	if(i==1) return midground1Layer;
+	if(i==2) return midground2Layer;
+	return NULL;
+}
 
 static const float scale = 1.0f;
 

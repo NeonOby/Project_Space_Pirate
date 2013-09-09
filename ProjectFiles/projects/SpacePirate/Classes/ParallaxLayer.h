@@ -28,6 +28,8 @@ public:
 
 	void move(float dt, int direction);
 
+	cocos2d::Layer* getLayer(int i);
+
 	CREATE_FUNC(ParallaxLayer);
 };
 
