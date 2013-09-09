@@ -17,7 +17,7 @@ enum SchreiSoundss{
 
 class SoundManager{
 private:
-	ISoundEngine* engine;
+	static ISoundEngine* engine;
 public:
 
 

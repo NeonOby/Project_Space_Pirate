@@ -50,6 +50,9 @@ bool GameScene::init()
 
 	//Try to play sound here
 
+
+
+
 	himmel = Sprite::create("Level/Jungle/Himmel.PNG");
 
     // position the sprite on the center of the screen
