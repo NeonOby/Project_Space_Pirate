@@ -77,6 +77,7 @@ bool GameScene::init()
 
 	LevelMap map = LevelMap();
 	map.SetLayerArray(level,level,level);
+	map.SetParallaxLayer(parallaxLayer->getLayer(0),parallaxLayer->getLayer(1),parallaxLayer->getLayer(2));
 	if(map.LoadMap("resources/maps/map6.xml")){
 			log("loading map finished: success");
 	}else{
@@ -85,10 +86,7 @@ bool GameScene::init()
 
 
 	//create World and add something
-
-
 	//The world, world has Gravity etc.
-	
 	
 	//The sprite of the ball, it moves, rotates, scales with the shape (_ball is not controlled by physic)
 	Sprite *_ball;
