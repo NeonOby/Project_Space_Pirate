@@ -30,9 +30,8 @@ Init
 LevelMap::LevelMap() 
 {
 	// Get IndieLib instante
+	
 }
-
-
 
 /* 
 ======================================									
@@ -45,25 +44,38 @@ void LevelMap::CreateNode (int pX, int pY, int pZ, int pLayer, float pScale, cha
 	Sprite *tmpSprite = Sprite::create(pFileName);
 	if(!tmpSprite)
 		return;
-	
+	log("PosY: %i", -pY);
 	tmpSprite->setPosition (Point((float) pX, (float) -pY));
 	tmpSprite->setScale(pScale);
 
-	if(pLayer > 2){
-		pLayer = 0;
+	if(pLayer > 5){
+		pLayer = 5;
 	}
 	mLayerArray[pLayer]->addChild(tmpSprite, pZ);
 }
 
 void LevelMap::SetLayerArray (cocos2d::Layer **pLayerArray){
-	mLayerArray = pLayerArray;
+	mLayerArray[3] = pLayerArray[0];
+	mLayerArray[4] = pLayerArray[1];
+	mLayerArray[5] = pLayerArray[2];
 }
 
-void LevelMap::SetLayerArray(cocos2d::Layer *pLayer0, cocos2d::Layer *pLayer1, cocos2d::Layer *pLayer2){
-	mLayerArray = new Layer*[3];
-	mLayerArray[0] = pLayer0;
-	mLayerArray[1] = pLayer1;
-	mLayerArray[2] = pLayer2;
+void LevelMap::SetLayerArray(cocos2d::Layer *pLayer1, cocos2d::Layer *pLayer2, cocos2d::Layer *pLayer3){
+	mLayerArray[3] = pLayer1;
+	mLayerArray[4] = pLayer2;
+	mLayerArray[5] = pLayer3;
+}
+
+void LevelMap::SetParallaxLayer(cocos2d::Layer *pLayer1, cocos2d::Layer *pLayer2, cocos2d::Layer *pLayer3){
+	mLayerArray[0] = pLayer1;
+	mLayerArray[1] = pLayer2;
+	mLayerArray[2] = pLayer3;
+}
+
+void LevelMap::SetParallaxArray(cocos2d::Layer **pLayerArray){
+	mLayerArray[0] = pLayerArray[0];
+	mLayerArray[1] = pLayerArray[1];
+	mLayerArray[2] = pLayerArray[2];
 }
 
 /* 
