@@ -71,7 +71,7 @@ bool Resources::LoadTileset (char *pTilesetFile)
 	// If there is a tileset already, free it
 	mTextureVector.clear();
 
-	TiXmlDocument mXmlDoc ((char*)pTilesetFile);
+	TiXmlDocument mXmlDoc (pTilesetFile);
 
 	// Fatal error, cannot load
 	if (!mXmlDoc.LoadFile())
