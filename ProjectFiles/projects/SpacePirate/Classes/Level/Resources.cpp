@@ -71,7 +71,13 @@ bool Resources::LoadTileset (char *pTilesetFile)
 	// If there is a tileset already, free it
 	mTextureVector.clear();
 
-	TiXmlDocument mXmlDoc (pTilesetFile);
+	string s(pTilesetFile);
+	if(s.empty()){
+		log("Resources Tileset-Path can't be nothing");
+		return false;
+	}
+	s.erase(0,1);
+	TiXmlDocument mXmlDoc (s.c_str());
 
 	// Fatal error, cannot load
 	if (!mXmlDoc.LoadFile())
