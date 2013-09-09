@@ -3,6 +3,12 @@
 #include <vector>
 #include <algorithm>
 
+#define PLAYER_FOOD 3
+#define PLAYER_RIGHT_SIDE 4
+#define PLAYER_RIGHT_START_CLIMB 5
+#define PLAYER_LEFT_SIDE 6
+#define PLAYER_LEFT_START_CLIMB 7
+
 struct MyContact {
     b2Fixture *fixtureA;
     b2Fixture *fixtureB;
@@ -13,10 +19,19 @@ struct MyContact {
 };
 
 class MyContactListener : public b2ContactListener {
-
+private:
+	bool addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum);
+	bool remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum);
 public:
     std::vector<MyContact>_contacts;
     
+	int playerFootContacts;
+	int playerRightSideContacts;
+	int playerRightStartClimbContacts;
+
+	int playerLeftSideContacts;
+	int playerLeftStartClimbContacts;
+
     MyContactListener();
     ~MyContactListener();
     

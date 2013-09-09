@@ -132,7 +132,7 @@ void ParallaxLayer::InitSprites(Layer* layer, const char** spriteNames, const in
 
 
 
-void ParallaxLayer::move(float dt, int direction){
+void ParallaxLayer::moveX(float dt, int direction){
 	
 	backgroundLayer->setPositionX(backgroundLayer->getPositionX() - dt * direction  * 50.0f);
 
@@ -140,6 +140,17 @@ void ParallaxLayer::move(float dt, int direction){
 
 	//Has to move abit against the move direction !!
 	midground2Layer->setPositionX(midground2Layer->getPositionX() - dt * direction  * 30.0f);
+
+}
+
+void ParallaxLayer::moveY(float dt, int direction){
+	
+	backgroundLayer->setPositionY(backgroundLayer->getPositionY() - dt * direction  * 50.0f);
+
+	midground1Layer->setPositionY(midground1Layer->getPositionY() - dt * direction  * 40.0f);
+
+	//Has to move abit against the move direction !!
+	midground2Layer->setPositionY(midground2Layer->getPositionY() - dt * direction  * 30.0f);
 
 }
 

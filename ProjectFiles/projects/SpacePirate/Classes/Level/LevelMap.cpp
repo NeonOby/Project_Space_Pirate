@@ -44,7 +44,7 @@ void LevelMap::CreateNode (int pX, int pY, int pZ, int pLayer, float pScale, cha
 	Sprite *tmpSprite = Sprite::create(pFileName);
 	if(!tmpSprite)
 		return;
-	log("PosY: %i", -pY);
+	//log("PosY: %i", -pY);
 	tmpSprite->setPosition (Point((float) pX, (float) -pY));
 	tmpSprite->setScale(pScale);
 

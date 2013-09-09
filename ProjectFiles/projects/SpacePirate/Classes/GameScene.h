@@ -3,6 +3,7 @@
 
 #include "ParallaxLayer.h"
 #include "cocos2d.h"
+#include "MyContactListener.h"
 
 class GameScene : public cocos2d::Layer {
 private:
@@ -16,9 +17,13 @@ private:
 
 	cocos2d::Sprite* himmel;
 
+	MyContactListener myContactListenerInstance;
+
 	void createPlatform(float x, float y, float width, float height);
 
-	bool jumping;
+	bool falling;
+	bool hasJumped;
+	bool climbingRight,climbingLeft;
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();
