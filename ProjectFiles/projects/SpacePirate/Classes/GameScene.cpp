@@ -324,19 +324,6 @@ void GameScene::update(float dt){
         }
 	}
 
-	//Jump
-	if(!jumping && GetAsyncKeyState(VK_SPACE)){
-		_Player->ApplyLinearImpulse(b2Vec2(0.0f, 60.0f), _Player->GetWorldCenter());
-		SoundManager::playSound(JUMP);
-		jumping = true;
-	}else{
-		//Get if hes not falling anymore:
-		if(_Player->GetLinearVelocity().y == 0){
-			jumping = false;
-		}
-
-	}
-
 	bool canMove = true;
 	bool JUMP_PRESSED = false;
 
