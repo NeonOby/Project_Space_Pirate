@@ -40,11 +40,13 @@ public:
 
 	cocos2d::Layer				**GetLayerArray		(){ return mLayerArray; };
 	void						SetLayerArray		(cocos2d::Layer **pLayerArray);
-	void						SetLayerArray		(cocos2d::Layer *pLayer0, cocos2d::Layer *pLayer1, cocos2d::Layer *pLayer2);
+	void						SetParallaxArray	(cocos2d::Layer **pLayerArray);
+	void						SetParallaxLayer	(cocos2d::Layer *pLayer1, cocos2d::Layer *pLayer2, cocos2d::Layer *pLayer3);
+	void						SetLayerArray		(cocos2d::Layer *pLayer1, cocos2d::Layer *pLayer2, cocos2d::Layer *pLayer3);
 private:
 
 
-	cocos2d::Layer **mLayerArray;
+	cocos2d::Layer* mLayerArray[6];
 };
 
 #endif // _LEVELMAP_

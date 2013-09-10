@@ -6,10 +6,12 @@
 
 #include "Level/LevelMap.h"
 
+#include "conio.h"
+
+#include "Konstanten.h"
+
 USING_NS_CC;
 using namespace irrklang;
-
-#define PTM_RATIO 64.0
 
 b2World *_world;
 //The Body of the Sprite, which is the collision shape if you want so
@@ -41,7 +43,12 @@ bool GameScene::init()
     }
 
 	//Init Variables:
-	jumping = false;
+	falling = false;
+	climbingLeft = false;
+	climbingRight = false;
+	hasJumped = false;
+	fallTime=0;
+	waitTime = 0;
 	level = new Layer();
 	blocks = new Sprite*[200];
     
@@ -80,6 +87,7 @@ bool GameScene::init()
 
 	LevelMap map = LevelMap();
 	map.SetLayerArray(level,level,level);
+	map.SetParallaxLayer(parallaxLayer->getLayer(0),parallaxLayer->getLayer(1),parallaxLayer->getLayer(2));
 	if(map.LoadMap("resources/maps/map6.xml")){
 			log("loading map finished: success");
 	}else{
@@ -88,15 +96,12 @@ bool GameScene::init()
 
 
 	//create World and add something
-
-
 	//The world, world has Gravity etc.
-	
 	
 	//The sprite of the ball, it moves, rotates, scales with the shape (_ball is not controlled by physic)
 	Sprite *_ball;
 
-	_ball = Sprite::create("Game/Dirt.PNG");
+	_ball = Sprite::create();
 	_ball->setPosition(Point(200,200));
 	level->addChild(_ball);
 
@@ -107,7 +112,10 @@ bool GameScene::init()
 	// create a world object, which will hold and simulate the rigid bodies.
 	_world = new b2World(gravity);
 	//World is generated, now add some things
+	myContactListenerInstance = MyContactListener();
+	_world->SetContactListener(&myContactListenerInstance);
 
+	//Player BOdy !!
 
 	b2BodyDef ballBodyDef;
 	ballBodyDef.type = b2_dynamicBody;
@@ -120,9 +128,9 @@ bool GameScene::init()
  
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &circle;
-	ballShapeDef.density = 5.0f;
-	ballShapeDef.friction = 0.3f;
-	ballShapeDef.restitution = 0.0f;
+	ballShapeDef.density = 10.0f;
+	ballShapeDef.friction = 0.5f;
+	ballShapeDef.restitution = 0.0f; //Bounce
 	_Player->CreateFixture(&ballShapeDef);
 
 	b2PolygonShape shapeDef2;
@@ -135,10 +143,78 @@ bool GameScene::init()
 	ballShapeDef2.density = 10.0f;
 	ballShapeDef2.friction = 0.0f;
 	ballShapeDef2.restitution = 0.0f;
-	_Player->CreateFixture(&ballShapeDef2);
+	b2Fixture * fixture = _Player->CreateFixture(&ballShapeDef2);
 
+
+	/*
+	//Try Ducken
+	_Player->DestroyFixture(fixture);
+
+	position.Set(0.0f, (16.0f + 12.0f)/PTM_RATIO);//No gravity
+	shapeDef2.SetAsBox(16/PTM_RATIO, 16/PTM_RATIO, position, 0);
+
+	ballShapeDef2.shape = &shapeDef2;
+	ballShapeDef2.density = 10.0f;
+	ballShapeDef2.friction = 0.0f;
+	ballShapeDef2.restitution = 0.0f;
+	fixture = _Player->CreateFixture(&ballShapeDef2);
+	*/
+
+	//Try Ende
 	_Player->SetFixedRotation(true);
 
+	b2PolygonShape polygonShape;
+	polygonShape.SetAsBox(8/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO), 0);
+	
+	b2FixtureDef myFixtureDef;
+	myFixtureDef.shape = &polygonShape;
+    myFixtureDef.density = 0.0f;
+	myFixtureDef.friction = 0.0f;
+    myFixtureDef.isSensor = true;
+    b2Fixture* footSensorFixture = _Player->CreateFixture(&myFixtureDef);
+    footSensorFixture->SetUserData( (void*)PLAYER_FOOD );
+
+	//Start Climbing:
+
+	polygonShape.SetAsBox(8/PTM_RATIO, 8/PTM_RATIO, b2Vec2(16/PTM_RATIO,64/PTM_RATIO), 0);
+
+	myFixtureDef.shape = &polygonShape;
+    myFixtureDef.density = 0.0f;
+	myFixtureDef.friction = 0.0f;
+    myFixtureDef.isSensor = true;
+    b2Fixture* rightSideStartSensorFixture = _Player->CreateFixture(&myFixtureDef);
+    rightSideStartSensorFixture->SetUserData( (void*)PLAYER_RIGHT_START_CLIMB );
+
+	polygonShape.SetAsBox(8/PTM_RATIO, 8/PTM_RATIO, b2Vec2(-16/PTM_RATIO,64/PTM_RATIO), 0);
+
+	myFixtureDef.shape = &polygonShape;
+    myFixtureDef.density = 0.0f;
+	myFixtureDef.friction = 0.0f;
+    myFixtureDef.isSensor = true;
+    b2Fixture* leftSideStartSensorFixture = _Player->CreateFixture(&myFixtureDef);
+    leftSideStartSensorFixture->SetUserData( (void*)PLAYER_LEFT_START_CLIMB );
+
+	//Continuing Climbing
+
+	polygonShape.SetAsBox(8/PTM_RATIO, 40/PTM_RATIO, b2Vec2(16/PTM_RATIO,26/PTM_RATIO), 0);
+
+	myFixtureDef.shape = &polygonShape;
+    myFixtureDef.density = 0.0f;
+	myFixtureDef.friction = 0.0f;
+    myFixtureDef.isSensor = true;
+    b2Fixture* rightSideSensorFixture = _Player->CreateFixture(&myFixtureDef);
+    rightSideSensorFixture->SetUserData( (void*)PLAYER_RIGHT_SIDE );
+
+	polygonShape.SetAsBox(8/PTM_RATIO, 40/PTM_RATIO, b2Vec2(-16/PTM_RATIO,26/PTM_RATIO), 0);
+
+	myFixtureDef.shape = &polygonShape;
+    myFixtureDef.density = 0.0f;
+	myFixtureDef.friction = 0.0f;
+    myFixtureDef.isSensor = true;
+    b2Fixture* leftSideSensorFixture = _Player->CreateFixture(&myFixtureDef);
+    leftSideSensorFixture->SetUserData( (void*)PLAYER_LEFT_SIDE );
+
+	//Player END
 
 	//Floor Body only (no Sprite yet)
 	b2Body *_body2;
@@ -149,19 +225,19 @@ bool GameScene::init()
 	_body2 = _world->CreateBody(&ballBodyDef2);
 
 	b2PolygonShape shapeDef;
-	shapeDef.SetAsBox(10000/PTM_RATIO, 100/PTM_RATIO);
+	shapeDef.SetAsBox(10000/PTM_RATIO, 50/PTM_RATIO);
  
 	b2FixtureDef ballShapeDef3;
 	ballShapeDef3.shape = &shapeDef;
-	ballShapeDef3.density = 1.0f;
-	ballShapeDef3.friction = 0.3f;
+	ballShapeDef3.density = 0.0f;
+	ballShapeDef3.friction = 0.5f;
 	ballShapeDef3.restitution = 0.0f;
 	_body2->CreateFixture(&ballShapeDef3);
 
 
-	createPlatform(200,256,128,16);
-	createPlatform(400,456,128,16);
-	createPlatform(600,656,128,16);
+	createPlatform(200,200,128,16);
+	createPlatform(400,400,128,16);
+	createPlatform(600,600,128,16);
 	
 	//Its the DEBUG Layer for Box2D which draws Debug Thingies
 	level->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
@@ -214,7 +290,7 @@ void GameScene::createPlatform(float x, float y, float width, float height){
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &shapeDef;
 	ballShapeDef.density = 1.0f;
-	ballShapeDef.friction = 0.3f;
+	ballShapeDef.friction = 0.5f;
 	ballShapeDef.restitution = 0.0f;
 	_body->CreateFixture(&ballShapeDef);
 }
@@ -248,6 +324,8 @@ void GameScene::update(float dt){
         }
 	}
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 	//Jump
 	if(!jumping && GetAsyncKeyState(VK_SPACE)){
 		_Player->ApplyLinearImpulse(b2Vec2(0.0f, 60.0f), _Player->GetWorldCenter());
@@ -258,19 +336,119 @@ void GameScene::update(float dt){
 		if(_Player->GetLinearVelocity().y == 0){
 			jumping = false;
 		}
+=======
+=======
+	bool canMove = true;
+>>>>>>> origin/Tobias
+	bool JUMP_PRESSED = false;
+
+	if(GetAsyncKeyState(VK_SPACE)){
+		JUMP_PRESSED=true;
+>>>>>>> origin/Tobias
 	}
 
-	Sprite *Player = (Sprite *)_Player->GetUserData();
-	float maxSpeed = 8.0f;
-	float speed = 6.0f;
-	if(jumping){
+	float maxSpeed = 5.0f;
+	float speed = 5.0f;
+	if(falling){
+		speed *= 0.15f;
+		maxSpeed *= 0.4f;
+	}else if(hasJumped){
 		speed *= 0.5f;
 		maxSpeed *= 0.5f;
 	}
 
+	float maxSpeedOnJump = maxSpeed/2.0f;
+
+	//Jump
+	if(!falling && !hasJumped && JUMP_PRESSED){
+		//Break player to maxVel
+		_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x*0.6f, _Player->GetLinearVelocity().y));
+
+		_Player->ApplyLinearImpulse(b2Vec2(0.0f, 50.0f), _Player->GetWorldCenter());
+		hasJumped = true;
+	}else{
+
+		if(waitTime >0){
+			waitTime-=dt;
+			canMove = false;
+		}
+		if(slowTime >0){
+			slowTime-=dt;
+			speed *= 0.5f;
+			maxSpeed *= 0.5f;
+		}
+		if(falling){
+			fallTime+=dt;
+		}else{
+			fallTime = 0;
+		}
+
+		if(hasJumped){
+			if(_Player->GetLinearVelocity().y < 0){
+				falling = true;
+				hasJumped = false;
+			}
+		}
+
+		if(myContactListenerInstance.playerFootContacts>0){
+			//Hit the Ground, look if we 
+			if(falling){
+				//Hit the ground for first time after falling
+				if(fallTime > 1.0f)
+					waitTime = fallTime*0.15f;
+				slowTime = fallTime*0.6f;
+			}
+			falling = false;
+		}
+
+		if(myContactListenerInstance.playerFootContacts==0 && _Player->GetLinearVelocity().y < 0){
+			//Falling from Platform
+			//Spieler ein wenig bremsen
+			falling = true;
+		}
+
+		//Right site climbing
+		if(!climbingRight && myContactListenerInstance.playerRightStartClimbContacts>0){
+			climbingRight = true;
+			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, 1.5f));
+			_Player->ApplyLinearImpulse(b2Vec2(1.0f, 0.0f), _Player->GetWorldCenter());
+		}
+		if(climbingRight && myContactListenerInstance.playerRightSideContacts>0){
+			//Continuing Climbing
+			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, 2.5f));
+			_Player->ApplyLinearImpulse(b2Vec2(1.0f, 0.0f), _Player->GetWorldCenter());
+		}else if(climbingRight){
+			//End climbing, add small force
+			_Player->ApplyLinearImpulse(b2Vec2(5.0f, 0.0f), _Player->GetWorldCenter());
+			climbingRight = false;
+		}
+		
+		//Left site climbing
+		if(!climbingLeft && myContactListenerInstance.playerLeftStartClimbContacts>0){
+			climbingLeft = true;
+			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, 1.5f));
+			_Player->ApplyLinearImpulse(b2Vec2(-1.0f, 0.0f), _Player->GetWorldCenter());
+		}
+		if(climbingLeft && myContactListenerInstance.playerLeftSideContacts>0){
+			//Continuing Climbing
+			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, 2.5f));
+			_Player->ApplyLinearImpulse(b2Vec2(-1.0f, 0.0f), _Player->GetWorldCenter());
+		}else if(climbingLeft){
+			//End climbing, add small force
+			_Player->ApplyLinearImpulse(b2Vec2(-5.0f, 0.0f), _Player->GetWorldCenter());
+			climbingLeft = false;
+		}
+	}
+
+	
+	
+
 	//Get KeyInput, will be outcoded in InputManager
-	if(GetAsyncKeyState(VK_RIGHT)){
-		_Player->SetLinearDamping(0.0f);
+	if(canMove && GetAsyncKeyState(VK_RIGHT)){
+		if(climbingLeft){
+			_Player->ApplyLinearImpulse(b2Vec2(5.0f, 0.0f), _Player->GetWorldCenter());
+			climbingLeft = false;
+		}
 		if(_Player->GetLinearVelocity().x < maxSpeed){
 			_Player->ApplyLinearImpulse(b2Vec2(speed,0.0f), _Player->GetWorldCenter());
 			if(_Player->GetLinearVelocity().x > maxSpeed){
@@ -278,8 +456,11 @@ void GameScene::update(float dt){
 			}
 		}
 			
-	}else if(GetAsyncKeyState(VK_LEFT)){
-		_Player->SetLinearDamping(0.0f);
+	}else if(canMove && GetAsyncKeyState(VK_LEFT)){
+		if(climbingRight){
+			_Player->ApplyLinearImpulse(b2Vec2(-5.0f, 0.0f), _Player->GetWorldCenter());
+			climbingLeft = false;
+		}
 		if(_Player->GetLinearVelocity().x > -maxSpeed){
 			_Player->ApplyLinearImpulse(b2Vec2(-speed,0.0f), _Player->GetWorldCenter());
 			if(_Player->GetLinearVelocity().x < -maxSpeed){
@@ -287,32 +468,46 @@ void GameScene::update(float dt){
 			}
 		}
 	}else{
-		//No Button drückt, brems !!
-		if(!jumping){
-			_Player->SetLinearDamping(5.0f);
-		}else{
-			_Player->SetLinearDamping(0.7f);
-		}
 	}
 
 	//Update MainLayer Position to scroll with player:
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Sprite *Player = (Sprite *)_Player->GetUserData();
 	Point playerPos = level->convertToWorldSpace(Player->getPosition());
 
 	float playerDiffToCenterX = (visibleSize.width/2-playerPos.x)*0.06f;
 	float playerDiffToCenterY = (visibleSize.height/2-playerPos.y)*0.06f;
 
-	this->setPositionX(this->getPositionX()+playerDiffToCenterX);
-	parallaxLayer->move(dt, playerDiffToCenterX);
+	//Test if X Position is to far left
 
-	himmel->setPositionX(himmel->getPositionX() - playerDiffToCenterX);
+	if(playerDiffToCenterX>0 && this->getPositionX()>=0){
+		//Stop
+		this->setPositionX(0);
+	}else{
+		this->setPositionX(this->getPositionX()+playerDiffToCenterX);
+		parallaxLayer->moveX(dt, playerDiffToCenterX);
 
-	//Selbe für y
-	this->setPositionY(this->getPositionY()+playerDiffToCenterY);
-	//parallaxLayer->move(dt, playerDiffToCenterX);
+		himmel->setPositionX(himmel->getPositionX() - playerDiffToCenterX);
+	}
 
-	himmel->setPositionY(himmel->getPositionY() - playerDiffToCenterY);
+
+	//Test if Y Position is to low or to high
+
+	if(playerDiffToCenterY>0 && this->getPositionY()>=0){
+		//To low
+		this->setPositionY(0);
+	}else if(playerDiffToCenterY<0 && this->getPositionY()<=-200*(1280/visibleSize.height)){
+		//To high
+		this->setPositionY(-200*(1280/visibleSize.height));
+	}else{
+		this->setPositionY(this->getPositionY()+playerDiffToCenterY);
+		parallaxLayer->moveY(dt, playerDiffToCenterY);
+
+		himmel->setPositionY(himmel->getPositionY() - playerDiffToCenterY);
+	}
+
+	
 
 }
 

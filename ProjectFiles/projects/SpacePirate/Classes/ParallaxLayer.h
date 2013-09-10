@@ -26,7 +26,10 @@ private:
 public:
 	 virtual bool init();  
 
-	void move(float dt, int direction);
+	void moveX(float dt, int direction);
+	void moveY(float dt, int direction);
+
+	cocos2d::Layer* getLayer(int i);
 
 	CREATE_FUNC(ParallaxLayer);
 };
