@@ -8,7 +8,7 @@
 
 #define PLAYER_MAX_SPEED 6.0f
 
-#pragma endregion	Maximale Geschwindigkeit \
+#pragma endregion	//Maximale Geschwindigkeit \
 					Multiplier wenn geduckt \
 					Ja
 
