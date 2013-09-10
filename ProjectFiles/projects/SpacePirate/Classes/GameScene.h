@@ -22,9 +22,10 @@ private:
 	void createPlatform(float x, float y, float width, float height);
 
 	bool falling;
-	bool hasJumped;
-	bool climbingRight,climbingLeft;
-	float fallTime, waitTime, slowTime;
+	bool hasJumped, jumping;
+	bool climbingRight, climbingLeft, holdingRight, holdingLeft;
+	float fallTime, waitTime, slowTime, jumpStart;
+	int walkDirection;
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();
