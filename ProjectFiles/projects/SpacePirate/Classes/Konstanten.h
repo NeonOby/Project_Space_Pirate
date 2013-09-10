@@ -1,6 +1,15 @@
 #ifndef __KONSTANTEN_H__
 #define __KONSTANTEN_H__
 
+#define PLAYER 1
+#define ENEMY 2
+#define BULLET 3
+#define PLAYER_FOOD 4
+#define PLAYER_RIGHT_SIDE 5
+#define PLAYER_RIGHT_START_CLIMB 6
+#define PLAYER_LEFT_SIDE 7
+#define PLAYER_LEFT_START_CLIMB 8
+
 //Umrechnung von Box2D Metern (Box2D Einheit) zu CoCos2D Points (Pixeln)
 #define PTM_RATIO 64.0f
 
@@ -55,7 +64,6 @@ enum EffectSizes {
 enum EntityGroups {
 	SHIP =				0x0001,
 	ASTEROID =			0x0002,
-	ENEMY =				0x0004,
 	IMPULSE =			0x0008
 };
 

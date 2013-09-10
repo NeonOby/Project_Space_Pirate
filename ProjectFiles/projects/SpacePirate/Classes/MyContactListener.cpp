@@ -1,6 +1,6 @@
 #include "MyContactListener.h"
 
-
+USING_NS_CC;
 
 MyContactListener::MyContactListener() : _contacts() {
 	playerFootContacts=0;

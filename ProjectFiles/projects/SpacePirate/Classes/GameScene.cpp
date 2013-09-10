@@ -4,6 +4,8 @@
 #include "Physic/B2DebugDrawLayer.h"
 #include "Manuel/SoundManager.h"
 
+#include "MouseListener.h"
+
 #include "Level/LevelMap.h"
 
 #include "conio.h"
@@ -50,7 +52,7 @@ bool GameScene::init()
 	jumping = false;
 	fallTime = 0;
 	waitTime = 0;
-	walkDirection = 0;
+	walkDirection = 1;
 	jumpStart = 0;
 	holdingRight = false;
 	holdingLeft = false;
@@ -286,7 +288,50 @@ bool GameScene::init()
     return true;
 }
 
-void GameScene::createPlatform(float x, float y, float width, float height){
+void GameScene::ShootBullet(){
+	Sprite* Player = (Sprite*)_Player->GetUserData();
+	b2Body * tmpBody = createBullet((Player->getPositionX()+walkDirection*48),Player->getPositionY()+32,8.0f,8.0f);
+
+	Point tmpPoint = MouseListener().getMousePos();
+
+	float dX = tmpPoint.x-(Player->getPositionX()+walkDirection);
+	float dY = tmpPoint.y-Player->getPositionY();
+
+	tmpBody->ApplyForceToCenter(b2Vec2(dX,dY));
+
+}
+
+b2Body * GameScene::createBullet(float x, float y, float width, float height){
+	//Floor2 Body only (no Sprite yet)
+	b2Body *_body;
+	
+
+	b2BodyDef BodyDef;
+	BodyDef.type = b2_dynamicBody;
+	BodyDef.gravityScale = 0.5f; //Weniger Gravity für Bullets
+	BodyDef.bullet = true;
+	BodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
+	_body = _world->CreateBody(&BodyDef);
+	
+
+	
+
+	b2PolygonShape shapeDef;
+	shapeDef.SetAsBox(width/PTM_RATIO, height/PTM_RATIO);
+ 
+	b2FixtureDef ballShapeDef;
+	ballShapeDef.shape = &shapeDef;
+	ballShapeDef.density = 1.0f;
+	ballShapeDef.friction = 0.4f;
+	ballShapeDef.restitution = 0.0f;
+
+	b2Fixture* leftSideSensorFixture =_body->CreateFixture(&ballShapeDef);
+	leftSideSensorFixture->SetUserData((void*)BULLET);
+
+	return _body;
+}
+
+b2Body * GameScene::createPlatform(float x, float y, float width, float height){
 	//Floor2 Body only (no Sprite yet)
 	b2Body *_body;
 
@@ -304,12 +349,18 @@ void GameScene::createPlatform(float x, float y, float width, float height){
 	ballShapeDef.friction = 0.4f;
 	ballShapeDef.restitution = 0.0f;
 	_body->CreateFixture(&ballShapeDef);
+
+	return _body;
 }
 
 float diffToCenter = 150.0f;
 
 
 void GameScene::update(float dt){
+
+	if(GetAsyncKeyState(VK_LBUTTON)){
+		ShootBullet();
+	}
 
 	//Test
 
@@ -328,10 +379,12 @@ void GameScene::update(float dt){
 	*/
     for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
         if (b->GetUserData() != NULL) {
-            Sprite *ballData = (Sprite *)b->GetUserData();
-            ballData->setPosition(Point(b->GetPosition().x * PTM_RATIO,
-                                    b->GetPosition().y * PTM_RATIO));
-            ballData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle()));
+			Sprite *ballData = (Sprite*)b->GetUserData();
+			if(ballData){
+				ballData->setPosition(Point(b->GetPosition().x * PTM_RATIO,
+					b->GetPosition().y * PTM_RATIO));
+				ballData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle())); 
+			}
         }
 	}
 

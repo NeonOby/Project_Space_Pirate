@@ -19,7 +19,9 @@ private:
 
 	MyContactListener myContactListenerInstance;
 
-	void createPlatform(float x, float y, float width, float height);
+	b2Body * createPlatform(float x, float y, float width, float height);
+	b2Body * createBullet(float x, float y, float width, float height);
+	void ShootBullet();
 
 	bool falling;
 	bool hasJumped, jumping;
