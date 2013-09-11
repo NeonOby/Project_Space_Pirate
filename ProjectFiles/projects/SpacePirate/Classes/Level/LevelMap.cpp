@@ -52,7 +52,7 @@ void LevelMap::CreateNode (int pX, int pY, int pZ, int pLayer, float pScale, cha
 	if(strcmp(pFileName,"resources\\images\\set1\\astPlatform.png")==0){
 		//Normale Platform
 		createPlatform(pX,-pY+(tmpSprite->getContentSize().height*pScale/3),tmpSprite->getContentSize().width*pScale/2,8*pScale);
-	}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste.png")==0){
+	}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste.png")==0 || strcmp(pFileName,"resources\\images\\set1\\classic_box_v1_64px.png")==0){
 		//Normale Platform
 		createKiste(pX,-pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite);
 	}

@@ -120,8 +120,8 @@ bool GameScene::init()
 	//The sprite of the ball, it moves, rotates, scales with the shape (_ball is not controlled by physic)
 	Sprite *_ball;
 
-	_ball = Sprite::create();
-	_ball->setPosition(Point(200,200));
+	_ball = Sprite::create("Pirate.PNG");
+	_ball->setPosition(Point(150,300));
 	level->addChild(_ball);
 
 	//Player BOdy !!
@@ -134,7 +134,7 @@ bool GameScene::init()
 
 	b2CircleShape circle;
 	circle.m_radius = 16.0/PTM_RATIO;
- 
+	circle.m_p = b2Vec2(0,16.0f/PTM_RATIO);
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &circle;
 	ballShapeDef.density = PLAYER_DENITY;
@@ -144,8 +144,8 @@ bool GameScene::init()
 
 	b2PolygonShape shapeDef2;
 	b2Vec2 position;
-	position.Set(0.0f, (16.0f + 24.0f)/PTM_RATIO);//No gravity
-	shapeDef2.SetAsBox(16/PTM_RATIO, 40/PTM_RATIO, position, 0);
+	position.Set(0.0f, (16.0f + 56.0f)/PTM_RATIO);//No gravity
+	shapeDef2.SetAsBox(16/PTM_RATIO, 56/PTM_RATIO, position, 0);
 
 	b2FixtureDef ballShapeDef2;
 	ballShapeDef2.shape = &shapeDef2;
@@ -173,7 +173,7 @@ bool GameScene::init()
 	_Player->SetFixedRotation(true);
 
 	b2PolygonShape polygonShape;
-	polygonShape.SetAsBox(8/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO), 0);
+	polygonShape.SetAsBox(16/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO+16.0f/PTM_RATIO), 0);
 	
 	b2FixtureDef myFixtureDef;
 	myFixtureDef.shape = &polygonShape;
@@ -185,7 +185,7 @@ bool GameScene::init()
 
 	//Start Climbing:
 
-	polygonShape.SetAsBox(2/PTM_RATIO, 8/PTM_RATIO, b2Vec2(16/PTM_RATIO,64/PTM_RATIO), 0);
+	polygonShape.SetAsBox(2/PTM_RATIO, 8/PTM_RATIO, b2Vec2(16/PTM_RATIO,96/PTM_RATIO+16.0f/PTM_RATIO), 0);
 
 	myFixtureDef.shape = &polygonShape;
     myFixtureDef.density = 0.0f;
@@ -194,7 +194,7 @@ bool GameScene::init()
     b2Fixture* rightSideStartSensorFixture = _Player->CreateFixture(&myFixtureDef);
     rightSideStartSensorFixture->SetUserData( (void*)PLAYER_RIGHT_START_CLIMB );
 
-	polygonShape.SetAsBox(2/PTM_RATIO, 8/PTM_RATIO, b2Vec2(-16/PTM_RATIO,64/PTM_RATIO), 0);
+	polygonShape.SetAsBox(2/PTM_RATIO, 8/PTM_RATIO, b2Vec2(-16/PTM_RATIO,96/PTM_RATIO+16.0f/PTM_RATIO), 0);
 
 	myFixtureDef.shape = &polygonShape;
     myFixtureDef.density = 0.0f;
@@ -205,7 +205,7 @@ bool GameScene::init()
 
 	//Continuing Climbing
 
-	polygonShape.SetAsBox(8/PTM_RATIO, 40/PTM_RATIO, b2Vec2(16/PTM_RATIO,26/PTM_RATIO), 0);
+	polygonShape.SetAsBox(8/PTM_RATIO, 56/PTM_RATIO, b2Vec2(16/PTM_RATIO,32/PTM_RATIO+16.0f/PTM_RATIO), 0);
 
 	myFixtureDef.shape = &polygonShape;
     myFixtureDef.density = 0.0f;
@@ -214,7 +214,7 @@ bool GameScene::init()
     b2Fixture* rightSideSensorFixture = _Player->CreateFixture(&myFixtureDef);
     rightSideSensorFixture->SetUserData( (void*)PLAYER_RIGHT_SIDE );
 
-	polygonShape.SetAsBox(8/PTM_RATIO, 40/PTM_RATIO, b2Vec2(-16/PTM_RATIO,26/PTM_RATIO), 0);
+	polygonShape.SetAsBox(8/PTM_RATIO, 56/PTM_RATIO, b2Vec2(-16/PTM_RATIO,32/PTM_RATIO+16.0f/PTM_RATIO), 0);
 
 	myFixtureDef.shape = &polygonShape;
     myFixtureDef.density = 0.0f;
@@ -261,8 +261,8 @@ bool GameScene::init()
 	//createKiste(1500,700,32,32);
 
 	//Its the DEBUG Layer for Box2D which draws Debug Thingies
-	level->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
-
+	//level->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
+	//
 
     // add a "close" icon to exit the progress. it's an autorelease object
     MenuItemImage *closeItem = MenuItemImage::create(
@@ -398,7 +398,7 @@ float diffToCenter = 150.0f;
 void GameScene::update(float dt){
 
 	if(GetAsyncKeyState(VK_LBUTTON)){
-		ShootBullet();
+		//ShootBullet();
 	}
 
 	//Test
@@ -434,7 +434,7 @@ void GameScene::update(float dt){
 	if(GetAsyncKeyState(VK_SPACE))
 		JUMP_PRESSED = true;
 
-	if(!jumping && !falling && !hasJumped && myContactListenerInstance.playerFootContacts>0){
+	if(!jumping && !hasJumped && myContactListenerInstance.playerFootContacts>0){
 		canJump = true;
 	}
 
@@ -454,6 +454,11 @@ void GameScene::update(float dt){
 
 		jumping = true;
 		jumpStart = PLAYER_START_JUMP_TIME;
+		if(jumpStart<=0.0f){
+			_Player->ApplyLinearImpulse(b2Vec2(0.0f, PLAYER_JUMP_SPEED*_Player->GetMass()), _Player->GetWorldCenter());
+			hasJumped = true;
+			jumping = false;
+		}
 	}else if(jumping){
 		//Während man springt kann man sich nicht bewegen, LoL
 		canMove = false;
@@ -512,12 +517,9 @@ void GameScene::update(float dt){
 		}
 
 		//Right site climbing
-		if(!climbingRight && !holdingRight && myContactListenerInstance.playerRightStartClimbContacts>0){
-			holdingRight = true;
-		}
 		if(climbingRight && myContactListenerInstance.playerRightSideContacts>0){
 			//Continuing Climbing
-			_Player->ApplyLinearImpulse(b2Vec2(_Player->GetLinearVelocity().x, PLAYER_CLIMBING_SPEED*_Player->GetMass()), _Player->GetWorldCenter());
+			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, PLAYER_CLIMBING_SPEED*_Player->GetMass()));
 			_Player->ApplyLinearImpulse(b2Vec2(1.0f, 0.0f), _Player->GetWorldCenter());
 		}else if(climbingRight){
 			//End climbing, add small force
@@ -526,13 +528,10 @@ void GameScene::update(float dt){
 			waitTime = 0.5f;
 		}
 		
-		//Left site climbing
-		if(!climbingLeft && !holdingLeft && myContactListenerInstance.playerLeftStartClimbContacts>0){
-			holdingLeft = true;
-		}
+		//Left site climbing		
 		if(climbingLeft && myContactListenerInstance.playerLeftSideContacts>0){
 			//Continuing Climbing
-			_Player->ApplyLinearImpulse(b2Vec2(_Player->GetLinearVelocity().x, PLAYER_CLIMBING_SPEED*_Player->GetMass()), _Player->GetWorldCenter());
+			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, PLAYER_CLIMBING_SPEED*_Player->GetMass()));
 			_Player->ApplyLinearImpulse(b2Vec2(-1.0f, 0.0f), _Player->GetWorldCenter());
 		}else if(climbingLeft){
 			//End climbing, add small force
@@ -548,6 +547,9 @@ void GameScene::update(float dt){
 	//Get KeyInput, will be outcoded in InputManager
 	if(canMove && !climbingRight && GetAsyncKeyState(VK_RIGHT)){
 		walkDirection = 1;
+		if(!climbingRight && !holdingRight && myContactListenerInstance.playerRightStartClimbContacts>0){
+			holdingRight = true;
+		}
 		if(holdingLeft){
 			holdingLeft = false;
 		}
@@ -564,6 +566,9 @@ void GameScene::update(float dt){
 			
 	}else if(canMove && !climbingLeft && GetAsyncKeyState(VK_LEFT)){
 		walkDirection = -1;
+		if(!climbingLeft && !holdingLeft && myContactListenerInstance.playerLeftStartClimbContacts>0){
+			holdingLeft = true;
+		}
 		if(holdingRight){
 			holdingRight = false;
 		}

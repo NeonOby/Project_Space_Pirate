@@ -28,15 +28,15 @@
 #define PLAYER_SPEED_CHANGE 1.0f
 
 //Sprung Kraft des Spielers
-#define PLAYER_JUMP_SPEED 6.0f
+#define PLAYER_JUMP_SPEED 7.0f
 
-#define PLAYER_START_JUMP_TIME 0.05f
+#define PLAYER_START_JUMP_TIME 0.00f
 
 //Slowness, wenn er abspringt
 #define PLAYER_SLOW_ON_JUMP 0.4f
 
 //Kletter Geschwindigkeit
-#define PLAYER_CLIMBING_SPEED 0.045f
+#define PLAYER_CLIMBING_SPEED 0.3f
 
 #define PLAYER_CLIMBING_START_JUMP 5.0f
 
