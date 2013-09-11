@@ -1,6 +1,16 @@
 #ifndef __KONSTANTEN_H__
 #define __KONSTANTEN_H__
 
+#define PLAYER 1
+#define ENEMY 2
+#define BULLET 3
+#define PLAYER_FOOD 4
+#define PLAYER_RIGHT_SIDE 5
+#define PLAYER_RIGHT_START_CLIMB 6
+#define PLAYER_LEFT_SIDE 7
+#define PLAYER_LEFT_START_CLIMB 8
+#define CLIMBFIXTURE 9
+
 //Umrechnung von Box2D Metern (Box2D Einheit) zu CoCos2D Points (Pixeln)
 #define PTM_RATIO 64.0f
 
@@ -9,11 +19,26 @@
 //Kletter-Geschwindigkeit
 #pragma region PLAYER_VARIABLES
 
+#define PLAYER_DENITY 10.0f
+
 //Maximale Geschwindigkeit (Wird mit Gewicht multipliziert)
-#define PLAYER_MAX_SPEED 6.0f
+#define PLAYER_MAX_SPEED 0.5f
 
 //Geschwindigkeits-Änderung, also wie schnell man die Richtung wechselt etc.
-#define PLAYER_SPEED_CHANGE = 5.0f
+#define PLAYER_SPEED_CHANGE 1.0f
+
+//Sprung Kraft des Spielers
+#define PLAYER_JUMP_SPEED 7.0f
+
+#define PLAYER_START_JUMP_TIME 0.00f
+
+//Slowness, wenn er abspringt
+#define PLAYER_SLOW_ON_JUMP 0.4f
+
+//Kletter Geschwindigkeit
+#define PLAYER_CLIMBING_SPEED 0.3f
+
+#define PLAYER_CLIMBING_START_JUMP 5.0f
 
 #pragma endregion
 
@@ -40,7 +65,6 @@ enum EffectSizes {
 enum EntityGroups {
 	SHIP =				0x0001,
 	ASTEROID =			0x0002,
-	ENEMY =				0x0004,
 	IMPULSE =			0x0008
 };
 

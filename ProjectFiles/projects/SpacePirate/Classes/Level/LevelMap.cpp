@@ -27,10 +27,10 @@ USING_NS_CC;
 Init
 ====================================== 
 */
-LevelMap::LevelMap() 
+LevelMap::LevelMap(b2World * pWorld) 
 {
 	// Get IndieLib instante
-	
+	_world = pWorld;
 }
 
 /* 
@@ -48,10 +48,64 @@ void LevelMap::CreateNode (int pX, int pY, int pZ, int pLayer, float pScale, cha
 	tmpSprite->setPosition (Point((float) pX, (float) -pY));
 	tmpSprite->setScale(pScale);
 
+	//If bestimmtes Bild mach dazu Body etc.
+	if(strcmp(pFileName,"resources\\images\\set1\\astPlatform.png")==0){
+		//Normale Platform
+		createPlatform(pX,-pY+(tmpSprite->getContentSize().height*pScale/3),tmpSprite->getContentSize().width*pScale/2,8*pScale);
+	}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste.png")==0 || strcmp(pFileName,"resources\\images\\set1\\classic_box_v1_64px.png")==0){
+		//Normale Platform
+		createKiste(pX,-pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite);
+	}
+
 	if(pLayer > 5){
 		pLayer = 5;
 	}
 	mLayerArray[pLayer]->addChild(tmpSprite, pZ);
+}
+
+b2Body * LevelMap::createPlatform(float x, float y, float width, float height){
+	//Floor2 Body only (no Sprite yet)
+	b2Body *_body;
+
+	b2BodyDef ballBodyDef;
+	//ballBodyDef2.type = b2_staticBody;
+	ballBodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
+	_body = _world->CreateBody(&ballBodyDef);
+
+	b2PolygonShape shapeDef;
+	shapeDef.SetAsBox(width/PTM_RATIO, height/PTM_RATIO);
+ 
+	b2FixtureDef ballShapeDef;
+	ballShapeDef.shape = &shapeDef;
+	ballShapeDef.density = 1.0f;
+	ballShapeDef.friction = 0.4f;
+	ballShapeDef.restitution = 0.0f;
+	_body->CreateFixture(&ballShapeDef)->SetUserData((void*)CLIMBFIXTURE);
+
+	return _body;
+}
+
+b2Body * LevelMap::createKiste(float x, float y, float width, float height, Sprite* pSprite){
+	//Floor2 Body only (no Sprite yet)
+	b2Body *_body;
+
+	b2BodyDef ballBodyDef;
+	ballBodyDef.type = b2_dynamicBody;
+	ballBodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
+	_body = _world->CreateBody(&ballBodyDef);
+	_body->SetUserData(pSprite);
+
+	b2PolygonShape shapeDef;
+	shapeDef.SetAsBox(width/PTM_RATIO, height/PTM_RATIO);
+ 
+	b2FixtureDef ballShapeDef;
+	ballShapeDef.shape = &shapeDef;
+	ballShapeDef.density = 10.0f;
+	ballShapeDef.friction = 2.0f;
+	ballShapeDef.restitution = 0.0f;
+	_body->CreateFixture(&ballShapeDef);
+
+	return _body;
 }
 
 void LevelMap::SetLayerArray (cocos2d::Layer **pLayerArray){

@@ -2,12 +2,8 @@
 #include "Box2D\Box2D.h"
 #include <vector>
 #include <algorithm>
-
-#define PLAYER_FOOD 3
-#define PLAYER_RIGHT_SIDE 4
-#define PLAYER_RIGHT_START_CLIMB 5
-#define PLAYER_LEFT_SIDE 6
-#define PLAYER_LEFT_START_CLIMB 7
+#include "Konstanten.h"
+#include "cocos2d.h"
 
 struct MyContact {
     b2Fixture *fixtureA;
@@ -22,6 +18,9 @@ class MyContactListener : public b2ContactListener {
 private:
 	bool addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum);
 	bool remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum);
+
+	bool addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum);
+	bool remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum);
 public:
     std::vector<MyContact>_contacts;
     

@@ -19,12 +19,16 @@ private:
 
 	MyContactListener myContactListenerInstance;
 
-	void createPlatform(float x, float y, float width, float height);
+	b2Body * createPlatform(float x, float y, float width, float height);
+	b2Body * createBullet(float x, float y, float width, float height);
+	b2Body * createKiste(float x, float y, float width, float height);
+	void ShootBullet();
 
 	bool falling;
-	bool hasJumped;
-	bool climbingRight,climbingLeft;
-	float fallTime, waitTime, slowTime;
+	bool hasJumped, jumping;
+	bool climbingRight, climbingLeft, holdingRight, holdingLeft;
+	float fallTime, waitTime, slowTime, jumpStart;
+	int walkDirection;
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();

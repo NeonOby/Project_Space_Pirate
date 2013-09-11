@@ -1,6 +1,6 @@
 #include "MyContactListener.h"
 
-
+USING_NS_CC;
 
 MyContactListener::MyContactListener() : _contacts() {
 	playerFootContacts=0;
@@ -23,8 +23,36 @@ bool MyContactListener::addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int
 	return false;
 }
 
+bool MyContactListener::addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum){
+	if((int)fixtureA->GetUserData() == data_filter1 && (int)fixtureB->GetUserData() == data_filter2){
+		sum++;
+		return true;
+	}
+	if((int)fixtureA->GetUserData() == data_filter2 && (int)fixtureB->GetUserData() == data_filter1){
+		sum++;
+		return true;
+	}
+	return false;
+}
+
 bool MyContactListener::remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum){
 	if((int)fixtureA->GetUserData() == data_filter || (int)fixtureB->GetUserData() == data_filter){
+		if(sum>0){
+			sum--;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool MyContactListener::remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum){
+	if((int)fixtureA->GetUserData() == data_filter1 && (int)fixtureB->GetUserData() == data_filter2){
+		if(sum>0){
+			sum--;
+		}
+		return true;
+	}
+	if((int)fixtureA->GetUserData() == data_filter2 && (int)fixtureB->GetUserData() == data_filter1){
 		if(sum>0){
 			sum--;
 		}
@@ -44,13 +72,13 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_SIDE, playerRightSideContacts)){
 		return;
 	}
-	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_START_CLIMB, playerRightStartClimbContacts)){
+	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_START_CLIMB, CLIMBFIXTURE, playerRightStartClimbContacts)){
 		return;
 	}
 	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_SIDE, playerLeftSideContacts)){
 		return;
 	}
-	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_START_CLIMB, playerLeftStartClimbContacts)){
+	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_START_CLIMB, CLIMBFIXTURE, playerLeftStartClimbContacts)){
 		return;
 	}
 
@@ -66,13 +94,13 @@ void MyContactListener::EndContact(b2Contact* contact) {
 	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_SIDE, playerRightSideContacts)){
 		return;
 	}
-	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_START_CLIMB, playerRightStartClimbContacts)){
+	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_START_CLIMB, CLIMBFIXTURE, playerRightStartClimbContacts)){
 		return;
 	}
 	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_SIDE, playerLeftSideContacts)){
 		return;
 	}
-	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_START_CLIMB, playerLeftStartClimbContacts)){
+	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_START_CLIMB, CLIMBFIXTURE, playerLeftStartClimbContacts)){
 		return;
 	}
 

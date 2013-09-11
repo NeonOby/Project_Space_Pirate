@@ -50,5 +50,8 @@
 		<surface id="45" image="resources\images\set1\dark-full.png" />
 		<surface id="46" image="resources\images\set1\dark-little.png" />
 		<surface id="47" image="resources\images\set1\dark-partial.png" />
+		<surface id="48" image="resources\images\set1\astPlatform.png" />
+		<surface id="49" image="resources\images\set1\Kiste.png" />
+		<surface id="50" image="resources\images\set1\classic_box_v1_64px.png" />
 	</surfaces>
 </resources>
