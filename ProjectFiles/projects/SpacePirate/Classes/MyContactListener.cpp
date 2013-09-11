@@ -2,6 +2,18 @@
 
 USING_NS_CC;
 
+MyContactListener::MyContactListener(cocos2d::Sprite * pPlayer) : _contacts() {
+	playerFootContacts=0;
+
+	playerRightSideContacts=0;
+	playerRightStartClimbContacts=0;
+
+	playerLeftSideContacts=0;
+	playerLeftStartClimbContacts=0;
+
+	Player = pPlayer;
+}
+
 MyContactListener::MyContactListener() : _contacts() {
 	playerFootContacts=0;
 
@@ -10,6 +22,8 @@ MyContactListener::MyContactListener() : _contacts() {
 
 	playerLeftSideContacts=0;
 	playerLeftStartClimbContacts=0;
+
+	Player = NULL;
 }
 
 MyContactListener::~MyContactListener() {
@@ -80,6 +94,25 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 	}
 	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_START_CLIMB, CLIMBFIXTURE, playerLeftStartClimbContacts)){
 		return;
+	}
+
+	if(Player){
+		if((int)contact->GetFixtureA()->GetUserData() == KISTE && contact->GetFixtureB()->GetBody()->GetUserData() == Player){
+			b2Body * chest = contact->GetFixtureA()->GetBody();
+			b2Body * player = contact->GetFixtureB()->GetBody();
+
+			float diffX = chest->GetPosition().x - player->GetPosition().x;
+
+			chest->ApplyForceToCenter(b2Vec2(diffX*chest->GetMass()*PLAYER_MAGNETIK_OBJECT_REJECT,0));
+		}
+		if((int)contact->GetFixtureB()->GetUserData() == KISTE && contact->GetFixtureA()->GetBody()->GetUserData() == Player){
+			b2Body * chest = contact->GetFixtureB()->GetBody();
+			b2Body * player = contact->GetFixtureA()->GetBody();
+
+			float diffX = chest->GetPosition().x - player->GetPosition().x;
+
+			chest->ApplyForceToCenter(b2Vec2(diffX*chest->GetMass()*PLAYER_MAGNETIK_OBJECT_REJECT,0));
+		}
 	}
 
 	MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };

@@ -48,13 +48,15 @@ void LevelMap::CreateNode (int pX, int pY, int pZ, int pLayer, float pScale, cha
 	tmpSprite->setPosition (Point((float) pX, (float) -pY));
 	tmpSprite->setScale(pScale);
 
-	//If bestimmtes Bild mach dazu Body etc.
-	if(strcmp(pFileName,"resources\\images\\set1\\astPlatform.png")==0){
-		//Normale Platform
-		createPlatform(pX,-pY+(tmpSprite->getContentSize().height*pScale/3),tmpSprite->getContentSize().width*pScale/2,8*pScale);
-	}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste.png")==0 || strcmp(pFileName,"resources\\images\\set1\\classic_box_v1_64px.png")==0){
-		//Normale Platform
-		createKiste(pX,-pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite);
+	if(pLayer==4){
+		//If bestimmtes Bild mach dazu Body etc.
+		if(strcmp(pFileName,"resources\\images\\set1\\astPlatform.png")==0){
+			//Normale Platform
+			createPlatform(pX,-pY+(tmpSprite->getContentSize().height*pScale/3.5f),tmpSprite->getContentSize().width*pScale/2,8*pScale);
+		}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste.png")==0 || strcmp(pFileName,"resources\\images\\set1\\classic_box_v1_64px.png")==0){
+			//Normale Platform
+			createKiste(pX,-pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite);
+		}
 	}
 
 	if(pLayer > 5){
@@ -77,8 +79,8 @@ b2Body * LevelMap::createPlatform(float x, float y, float width, float height){
  
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &shapeDef;
-	ballShapeDef.density = 1.0f;
-	ballShapeDef.friction = 0.4f;
+	ballShapeDef.density = 0.0f;
+	ballShapeDef.friction = 0.7f;
 	ballShapeDef.restitution = 0.0f;
 	_body->CreateFixture(&ballShapeDef)->SetUserData((void*)CLIMBFIXTURE);
 
@@ -100,10 +102,10 @@ b2Body * LevelMap::createKiste(float x, float y, float width, float height, Spri
  
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &shapeDef;
-	ballShapeDef.density = 10.0f;
-	ballShapeDef.friction = 2.0f;
-	ballShapeDef.restitution = 0.0f;
-	_body->CreateFixture(&ballShapeDef);
+	ballShapeDef.density = 13.0f;
+	ballShapeDef.friction = 1.8f;
+	ballShapeDef.restitution = 0.2f;
+	_body->CreateFixture(&ballShapeDef)->SetUserData((void*)KISTE);
 
 	return _body;
 }

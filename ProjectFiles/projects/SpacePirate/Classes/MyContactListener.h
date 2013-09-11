@@ -21,6 +21,8 @@ private:
 
 	bool addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum);
 	bool remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum);
+
+	cocos2d::Sprite * Player;
 public:
     std::vector<MyContact>_contacts;
     
@@ -31,7 +33,8 @@ public:
 	int playerLeftSideContacts;
 	int playerLeftStartClimbContacts;
 
-    MyContactListener();
+    MyContactListener(cocos2d::Sprite * pPlayer);
+	MyContactListener();
     ~MyContactListener();
     
 	virtual void BeginContact(b2Contact* contact);

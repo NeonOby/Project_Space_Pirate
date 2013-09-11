@@ -10,9 +10,12 @@
 #define PLAYER_LEFT_SIDE 7
 #define PLAYER_LEFT_START_CLIMB 8
 #define CLIMBFIXTURE 9
+#define KISTE 10
 
 //Umrechnung von Box2D Metern (Box2D Einheit) zu CoCos2D Points (Pixeln)
 #define PTM_RATIO 64.0f
+
+#define GRAVITY_Y 18.0f
 
 //So Zeug wie maximale Geschwindigkeit \
 //Das man geduckt langsamer läuft
@@ -27,34 +30,54 @@
 //Geschwindigkeits-Änderung, also wie schnell man die Richtung wechselt etc.
 #define PLAYER_SPEED_CHANGE 1.0f
 
+//Slow wenn der Spieler sich nicht bewegt (Simuliert Reibung)
+#define PLAYER_SLOW_MULTIPLIER 2.5f
+
 //Sprung Kraft des Spielers
-#define PLAYER_JUMP_SPEED 7.0f
+#define PLAYER_JUMP_SPEED 0.8f
 
 #define PLAYER_START_JUMP_TIME 0.00f
+
+//Größere Zahl weniger Slow (1.0 = bleibt wie aufm Boden)
+#define PLAYER_SLOW_FALLING 0.6f
+#define PLAYER_SLOW_FLYING 0.7f
+
+#define PLAYER_SLOW_WHILE_FLYING 0.2f
 
 //Slowness, wenn er abspringt
 #define PLAYER_SLOW_ON_JUMP 0.4f
 
+#define PLAYER_JUMP_COOLDOWN 0.4f
+
 //Kletter Geschwindigkeit
-#define PLAYER_CLIMBING_SPEED 0.3f
+#define PLAYER_CLIMBING_SPEED 0.4f
 
 #define PLAYER_CLIMBING_START_JUMP 5.0f
+
+//Wie stark bewegbare Objecte vom Spieler weggedrückt werden
+#define PLAYER_MAGNETIK_OBJECT_REJECT 100.0f
 
 #pragma endregion
 
 #pragma region PLAYER_FALL_VARIABLES
 
-//Fallzeit * this = Zeit in Sekunden für den Debuff (Langsamer Laufen)
-#define FALL_DEBUF_TIME_MULTIPLIER 0.6f
-//MaxSpeed * this = Maximale Geschwindigkeit die der Spieler noch haben kann mit Debuff (Langsamer Laufen)
-#define FALL_DEBUF_SPEED_MULTIPLIER 0.5f
 
-//Fall-Zeit in Sekunden ab wann der Spieler schaden bekommt und stehen bleibt
-#define FALL_TIME_MAX_WITHOUT_DAMAGE 0.5f
+//Normal Jump 0,45sec
+
+//Fallzeit * this = Zeit in Sekunden für den Debuff (Langsamer Laufen)
+#define FALL_DEBUF_TIME_MULTIPLIER 0.7f
+//MaxSpeed * this = Maximale Geschwindigkeit die der Spieler noch haben kann mit Debuff (Langsamer Laufen)
+#define FALL_DEBUF_SPEED_MULTIPLIER 0.4f
+//Nicht zu klein einstellen, sonst schwebt der Spieler nur noch rum
+#define FALL_MAX_SPEED_WITHOUT_DEBUFF 0.3f
+
+//Fall-Geschwindigkeit ab wann der Spieler schaden bekommt und stehen bleibt
+//3 ist ZIEMLICH schnell
+#define FALL_MAX_SPEED_WITHOUT_DAMAGE 0.8f
 //FallZeit * this = Damage
 #define FALL_DAMAGE_MULTIPLIER 2.0f
 //Fallzeit * this = Zeit in Sekunden die der Spieler stehen bleibt;
-#define FALL_STOP_TIME_MULTIPLIER 0.15f
+#define FALL_STOP_TIME_MULTIPLIER 0.5f
 
 #pragma endregion
 
