@@ -5,7 +5,7 @@
 
 using namespace irrklang;
 
-enum SchussSoundss{
+enum Soundss{
 	LASER_GUN = 0,
 	JUMP = 1
 };
@@ -17,12 +17,15 @@ enum Musics{
 
 class SoundManager{
 private:
-	ISoundEngine* engine;
+
+protected:
+	
+
 public:
-
-	static void playSound(SchussSoundss id);
-	static void playMusic(Musics id);
-
 	SoundManager();
+	static SoundManager *getInstance();
+	static void playMusic(Musics id);
+	static void playSound(Soundss id);
+	static void playSound(Soundss id, bool echo);
 };
 #endif
