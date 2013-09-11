@@ -92,7 +92,19 @@ bool GameScene::init()
 
 	this->addChild(level, 2);
 
-	LevelMap map = LevelMap();
+
+	// Define the gravity vector.
+	b2Vec2 gravity;
+	gravity.Set(0.0f, -10.0f);//No gravity
+ 
+	// create a world object, which will hold and simulate the rigid bodies.
+	_world = new b2World(gravity);
+	//World is generated, now add some things
+	myContactListenerInstance = MyContactListener();
+	_world->SetContactListener(&myContactListenerInstance);
+
+
+	LevelMap map = LevelMap(_world);
 	map.SetLayerArray(level,level,level);
 	map.SetParallaxLayer(parallaxLayer->getLayer(0),parallaxLayer->getLayer(1),parallaxLayer->getLayer(2));
 	if(map.LoadMap("resources/maps/map6.xml")){
@@ -111,16 +123,6 @@ bool GameScene::init()
 	_ball = Sprite::create();
 	_ball->setPosition(Point(200,200));
 	level->addChild(_ball);
-
-	// Define the gravity vector.
-	b2Vec2 gravity;
-	gravity.Set(0.0f, -10.0f);//No gravity
- 
-	// create a world object, which will hold and simulate the rigid bodies.
-	_world = new b2World(gravity);
-	//World is generated, now add some things
-	myContactListenerInstance = MyContactListener();
-	_world->SetContactListener(&myContactListenerInstance);
 
 	//Player BOdy !!
 
@@ -239,18 +241,24 @@ bool GameScene::init()
 	b2FixtureDef ballShapeDef3;
 	ballShapeDef3.shape = &shapeDef;
 	ballShapeDef3.density = 0.0f;
-	ballShapeDef3.friction = 0.4f;
+	ballShapeDef3.friction = 0.5f;
 	ballShapeDef3.restitution = 0.0f;
 	_body2->CreateFixture(&ballShapeDef3);
 
 
-	createPlatform(200,200,128,16);
-	createPlatform(400,400,128,16);
-	createPlatform(600,600,128,16);
+	//createPlatform(200,200,128,16);
+	//createPlatform(400,400,128,16);
+	//createPlatform(600,600,128,16);
 	
-	createPlatform(900,100,64,512);
+	//createPlatform(900,100,64,512);
 
-	createPlatform(1250,100,64,512);
+	//createPlatform(1250,100,64,512);
+
+
+	//createKiste(1500,100,32,32);
+	//createKiste(1500,550,32,32);
+	//createKiste(1200,600,32,32);
+	//createKiste(1500,700,32,32);
 
 	//Its the DEBUG Layer for Box2D which draws Debug Thingies
 	level->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
@@ -347,6 +355,37 @@ b2Body * GameScene::createPlatform(float x, float y, float width, float height){
 	ballShapeDef.shape = &shapeDef;
 	ballShapeDef.density = 1.0f;
 	ballShapeDef.friction = 0.4f;
+	ballShapeDef.restitution = 0.0f;
+	_body->CreateFixture(&ballShapeDef);
+
+	return _body;
+}
+
+b2Body * GameScene::createKiste(float x, float y, float width, float height){
+	Sprite * tmpKiste = Sprite::create("Level/Kiste.PNG");
+	float scaleX = (width/tmpKiste->getContentSize().width)*2.0f;
+	float scaleY = (height/tmpKiste->getContentSize().height)*2.0f;
+	tmpKiste->setScaleX(scaleX);
+	tmpKiste->setScaleY(scaleY);
+	tmpKiste->setPosition(Point(x,y));
+	this->addChild(tmpKiste);
+
+	//Floor2 Body only (no Sprite yet)
+	b2Body *_body;
+
+	b2BodyDef ballBodyDef;
+	ballBodyDef.type = b2_dynamicBody;
+	ballBodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
+	_body = _world->CreateBody(&ballBodyDef);
+	_body->SetUserData(tmpKiste);
+
+	b2PolygonShape shapeDef;
+	shapeDef.SetAsBox(width/PTM_RATIO, height/PTM_RATIO);
+ 
+	b2FixtureDef ballShapeDef;
+	ballShapeDef.shape = &shapeDef;
+	ballShapeDef.density = 10.0f;
+	ballShapeDef.friction = 2.0f;
 	ballShapeDef.restitution = 0.0f;
 	_body->CreateFixture(&ballShapeDef);
 
@@ -588,9 +627,9 @@ void GameScene::update(float dt){
 	if(playerDiffToCenterY>0 && this->getPositionY()>=0){
 		//To low
 		this->setPositionY(0);
-	}else if(playerDiffToCenterY<0 && this->getPositionY()<=-200*(1280/visibleSize.height)){
+	}else if(playerDiffToCenterY<0 && this->getPositionY()<=-280*(1280/visibleSize.height)){
 		//To high
-		this->setPositionY(-200*(1280/visibleSize.height));
+		this->setPositionY(-280*(1280/visibleSize.height));
 	}else{
 		this->setPositionY(this->getPositionY()+playerDiffToCenterY);
 		parallaxLayer->moveY(dt, playerDiffToCenterY);

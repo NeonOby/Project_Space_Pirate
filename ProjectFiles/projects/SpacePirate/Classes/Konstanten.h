@@ -9,6 +9,7 @@
 #define PLAYER_RIGHT_START_CLIMB 6
 #define PLAYER_LEFT_SIDE 7
 #define PLAYER_LEFT_START_CLIMB 8
+#define CLIMBFIXTURE 9
 
 //Umrechnung von Box2D Metern (Box2D Einheit) zu CoCos2D Points (Pixeln)
 #define PTM_RATIO 64.0f

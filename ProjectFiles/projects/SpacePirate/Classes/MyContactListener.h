@@ -18,6 +18,9 @@ class MyContactListener : public b2ContactListener {
 private:
 	bool addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum);
 	bool remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum);
+
+	bool addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum);
+	bool remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum);
 public:
     std::vector<MyContact>_contacts;
     

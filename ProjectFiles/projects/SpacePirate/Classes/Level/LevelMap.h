@@ -24,6 +24,8 @@
 #include "TinyXML/tinyxml.h"
 #include "Resources.h"
 #include "cocos2d.h"
+#include "Konstanten.h"
+#include "Box2D\Box2D.h"
 
 // --------------------------------------------------------------------------------
 //								     	_LEVELMAP_
@@ -33,7 +35,7 @@ class LevelMap
 {
 public:
 
-	LevelMap										();
+	LevelMap										(b2World * pworld);
 
 	void						CreateNode			(int pX, int pY, int pZ, int pLayer, float pScale, char *pFileName);
 	bool						LoadMap				(char* pMapXMLPath);
@@ -45,6 +47,10 @@ public:
 	void						SetLayerArray		(cocos2d::Layer *pLayer1, cocos2d::Layer *pLayer2, cocos2d::Layer *pLayer3);
 private:
 
+	b2Body * createKiste(float x, float y, float width, float height, cocos2d::Sprite* pSprite);
+	b2Body * createPlatform(float x, float y, float width, float height);
+
+	b2World * _world;
 
 	cocos2d::Layer* mLayerArray[6];
 };

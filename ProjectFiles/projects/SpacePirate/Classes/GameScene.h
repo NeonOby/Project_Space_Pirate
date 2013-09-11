@@ -21,6 +21,7 @@ private:
 
 	b2Body * createPlatform(float x, float y, float width, float height);
 	b2Body * createBullet(float x, float y, float width, float height);
+	b2Body * createKiste(float x, float y, float width, float height);
 	void ShootBullet();
 
 	bool falling;
