@@ -1,4 +1,6 @@
-//#include "Box2D\Dynamics\Contacts\b2Contact.h"
+#ifndef __MY_CONTACT_LISTENER_H__
+#define __MY_CONTACT_LISTENER_H__
+
 #include "Box2D\Box2D.h"
 #include <vector>
 #include <algorithm>
@@ -14,6 +16,23 @@ struct MyContact {
     }
 };
 
+struct BulletHit {
+	b2Fixture *bulletFixture;
+	b2Fixture *hitFixture;
+
+	b2Vec2 hitPoint;
+	b2Vec2 hitForce;
+
+	bool operator==(const BulletHit& other) const
+    {
+		//Just for better readability
+        return (\
+				bulletFixture == other.bulletFixture) \
+			&& (hitFixture == other.hitFixture) \
+			&& (hitPoint == other.hitPoint);
+    }
+};
+
 class MyContactListener : public b2ContactListener {
 private:
 	bool addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum);
@@ -21,9 +40,14 @@ private:
 
 	bool addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum);
 	bool remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter1, int data_filter2, int &sum);
+
+	cocos2d::Sprite *mPlayer;
+
 public:
     std::vector<MyContact>_contacts;
     
+	std::vector<BulletHit>mBulletHits;
+
 	int playerFootContacts;
 	int playerRightSideContacts;
 	int playerRightStartClimbContacts;
@@ -31,7 +55,8 @@ public:
 	int playerLeftSideContacts;
 	int playerLeftStartClimbContacts;
 
-    MyContactListener();
+    MyContactListener(cocos2d::Sprite * pPlayer);
+	MyContactListener();
     ~MyContactListener();
     
 	virtual void BeginContact(b2Contact* contact);
@@ -40,3 +65,5 @@ public:
 	virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
     
 };
+
+#endif //__MY_CONTACT_LISTENER_H__

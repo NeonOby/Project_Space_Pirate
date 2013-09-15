@@ -100,11 +100,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Classes</name>
-			<type>2</type>
-			<location>COCOS2DX/projects/SpacePirate/Classes</location>
-		</link>
-		<link>
 			<name>cocos2dx</name>
 			<type>2</type>
 			<locationURI>COCOS2DX/cocos2dx</locationURI>
@@ -112,7 +107,7 @@
 		<link>
 			<name>extensions</name>
 			<type>2</type>
-			<location>COCOS2DX/extensions</location>
+			<locationURI>COCOS2DX/extensions</locationURI>
 		</link>
 		<link>
 			<name>scripting</name>

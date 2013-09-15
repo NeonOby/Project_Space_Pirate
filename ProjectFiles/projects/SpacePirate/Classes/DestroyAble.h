@@ -14,7 +14,6 @@
 class DestroyAble : public DamageAble
 {
 public:
-
 	void setDrops(cocos2d::CCArray* args){
 		drops = new cocos2d::CCArray;
 		drops->addObjectsFromArray(args);
