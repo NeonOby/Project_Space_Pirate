@@ -15,4 +15,4 @@ protected:
 	b2Body* body;
 };
 
-#endif  // __BAUTEIL_H__
+#endif  // __COLLIDER_H__

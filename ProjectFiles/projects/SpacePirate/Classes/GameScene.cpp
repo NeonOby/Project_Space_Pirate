@@ -21,28 +21,28 @@ b2Body *_Player;
 
 Scene* GameScene::scene()
 {
-    // 'scene' is an autorelease object
-    Scene *scene = Scene::create();
-    
-    // 'layer' is an autorelease object
-    GameScene *layer = GameScene::create();
+	// 'scene' is an autorelease object
+	Scene *scene = Scene::create();
+	
+	// 'layer' is an autorelease object
+	GameScene *layer = GameScene::create();
 
-    // add layer as a child to scene
-    scene->addChild(layer);
+	// add layer as a child to scene
+	scene->addChild(layer);
 
-    // return the scene
-    return scene;
+	// return the scene
+	return scene;
 }
 
 // on "init" you need to initialize your instance
 bool GameScene::init()
 {
-    //////////////////////////////
-    // 1. super init first
-    if ( !Layer::init() )
-    {
-        return false;
-    }
+	//////////////////////////////
+	// 1. super init first
+	if ( !Layer::init() )
+	{
+		return false;
+	}
 
 	//Init Variables:
 	climbingLeft = false;
@@ -61,32 +61,33 @@ bool GameScene::init()
 	level2 = new Layer();
 	level3 = new Layer();
 	blocks = new Sprite*[200];
-    
+	
 	this->addChild(level1, 2);
 	this->addChild(level2, 3);
 	this->addChild(level3, 4);
 
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    Point origin = Director::getInstance()->getVisibleOrigin();
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Point origin = Director::getInstance()->getVisibleOrigin();
 
 	//Try to play sound here
 
-	SoundManager::playMusic(COMPLEX);
+	//SoundManager::playMusic(COMPLEX);
 
 
 	himmel = Sprite::create("Level/Jungle/Himmel.PNG");
 
-    // position the sprite on the center of the screen
-    himmel->setPosition(Point(himmel->getContentSize().width/2*0.5f, himmel->getContentSize().height/2*0.5f));
+	// position the sprite on the center of the screen
+	himmel->setPosition(Point(himmel->getContentSize().width/2*0.5f, himmel->getContentSize().height/2*0.5f));
 
-    // add the sprite as a child to this layer
-    this->addChild(himmel, 0);
+	// add the sprite as a child to this layer
+	this->addChild(himmel, 0);
 
 	parallaxLayer = ParallaxLayer::create();
 
 	this->addChild(parallaxLayer, 1);
 
 	
+	/*
 	
 	for(int i=0; i< 200;i++){
 		blocks[i] = Sprite::create("Game/Dirt.PNG");
@@ -97,7 +98,7 @@ bool GameScene::init()
 		level2->addChild(blocks[i]);
 	}
 
-
+	*/
 
 	
 	Player = Sprite::create("Pirate.PNG");
@@ -119,10 +120,17 @@ bool GameScene::init()
 	map.SetParallaxLayer(parallaxLayer->getLayer(0),parallaxLayer->getLayer(1),parallaxLayer->getLayer(2));
 	if(map.LoadMap("resources/maps/map6.xml")){
 			log("loading map finished: success");
+			PlayerSpawn = map.getSpawnPoint();
+			Player->setPosition(PlayerSpawn);
 	}else{
 			log("loading map finished: Error");
+			PlayerSpawn = Player->getPosition();
 	}
 
+
+	//Map Finished now set SpawnPos:
+	
+	
 
 	//create World and add something
 	//The world, world has Gravity etc.
@@ -136,7 +144,7 @@ bool GameScene::init()
 
 	b2BodyDef ballBodyDef;
 	ballBodyDef.type = b2_dynamicBody;
-	ballBodyDef.position.Set(100/PTM_RATIO, 300/PTM_RATIO);
+	ballBodyDef.position.Set(PlayerSpawn.x/PTM_RATIO, PlayerSpawn.y/PTM_RATIO);
 	ballBodyDef.userData = Player;
 	_Player = _world->CreateBody(&ballBodyDef);
 
@@ -146,7 +154,7 @@ bool GameScene::init()
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &circle;
 	ballShapeDef.density = PLAYER_DENITY;
-	ballShapeDef.friction = 0.0f;
+	ballShapeDef.friction = 0.08f;
 	ballShapeDef.restitution = 0.0f; //Bounce
 	_Player->CreateFixture(&ballShapeDef);
 
@@ -181,60 +189,59 @@ bool GameScene::init()
 	_Player->SetFixedRotation(true);
 
 	b2PolygonShape polygonShape;
-	polygonShape.SetAsBox(16/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO+16.0f/PTM_RATIO), 0);
+	polygonShape.SetAsBox(14/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO+16.0f/PTM_RATIO), 0);
 	
 	b2FixtureDef myFixtureDef;
 	myFixtureDef.shape = &polygonShape;
-    myFixtureDef.density = 0.0f;
+	myFixtureDef.density = 0.0f;
 	myFixtureDef.friction = 0.0f;
-    myFixtureDef.isSensor = true;
-    b2Fixture* footSensorFixture = _Player->CreateFixture(&myFixtureDef);
-    footSensorFixture->SetUserData( (void*)PLAYER_FOOD );
+	myFixtureDef.isSensor = true;
+	b2Fixture* footSensorFixture = _Player->CreateFixture(&myFixtureDef);
+	footSensorFixture->SetUserData( (void*)PLAYER_FOOD );
 
 	//Start Climbing:
 
 	polygonShape.SetAsBox(2/PTM_RATIO, 8/PTM_RATIO, b2Vec2(16/PTM_RATIO,96/PTM_RATIO), 0);
 
 	myFixtureDef.shape = &polygonShape;
-    myFixtureDef.density = 0.0f;
+	myFixtureDef.density = 0.0f;
 	myFixtureDef.friction = 0.0f;
-    myFixtureDef.isSensor = true;
-    b2Fixture* rightSideStartSensorFixture = _Player->CreateFixture(&myFixtureDef);
-    rightSideStartSensorFixture->SetUserData( (void*)PLAYER_RIGHT_START_CLIMB );
+	myFixtureDef.isSensor = true;
+	b2Fixture* rightSideStartSensorFixture = _Player->CreateFixture(&myFixtureDef);
+	rightSideStartSensorFixture->SetUserData( (void*)PLAYER_RIGHT_START_CLIMB );
 
 	polygonShape.SetAsBox(2/PTM_RATIO, 8/PTM_RATIO, b2Vec2(-16/PTM_RATIO,96/PTM_RATIO), 0);
 
 	myFixtureDef.shape = &polygonShape;
-    myFixtureDef.density = 0.0f;
+	myFixtureDef.density = 0.0f;
 	myFixtureDef.friction = 0.0f;
-    myFixtureDef.isSensor = true;
-    b2Fixture* leftSideStartSensorFixture = _Player->CreateFixture(&myFixtureDef);
-    leftSideStartSensorFixture->SetUserData( (void*)PLAYER_LEFT_START_CLIMB );
+	myFixtureDef.isSensor = true;
+	b2Fixture* leftSideStartSensorFixture = _Player->CreateFixture(&myFixtureDef);
+	leftSideStartSensorFixture->SetUserData( (void*)PLAYER_LEFT_START_CLIMB );
 
-	//Continuing Climbing
+	// Continuing Climbing
 
 	polygonShape.SetAsBox(8/PTM_RATIO, 56/PTM_RATIO, b2Vec2(16/PTM_RATIO,32/PTM_RATIO+16.0f/PTM_RATIO), 0);
 
 	myFixtureDef.shape = &polygonShape;
-    myFixtureDef.density = 0.0f;
+	myFixtureDef.density = 0.0f;
 	myFixtureDef.friction = 0.0f;
-    myFixtureDef.isSensor = true;
-    b2Fixture* rightSideSensorFixture = _Player->CreateFixture(&myFixtureDef);
-    rightSideSensorFixture->SetUserData( (void*)PLAYER_RIGHT_SIDE );
+	myFixtureDef.isSensor = true;
+	b2Fixture* rightSideSensorFixture = _Player->CreateFixture(&myFixtureDef);
+	rightSideSensorFixture->SetUserData( (void*)PLAYER_RIGHT_SIDE );
 
 	polygonShape.SetAsBox(8/PTM_RATIO, 56/PTM_RATIO, b2Vec2(-16/PTM_RATIO,32/PTM_RATIO+16.0f/PTM_RATIO), 0);
 
 	myFixtureDef.shape = &polygonShape;
-    myFixtureDef.density = 0.0f;
+	myFixtureDef.density = 0.0f;
 	myFixtureDef.friction = 0.0f;
-    myFixtureDef.isSensor = true;
-    b2Fixture* leftSideSensorFixture = _Player->CreateFixture(&myFixtureDef);
-    leftSideSensorFixture->SetUserData( (void*)PLAYER_LEFT_SIDE );
+	myFixtureDef.isSensor = true;
+	b2Fixture* leftSideSensorFixture = _Player->CreateFixture(&myFixtureDef);
+	leftSideSensorFixture->SetUserData( (void*)PLAYER_LEFT_SIDE );
 
 	//Player END
 
-	log("Player Masse: %f", _Player->GetMass());
-
+	/*
 	//Floor Body only (no Sprite yet)
 	b2Body *_body2;
 
@@ -252,42 +259,47 @@ bool GameScene::init()
 	ballShapeDef3.friction = 0.5f;
 	ballShapeDef3.restitution = 0.0f;
 	_body2->CreateFixture(&ballShapeDef3);
-
+	*/
 
 	//Its the DEBUG Layer for Box2D which draws Debug Thingies
-	//this->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
+	if(BOX2D_DEBUG)
+		this->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
 	//
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    MenuItemImage *closeItem = MenuItemImage::create(
-                                        "CloseNormal.png",
-                                        "CloseSelected.png",
-                                        CC_CALLBACK_1(GameScene::menuCloseCallback, this));
-    
+	// add a "close" icon to exit the progress. it's an autorelease object
+	MenuItemImage *closeItem = MenuItemImage::create(
+										"CloseNormal.png",
+										"CloseSelected.png",
+										CC_CALLBACK_1(GameScene::menuCloseCallback, this));
+	
 	closeItem->setPosition(Point(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
-                                origin.y + closeItem->getContentSize().height/2));
+								origin.y + closeItem->getContentSize().height/2));
 
-    // create menu, it's an autorelease object
-    Menu* menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Point::ZERO);
-    this->addChild(menu, 5);
+	// create menu, it's an autorelease object
+	Menu* menu = Menu::create(closeItem, NULL);
+	menu->setPosition(Point::ZERO);
+	this->addChild(menu, 5);
 
-    
-    LabelTTF* label = LabelTTF::create("Hello World", "Arial", 24);
-    
-    // position the label on the center of the screen
-    label->setPosition(Point(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - label->getContentSize().height));
+	
+	LabelTTF* label = LabelTTF::create("Hello World", "Arial", 24);
+	
+	// position the label on the center of the screen
+	label->setPosition(Point(origin.x + visibleSize.width/2,
+							origin.y + visibleSize.height - label->getContentSize().height));
 
-    // add the label as a child to this layer
-    this->addChild(label, 1);
+	// add the label as a child to this layer
+	this->addChild(label, 1);
 
-	this->schedule(schedule_selector(GameScene::update), 0.005F);
+	this->schedule(schedule_selector(GameScene::step), BOX2D_STEP);
+
+	this->schedule(schedule_selector(GameScene::update), 0.01F);
+
+	_world->SetContinuousPhysics(false);
 
 	//This follows the Player !!
 	//this->runAction(Follow::create(_ball));
 
-    return true;
+	return true;
 }
 
 void GameScene::ShootBullet(){
@@ -303,6 +315,7 @@ void GameScene::ShootBullet(){
 
 }
 
+
 b2Body * GameScene::createBullet(float x, float y, float width, float height){
 	//Floor2 Body only (no Sprite yet)
 	b2Body *_body;
@@ -310,40 +323,51 @@ b2Body * GameScene::createBullet(float x, float y, float width, float height){
 
 	b2BodyDef BodyDef;
 	BodyDef.type = b2_dynamicBody;
-	BodyDef.gravityScale = 0.5f; //Weniger Gravity für Bullets
 	BodyDef.bullet = true;
+	
 	BodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
 	_body = _world->CreateBody(&BodyDef);
-	
-
-	
 
 	b2PolygonShape shapeDef;
 	shapeDef.SetAsBox(width/PTM_RATIO, height/PTM_RATIO);
  
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &shapeDef;
-	ballShapeDef.density = 1.0f;
-	ballShapeDef.friction = 0.4f;
-	ballShapeDef.restitution = 0.0f;
-
+	ballShapeDef.isSensor = true;
 	b2Fixture* leftSideSensorFixture =_body->CreateFixture(&ballShapeDef);
 	leftSideSensorFixture->SetUserData((void*)BULLET);
 
 	return _body;
 }
 
-
-void GameScene::update(float dt){
-
+void GameScene::step(float dt){
 	if(GetAsyncKeyState(VK_LBUTTON)){
-		//ShootBullet();
+		ShootBullet();
 	}
 
-	//Test
-
-	//Update World, Box2D updates position, rotation, calculates things etc.
 	_world->Step(dt, 10, 10);
+
+	//Get List from Contact Listener and delete those
+	vector<BulletHit> *list = &myContactListenerInstance.mBulletHits;
+	vector<b2Body*> *destroy = new vector<b2Body*>();
+
+	for (std::vector<BulletHit>::iterator it = list->begin() ; it != list->end(); ++it){
+		//Make Effects, apply Forces etc.
+
+		//For now delete Shot
+		if(std::find(destroy->begin(), destroy->end(), it->bulletFixture->GetBody()) == destroy->end()){
+			destroy->push_back(it->bulletFixture->GetBody());
+		}
+		if(std::find(destroy->begin(), destroy->end(), it->hitFixture->GetBody()) == destroy->end()){
+			//destroy->push_back(it->hitFixture->GetBody());
+		}
+	}
+
+	for(std::vector<b2Body*>::iterator tmpBody = destroy->begin() ; tmpBody != destroy->end(); ++tmpBody){
+		_world->DestroyBody(*tmpBody);
+	}
+
+	myContactListenerInstance.mBulletHits.clear();
 
 	//Update Position of every Sprite to its b2Body Referenz
 	//Why?
@@ -355,16 +379,38 @@ void GameScene::update(float dt){
 	That means, that we have to update Position, Rotation
 	and if its changed by Box2D scale of sprites
 	*/
-    for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
-        if (b->GetUserData() != NULL) {
+	for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
+		if (b->GetUserData() != NULL) {
 			Sprite *ballData = (Sprite*)b->GetUserData();
 			if(ballData){
 				ballData->setPosition(Point(b->GetPosition().x * PTM_RATIO,
 					b->GetPosition().y * PTM_RATIO));
 				ballData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle())); 
 			}
-        }
+		}
 	}
+}
+
+void GameScene::update(float dt){
+
+	
+
+	//Test
+
+	//Update World, Box2D updates position, rotation, calculates things etc.
+	
+
+
+	//Test If GameOver things
+	if(Player->getPositionY()<-MIN_KAMERA_POS){
+		//To low dead:
+		_Player->SetTransform(b2Vec2(PlayerSpawn.x/PTM_RATIO, PlayerSpawn.y/PTM_RATIO), 0.0f);
+		_Player->SetLinearVelocity(b2Vec2(0,0));
+		waitTime = 0.15f;
+		slowTime = 0.2f;
+	}
+
+	
 
 	bool canMove = true;
 	bool canJump = false;
@@ -568,9 +614,9 @@ void GameScene::update(float dt){
 	Point playerPos = level2->convertToWorldSpace(Player->getPosition());
 
 	float playerDiffToCenterX = (visibleSize.width/2-playerPos.x)*0.06f;
+
+	//Have to do Absolute Y Movement
 	float playerDiffToCenterY = (visibleSize.height/2-playerPos.y)*0.06f;
-
-
 
 	//Test if X Position is to far left
 
@@ -587,12 +633,12 @@ void GameScene::update(float dt){
 
 	//Test if Y Position is to low or to high
 
-	if(playerDiffToCenterY>0 && this->getPositionY()>=0){
+	if(playerDiffToCenterY>0 && this->getPositionY()>=MIN_KAMERA_POS){
 		//To low
-		this->setPositionY(0);
-	}else if(playerDiffToCenterY<0 && this->getPositionY()<=-280*(1280/visibleSize.height)){
+		this->setPositionY(MIN_KAMERA_POS);
+	}else if(playerDiffToCenterY<0 && this->getPositionY()<=-MAX_KAMERA_POS*(MAX_MAP_HEIGHT/visibleSize.height)){
 		//To high
-		this->setPositionY(-280*(1280/visibleSize.height));
+		this->setPositionY(-MAX_KAMERA_POS*(MAX_MAP_HEIGHT/visibleSize.height));
 	}else{
 		this->setPositionY(this->getPositionY()+playerDiffToCenterY);
 		parallaxLayer->moveY(dt, playerDiffToCenterY);
@@ -606,9 +652,9 @@ void GameScene::update(float dt){
 
 void GameScene::menuCloseCallback(Object* pSender){
 
-    Director::getInstance()->end();
+	Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
+	exit(0);
 #endif
 }

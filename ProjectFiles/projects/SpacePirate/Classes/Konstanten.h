@@ -12,10 +12,19 @@
 #define CLIMBFIXTURE 9
 #define KISTE 10
 
+#define BOX2D_STEP 0.02f
+
+#define BOX2D_DEBUG true
+
 //Umrechnung von Box2D Metern (Box2D Einheit) zu CoCos2D Points (Pixeln)
 #define PTM_RATIO 64.0f
 
 #define GRAVITY_Y 18.0f
+
+//Das hier ist schon mim MapEditor abgestimmt!
+#define MIN_KAMERA_POS 200
+#define MAX_KAMERA_POS 280
+#define MAX_MAP_HEIGHT 1280
 
 //So Zeug wie maximale Geschwindigkeit \
 //Das man geduckt langsamer läuft
@@ -39,8 +48,8 @@
 #define PLAYER_START_JUMP_TIME 0.00f
 
 //Größere Zahl weniger Slow (1.0 = bleibt wie aufm Boden)
-#define PLAYER_SLOW_FALLING 0.6f
-#define PLAYER_SLOW_FLYING 0.7f
+#define PLAYER_SLOW_FALLING 0.5f
+#define PLAYER_SLOW_FLYING 0.6f
 
 #define PLAYER_SLOW_WHILE_FLYING 0.2f
 
@@ -55,7 +64,7 @@
 #define PLAYER_CLIMBING_START_JUMP 5.0f
 
 //Wie stark bewegbare Objecte vom Spieler weggedrückt werden
-#define PLAYER_MAGNETIK_OBJECT_REJECT 100.0f
+#define PLAYER_MAGNETIK_OBJECT_REJECT 5.0f
 
 #pragma endregion
 

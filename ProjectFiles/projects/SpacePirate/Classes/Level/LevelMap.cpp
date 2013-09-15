@@ -33,29 +33,46 @@ LevelMap::LevelMap(b2World * pWorld)
 	_world = pWorld;
 }
 
+Point LevelMap::getSpawnPoint(){
+	return spawnPoint;
+}
+
 /* 
 ======================================									
 Create node
 ====================================== 
 */
-void LevelMap::CreateNode (int pX, int pY, int pZ, int pLayer, float pScale, char *pFileName)
+void LevelMap::CreateNode (int pX, int pY, int pZ, float pAngle, Color3B pColor, GLubyte pOpacity, int pLayer, float pScale, char *pFileName)
 {
+
+	if(strcmp(pFileName,"resources\\images\\set1\\SpawnPoint.png")==0){
+		log("SpawnPosition");
+		spawnPoint = Point(pX,pY);
+		return;
+	}
+
 	//Seems not to load Texture right :(
 	Sprite *tmpSprite = Sprite::create(pFileName);
 	if(!tmpSprite)
 		return;
-	//log("PosY: %i", -pY);
-	tmpSprite->setPosition (Point((float) pX, (float) -pY));
+
+	tmpSprite->setPosition (Point((float) pX, (float) pY));
 	tmpSprite->setScale(pScale);
+	tmpSprite->setRotation(pAngle);
+	tmpSprite->setColor(pColor);
+	tmpSprite->setOpacity(pOpacity);
 
 	if(pLayer==4){
 		//If bestimmtes Bild mach dazu Body etc.
-		if(strcmp(pFileName,"resources\\images\\set1\\astPlatform.png")==0){
+		if(strcmp(pFileName,"resources\\images\\set1\\Astgabelung_v3_256px.png")==0){
 			//Normale Platform
-			createPlatform(pX,-pY+(tmpSprite->getContentSize().height*pScale/3.5f),tmpSprite->getContentSize().width*pScale/2,8*pScale);
-		}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste.png")==0 || strcmp(pFileName,"resources\\images\\set1\\classic_box_v1_64px.png")==0){
+			createPlatform(pX,pY+(tmpSprite->getContentSize().height*pScale/7.0f),tmpSprite->getContentSize().width*pScale/2,8*pScale, pAngle);
+		}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste.png")==0){
 			//Normale Platform
-			createKiste(pX,-pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite);
+			createKiste(pX,pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite, true, pAngle);
+		}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste-static.png")==0 || strcmp(pFileName,"resources\\images\\set1\\classic_box_v1_64px.png")==0){
+			//Normale Platform
+			createKiste(pX,pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite, true, pAngle);
 		}
 	}
 
@@ -65,13 +82,14 @@ void LevelMap::CreateNode (int pX, int pY, int pZ, int pLayer, float pScale, cha
 	mLayerArray[pLayer]->addChild(tmpSprite, pZ);
 }
 
-b2Body * LevelMap::createPlatform(float x, float y, float width, float height){
+b2Body * LevelMap::createPlatform(float x, float y, float width, float height, float pAngle){
 	//Floor2 Body only (no Sprite yet)
 	b2Body *_body;
 
 	b2BodyDef ballBodyDef;
 	//ballBodyDef2.type = b2_staticBody;
 	ballBodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
+	ballBodyDef.angle = pAngle;
 	_body = _world->CreateBody(&ballBodyDef);
 
 	b2PolygonShape shapeDef;
@@ -80,22 +98,26 @@ b2Body * LevelMap::createPlatform(float x, float y, float width, float height){
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &shapeDef;
 	ballShapeDef.density = 0.0f;
-	ballShapeDef.friction = 0.7f;
+	ballShapeDef.friction = 0.8f;
 	ballShapeDef.restitution = 0.0f;
 	_body->CreateFixture(&ballShapeDef)->SetUserData((void*)CLIMBFIXTURE);
 
 	return _body;
 }
 
-b2Body * LevelMap::createKiste(float x, float y, float width, float height, Sprite* pSprite){
+b2Body * LevelMap::createKiste(float x, float y, float width, float height, Sprite* pSprite, bool dynamic, float pAngle){
 	//Floor2 Body only (no Sprite yet)
 	b2Body *_body;
 
 	b2BodyDef ballBodyDef;
-	ballBodyDef.type = b2_dynamicBody;
+	if(dynamic)
+		ballBodyDef.type = b2_dynamicBody;
 	ballBodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
+	ballBodyDef.angle = pAngle;
 	_body = _world->CreateBody(&ballBodyDef);
+
 	_body->SetUserData(pSprite);
+
 
 	b2PolygonShape shapeDef;
 	shapeDef.SetAsBox(width/PTM_RATIO, height/PTM_RATIO);
@@ -103,8 +125,8 @@ b2Body * LevelMap::createKiste(float x, float y, float width, float height, Spri
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &shapeDef;
 	ballShapeDef.density = 13.0f;
-	ballShapeDef.friction = 1.8f;
-	ballShapeDef.restitution = 0.2f;
+	ballShapeDef.friction = 1.0f;
+	ballShapeDef.restitution = 0.15f;
 	_body->CreateFixture(&ballShapeDef)->SetUserData((void*)KISTE);
 
 	return _body;
@@ -144,8 +166,7 @@ bool LevelMap::LoadMap (char* pMapXMLPath)
 	Resources *pResources = new Resources();
 
 	//String compare
-	if (!strcmp (pMapXMLPath, "")) 
-	{
+	if (!strcmp (pMapXMLPath, "")){
 		delete [] pMapXMLPath;
 		return true;
 	}
@@ -154,9 +175,8 @@ bool LevelMap::LoadMap (char* pMapXMLPath)
 	TiXmlDocument mXmlDoc (pMapXMLPath);
 
 	// Fatal error, cannot load
-	if (!mXmlDoc.LoadFile())
-	{
-		log("%s: %s","TinyXML",mXmlDoc.ErrorDesc());
+	if (!mXmlDoc.LoadFile()){
+		log("%s: %s","TinyXML", mXmlDoc.ErrorDesc());
 		return false;
 	}
 
@@ -164,8 +184,7 @@ bool LevelMap::LoadMap (char* pMapXMLPath)
 	TiXmlElement *mXMap = 0;
 	mXMap = mXmlDoc.FirstChildElement("map");
 
-	if (!mXMap)
-	{
+	if (!mXMap){
 		// No "<map>" tag
 		return false;
 	}
@@ -176,15 +195,13 @@ bool LevelMap::LoadMap (char* pMapXMLPath)
 	TiXmlElement *mXTileset = 0;
 	mXTileset = mXMap->FirstChildElement("tileset");
 
-	if (!mXTileset)
-	{
+	if (!mXTileset){
 		// No "<tileset>" tag
 		return false;
 	}
 
 	// Id
-	if (mXTileset->Attribute("tileset_file"))
-	{
+	if (mXTileset->Attribute("tileset_file")){
 		if (!pResources->LoadTileset ((char *)mXTileset->Attribute("tileset_file"))) return false;	// It tries to load the tiles
 	}
 
@@ -195,8 +212,7 @@ bool LevelMap::LoadMap (char* pMapXMLPath)
 	TiXmlElement *mXNodes = 0;
 	mXNodes = mXMap->FirstChildElement("nodes");
 
-	if (!mXNodes)
-	{
+	if (!mXNodes){
 		// No "<nodes>" tag
 		return false;
 	}
@@ -204,8 +220,7 @@ bool LevelMap::LoadMap (char* pMapXMLPath)
 	TiXmlElement *mXNode = 0;
 	mXNode = mXNodes->FirstChildElement("node");
 
-	if (!mXNode)
-	{
+	if (!mXNode){
 		// No nodes to parse
 		return false;
 	}
@@ -383,7 +398,7 @@ bool LevelMap::LoadMap (char* pMapXMLPath)
 
 		//Load Sprite etc.
 
-		CreateNode(mX,mY,mZ,mLayer,mScale,pResources->GetImagePath(mSurfaceId));
+		CreateNode(mX,-mY,mZ,mAngle, Color3B(mTintR, mTintG, mTintB), mTrans,mLayer,mScale,pResources->GetImagePath(mSurfaceId));
 	
 		// Move to the next declaration
 		mXNode = mXNode->NextSiblingElement("node");

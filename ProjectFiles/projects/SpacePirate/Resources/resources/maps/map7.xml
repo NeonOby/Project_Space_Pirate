@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<map>
-    <tileset tileset_file="\resources\tileset_01.xml" />
-    <nodes>
-        <node surface_id="0" x="-35" y="425" z="0" layer="0" angle="0.000000" scale="1.000000" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
-        <node surface_id="0" x="-36" y="621" z="0" layer="0" angle="0.000000" scale="1.000000" trans="255" mirror_x="0" mirror_y="0" tint_r="255" tint_g="255" tint_b="255" if_wrap="0" region_width="0" region_height="0" />
-    </nodes>
-</map>

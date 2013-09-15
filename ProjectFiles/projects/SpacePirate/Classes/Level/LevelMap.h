@@ -37,7 +37,7 @@ public:
 
 	LevelMap										(b2World * pworld);
 
-	void						CreateNode			(int pX, int pY, int pZ, int pLayer, float pScale, char *pFileName);
+	void						CreateNode			(int pX, int pY, int pZ, float pAngle, cocos2d::Color3B pColor, GLubyte pOpacity, int pLayer, float pScale, char *pFileName);
 	bool						LoadMap				(char* pMapXMLPath);
 
 	cocos2d::Layer				**GetLayerArray		(){ return mLayerArray; };
@@ -45,12 +45,16 @@ public:
 	void						SetParallaxArray	(cocos2d::Layer **pLayerArray);
 	void						SetParallaxLayer	(cocos2d::Layer *pLayer1, cocos2d::Layer *pLayer2, cocos2d::Layer *pLayer3);
 	void						SetLayerArray		(cocos2d::Layer *pLayer1, cocos2d::Layer *pLayer2, cocos2d::Layer *pLayer3);
+
+	cocos2d::Point				getSpawnPoint		();
 private:
 
-	b2Body * createKiste(float x, float y, float width, float height, cocos2d::Sprite* pSprite);
-	b2Body * createPlatform(float x, float y, float width, float height);
+	b2Body * createKiste(float x, float y, float width, float height, cocos2d::Sprite* pSprite, bool dynamic, float pAngle);
+	b2Body * createPlatform(float x, float y, float width, float height, float pAngle);
 
 	b2World * _world;
+
+	cocos2d::Point spawnPoint;
 
 	cocos2d::Layer* mLayerArray[6];
 };

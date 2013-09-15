@@ -3,6 +3,8 @@
 
 #include "ParallaxLayer.h"
 #include "cocos2d.h"
+#include "Box2D\Box2D.h"
+#include <vector>
 #include "MyContactListener.h"
 
 class GameScene : public cocos2d::Layer {
@@ -32,6 +34,8 @@ private:
 	float fallTime, waitTime, slowTime, jumpStart, jumpTimer;
 	int walkDirection;
 
+	cocos2d::Point PlayerSpawn;
+
 	cocos2d::Sprite *Player;
 
 public:
@@ -48,6 +52,7 @@ public:
     CREATE_FUNC(GameScene);
 
 	void update(float dt);
+	void step(float dt);
 };
 
 const float speed = 300.0f;
