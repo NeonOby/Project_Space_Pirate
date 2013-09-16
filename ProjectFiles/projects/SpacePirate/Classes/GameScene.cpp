@@ -73,6 +73,15 @@ bool GameScene::init()
 
 	//SoundManager::playMusic(COMPLEX);
 
+	ISound * sji = NULL;
+
+	SoundManager::playMusic(COMPLEX,0,&sji);
+	if(!sji){
+
+		return false;
+	}
+
+	sji->setPlaybackSpeed(0.6f);
 
 	himmel = Sprite::create("Level/Jungle/Himmel.PNG");
 

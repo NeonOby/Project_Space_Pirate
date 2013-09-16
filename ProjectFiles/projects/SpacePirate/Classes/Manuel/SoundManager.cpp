@@ -42,9 +42,8 @@ void SoundManager::playMusic(Musics id, float position){
 
 //Musik von 1 = links über 0 = mitte bis -1 = rechts abspielen
 //Rückgabe: ISound* um Musikposition später ändern zu können
-	static void playMusic(Musics id, float position, ISound& retMusic){
-	ISoundEngine* engine = createIrrKlangDevice();
-	retMusic = *engine->play3D(BackgroundMusic[id],vec3df(0,0,position*3),true);
+void SoundManager::playMusic(const Musics id, const float position, ISound** pReturn){
+	*pReturn = createIrrKlangDevice()->play3D(BackgroundMusic[id],vec3df(0,0,position*3),true,false,true);
 }
 
 //neu Position der Musik festlegen mit  1 = links, 0 = mitte oder -1 = rechts abspielen

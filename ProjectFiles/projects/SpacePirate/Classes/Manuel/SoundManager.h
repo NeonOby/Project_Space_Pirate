@@ -27,7 +27,7 @@ public:
 	static void playMusic(Musics id);
 	static void playMusic(Musics id, float position);
 	//static ISound* playNReturnMusic(Musics id, float position);
-	static void playMusic(Musics id, float position, ISound& retMusic);
+	static void playMusic(const Musics id, const float position, ISound** pReturn);
 	static void setMusicPos(ISound* steroMusic, float newPosition);
 	static void playSound(Soundss id);
 	static void playSound(Soundss id, bool echo);
