@@ -14,7 +14,7 @@
 
 #define BOX2D_STEP 0.02f
 
-#define BOX2D_DEBUG true
+#define BOX2D_DEBUG false
 
 //Umrechnung von Box2D Metern (Box2D Einheit) zu CoCos2D Points (Pixeln)
 #define PTM_RATIO 64.0f
