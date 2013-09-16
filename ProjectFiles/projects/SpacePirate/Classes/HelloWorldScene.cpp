@@ -1,13 +1,14 @@
 #include "HelloWorldScene.h"
 #include "MainMenuScene.h"
 
+#include "CCSpriterX.h"
 USING_NS_CC;
 
 Scene* HelloWorldScene::scene()
 {
-    // 'scene' is an autorelease object
+    // 'scene' is an autorelease objec
     Scene *scene = Scene::create();
-    
+
     // 'layer' is an autorelease object
     HelloWorldScene *layer = HelloWorldScene::create();
 
@@ -64,14 +65,15 @@ bool HelloWorldScene::init()
     // add the label as a child to this layer
     this->addChild(label, 1);
 
-    // add "HelloWorld" splash screen"
-    Sprite* sprite = Sprite::create("HelloWorld.png");
+	//SpriteBatchNode *n = SpriteBatchNode::create("monster.png");
+    CCSpriterX *animator = CCSpriterX::create("Example.SCML", "monster.plist");
 
-    // position the sprite on the center of the screen
-    sprite->setPosition(Point(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+	animator->setPosition(ccp(240, 30));
+	animator->setScale(0.8f);
+		
+	//n->addChild(animator);
+	this->addChild(animator, 5);
 
-    // add the sprite as a child to this layer
-    this->addChild(sprite, 0);
     
     return true;
 }
