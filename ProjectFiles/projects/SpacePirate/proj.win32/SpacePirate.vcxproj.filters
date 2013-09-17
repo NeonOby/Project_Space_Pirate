@@ -81,6 +81,7 @@
     <ClCompile Include="..\Classes\CCSpriterX.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -164,6 +165,7 @@
     <ClInclude Include="..\Classes\CCSpriterX.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Classes\Physic\README.md">
