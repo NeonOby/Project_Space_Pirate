@@ -1,6 +1,7 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
 #include "GameScene.h"
+#include "MainMenuScene.h"
 
 USING_NS_CC;
 
@@ -27,7 +28,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    Scene *scene = GameScene::scene();
+    Scene *scene = MainMenuScene::scene();
 
     // run
     director->runWithScene(scene);

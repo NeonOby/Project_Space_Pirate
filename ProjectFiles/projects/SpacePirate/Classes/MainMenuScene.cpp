@@ -1,6 +1,9 @@
 #include "MainMenuScene.h"
+#include "GameScene.h"
+
 
 USING_NS_CC;
+
 
 Scene* MainMenuScene::scene()
 {
@@ -48,6 +51,18 @@ bool MainMenuScene::init()
     menu->setPosition(Point::ZERO);
     this->addChild(menu, 1);
 
+	MenuItemImage *StartGame = MenuItemImage::create(
+                                        "ButtonRed.png",
+                                        "ButtonRed.png",
+                                        CC_CALLBACK_1(MainMenuScene::StartGame, this));
+    
+	StartGame->setPosition(Point(visibleSize.width/2 ,visibleSize.height/2 - visibleSize.height/4));
+
+	Menu* StartButton = Menu::create(StartGame, NULL);
+	StartButton->setPosition(Point::ZERO);
+	this->addChild(StartButton,99);
+
+
     /////////////////////////////
     // 3. add your codes below...
 
@@ -63,8 +78,9 @@ bool MainMenuScene::init()
     // add the label as a child to this layer
     this->addChild(label, 1);
 
+	
     // add "HelloWorld" splash screen"
-    Sprite* sprite = Sprite::create("HelloWorld.png");
+    Sprite* sprite = Sprite::create("Spacepirates.png");
 
     // position the sprite on the center of the screen
     sprite->setPosition(Point(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
@@ -90,4 +106,11 @@ void MainMenuScene::menuCloseCallback(Object* pSender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
+}
+void MainMenuScene::StartGame(Object* pSender)
+{
+    //Director::getInstance()->end();
+	Director::getInstance()->replaceScene(GameScene::scene());
+
+
 }
