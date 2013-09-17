@@ -20,17 +20,15 @@ private:
 
 protected:
 	
-
 public:
 	SoundManager();
 	static SoundManager *getInstance();
-	static void playMusic(Musics id);
-	static void playMusic(Musics id, float position);
-	//static ISound* playNReturnMusic(Musics id, float position);
+	static void playMusic(const Musics id);
+	static void playMusic(const Musics id, const float position);
 	static void playMusic(const Musics id, const float position, ISound** pReturn);
-	static void setMusicPos(ISound* steroMusic, float newPosition);
-	static void playSound(Soundss id);
-	static void playSound(Soundss id, bool echo);
-	static void playSound(Soundss id, float position);
+	static void setMusicPos(ISound* steroMusic, const float newPosition);
+	static void playSound(const Soundss id);
+	static void playSound(const Soundss id, const bool echo);
+	static void playSound(const Soundss id, const float position);
 };
 #endif
