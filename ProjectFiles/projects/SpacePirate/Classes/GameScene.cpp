@@ -12,6 +12,9 @@
 
 #include "Konstanten.h"
 
+
+//#include "GameGUI.h"
+
 USING_NS_CC;
 using namespace irrklang;
 
@@ -62,6 +65,16 @@ bool GameScene::init()
 	level3 = new Layer();
 	blocks = new Sprite*[200];
 	
+	himmel = Sprite::create("Level/Jungle/Himmel.PNG");
+
+	// position the sprite on the center of the screen
+	himmel->setPosition(Point(himmel->getContentSize().width/2*0.5f, himmel->getContentSize().height/2*0.5f));
+
+	// add the sprite as a child to this layer
+	this->addChild(himmel, 0);
+
+	parallaxLayer = ParallaxLayer::create();
+	this->addChild(parallaxLayer, 1);
 	this->addChild(level1, 2);
 	this->addChild(level2, 3);
 	this->addChild(level3, 4);
@@ -74,40 +87,12 @@ bool GameScene::init()
 	//SoundManager::playMusic(COMPLEX);
 
 	ISound * sji = NULL;
-
 	SoundManager::playMusic(COMPLEX,0,&sji);
 	if(!sji){
 
 		return false;
 	}
-
 	sji->setPlaybackSpeed(0.6f);
-
-	himmel = Sprite::create("Level/Jungle/Himmel.PNG");
-
-	// position the sprite on the center of the screen
-	himmel->setPosition(Point(himmel->getContentSize().width/2*0.5f, himmel->getContentSize().height/2*0.5f));
-
-	// add the sprite as a child to this layer
-	this->addChild(himmel, 0);
-
-	parallaxLayer = ParallaxLayer::create();
-
-	this->addChild(parallaxLayer, 1);
-
-	
-	/*
-	
-	for(int i=0; i< 200;i++){
-		blocks[i] = Sprite::create("Game/Dirt.PNG");
-
-		blocks[i]->setPosition(Point(blocks[i]->getContentSize().width/2 + i * blocks[i]->getContentSize().width - 100*blocks[i]->getContentSize().width,
-									 blocks[i]->getContentSize().height/2));
-
-		level2->addChild(blocks[i]);
-	}
-
-	*/
 
 	
 	Player = Sprite::create("Pirate.PNG");
@@ -138,9 +123,6 @@ bool GameScene::init()
 
 
 	//Map Finished now set SpawnPos:
-	
-	
-
 	//create World and add something
 	//The world, world has Gravity etc.
 	

@@ -32,6 +32,8 @@ void SoundManager::playMusic(Musics id, float position){
 	ISound* stereoMusic = engine->play3D(BackgroundMusic[id],vec3df(0,0,position*3),true);
 }
 
+
+
 //Musik von 1 = links über 0 = mitte bis -1 = rechts abspielen
 //Rückgabe: ISound* um Musikposition später ändern zu können
 //ISound* SoundManager::playNReturnMusic(Musics id, float position){
