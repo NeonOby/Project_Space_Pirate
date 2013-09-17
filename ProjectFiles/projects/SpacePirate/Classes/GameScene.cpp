@@ -13,7 +13,7 @@
 #include "Konstanten.h"
 
 
-//#include "GameGUI.h"
+#include "GameGUI.h"
 
 USING_NS_CC;
 using namespace irrklang;
@@ -78,6 +78,8 @@ bool GameScene::init()
 	this->addChild(level1, 2);
 	this->addChild(level2, 3);
 	this->addChild(level3, 4);
+
+	this->addChild(GameGUI::create(),5);
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Point origin = Director::getInstance()->getVisibleOrigin();
