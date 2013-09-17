@@ -84,15 +84,7 @@ bool GameScene::init()
 
 	//Try to play sound here
 
-	//SoundManager::playMusic(COMPLEX);
-
-	ISound * sji = NULL;
-	SoundManager::playMusic(COMPLEX,0,&sji);
-	if(!sji){
-
-		return false;
-	}
-	sji->setPlaybackSpeed(0.6f);
+	SoundManager::playMusic(COMPLEX);
 
 	
 	Player = Sprite::create("Pirate.PNG");
@@ -609,7 +601,12 @@ void GameScene::update(float dt){
 	//Have to do Absolute Y Movement
 	float playerDiffToCenterY = (visibleSize.height/2-playerPos.y)*0.06f;
 
+	//playerDiffToCenterX = 0;
+	//playerDiffToCenterY = 0;
 	//Test if X Position is to far left
+
+
+
 
 	if(playerDiffToCenterX>0 && this->getPositionX()>=0){
 		//Stop

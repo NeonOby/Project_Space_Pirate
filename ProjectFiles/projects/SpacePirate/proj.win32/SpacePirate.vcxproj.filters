@@ -19,6 +19,9 @@
     <Filter Include="Classes\TinyXML">
       <UniqueIdentifier>{5f22f3f4-31dc-49ea-8e88-9d2f9a3ee1be}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Stefan">
+      <UniqueIdentifier>{34d4b9de-3ecd-48ce-aaf8-ca8b4661fe91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -82,6 +85,9 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="GameGUI.cpp">
+      <Filter>Classes\Stefan</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -166,6 +172,9 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Player.h" />
+    <ClInclude Include="GameGUI.h">
+      <Filter>Classes\Stefan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Classes\Physic\README.md">

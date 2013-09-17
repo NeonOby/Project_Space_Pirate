@@ -136,7 +136,7 @@ void ParallaxLayer::moveX(float dt, int direction){
 	
 	backgroundLayer->setPositionX(backgroundLayer->getPositionX() - dt * direction  * 50.0f);
 
-	midground1Layer->setPositionX(midground1Layer->getPositionX() - dt * direction  * 40.0f);
+	midground1Layer->setPositionX(midground1Layer->getPositionX() - dt * direction  * 45.0f);
 
 	//Has to move abit against the move direction !!
 	midground2Layer->setPositionX(midground2Layer->getPositionX() - dt * direction  * 30.0f);
