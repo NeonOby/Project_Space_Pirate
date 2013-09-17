@@ -12,7 +12,7 @@
 
 #include "Konstanten.h"
 
-
+#include "GameGUI.h"
 //#include "GameGUI.h"
 
 USING_NS_CC;
@@ -65,6 +65,7 @@ bool GameScene::init()
 	level3 = new Layer();
 	blocks = new Sprite*[200];
 	
+	
 	himmel = Sprite::create("Level/Jungle/Himmel.PNG");
 
 	// position the sprite on the center of the screen
@@ -78,6 +79,7 @@ bool GameScene::init()
 	this->addChild(level1, 2);
 	this->addChild(level2, 3);
 	this->addChild(level3, 4);
+	this->addChild(GameGUI::create(),5);
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Point origin = Director::getInstance()->getVisibleOrigin();
