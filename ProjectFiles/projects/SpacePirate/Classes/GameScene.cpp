@@ -300,6 +300,9 @@ void GameScene::ShootBullet(){
 
 }
 
+void GameScene::grappleHook(){
+
+}
 
 b2Body * GameScene::createBullet(float x, float y, float width, float height){
 	//Floor2 Body only (no Sprite yet)
@@ -326,6 +329,11 @@ b2Body * GameScene::createBullet(float x, float y, float width, float height){
 }
 
 void GameScene::step(float dt){
+	if (GetAsyncKeyState(VK_RBUTTON)){
+		grappleHook();
+	}
+
+
 	if(GetAsyncKeyState(VK_LBUTTON)){
 		ShootBullet();
 	}
