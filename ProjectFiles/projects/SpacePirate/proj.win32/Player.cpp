@@ -7,9 +7,7 @@ bool Player::init(){
 	{
 		return false;
 	}
-
 	
-
 	return true;
 }
 

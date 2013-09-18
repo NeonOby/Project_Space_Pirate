@@ -9,7 +9,10 @@ private:
 	bool climbingRight, climbingLeft, holdingRight, holdingLeft;
 	int walkDirection;
 
-	//issue:16 //Das isn Link zu nem GitHub Issue/Bug, nicht schlecht
+	//issue:17 //Das isn Link zu nem GitHub Issue/Bug, nicht schlecht
+
+	//Part of wiki:Player---Steuerung
+	//https://github.com/ADoby/Project_Space_Pirate/wiki/Player---Steuerung
 
 	//The time remaining for the jumpstart
 	//? Getting into position, slow down, etc.

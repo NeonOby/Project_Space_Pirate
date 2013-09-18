@@ -14,25 +14,25 @@ static SoundManager* getInstance(){
 
 //Musik und Sounds laden
 SoundManager::SoundManager() {
-	createIrrKlangDevice()->addSoundSourceFromFile("Music/Jason.mp3", irrklang::ESM_AUTO_DETECT, true);
-	createIrrKlangDevice()->addSoundSourceFromFile("Music/Complex.mp3", irrklang::ESM_AUTO_DETECT, true);
-	createIrrKlangDevice()->addSoundSourceFromFile("Sounds/jump01.wav", irrklang::ESM_AUTO_DETECT, true);
+	irrklang::createIrrKlangDevice()->addSoundSourceFromFile("Music/Jason.mp3", irrklang::ESM_AUTO_DETECT, true);
+	irrklang::createIrrKlangDevice()->addSoundSourceFromFile("Music/Complex.mp3", irrklang::ESM_AUTO_DETECT, true);
+	irrklang::createIrrKlangDevice()->addSoundSourceFromFile("Sounds/jump01.wav", irrklang::ESM_AUTO_DETECT, true);
 }
 
 //Musik orginal mittig
 void SoundManager::playMusic(const Musics id){
-	createIrrKlangDevice()->play2D(BackgroundMusic[id], true);
+	irrklang::createIrrKlangDevice()->play2D(BackgroundMusic[id], true);
 }
 
 //Musik von 1 = links über 0 = mitte bis -1 = rechts abspielen
 void SoundManager::playMusic(const Musics id, const float position){
-	ISound* stereoMusic = createIrrKlangDevice()->play3D(BackgroundMusic[id],vec3df(0,0,position*3), true);
+	ISound* stereoMusic = irrklang::createIrrKlangDevice()->play3D(BackgroundMusic[id],vec3df(0,0,position*3), true);
 }
 
 //Musik von 1 = links über 0 = mitte bis -1 = rechts abspielen
 //Rückgabe: ISound* um Musikposition später ändern zu können
 void SoundManager::playMusic(const Musics id, const float position, ISound** pReturn){
-	*pReturn = createIrrKlangDevice()->play3D(BackgroundMusic[id],vec3df(0, 0, position*3), true, false, true);
+	*pReturn = irrklang::createIrrKlangDevice()->play3D(BackgroundMusic[id],vec3df(0, 0, position*3), true, false, true);
 }
 
 //neu Position der Musik festlegen mit  1 = links, 0 = mitte oder -1 = rechts abspielen
@@ -42,12 +42,12 @@ void SoundManager::setMusicPos(ISound* steroMusic, const float newPosition){
 
 //Sound orginal mittig
 void SoundManager::playSound(const Soundss id){
-	createIrrKlangDevice()->play2D(Sounds[id]);
+	irrklang::createIrrKlangDevice()->play2D(Sounds[id]);
 }
 
 //Soundname & true für Echo-Effekt übergeben
 void SoundManager::playSound(const Soundss id, const bool echo){
-	ISound* effectSound = createIrrKlangDevice()->play2D(Sounds[id]);
+	ISound* effectSound = irrklang::createIrrKlangDevice()->play2D(Sounds[id]);
 	if (echo){
 		ISoundEffectControl* fx = 0;
 		if (effectSound){
@@ -62,5 +62,5 @@ void SoundManager::playSound(const Soundss id, const bool echo){
 
 //Sound von 1 = links über 0 = mitte bis -1 = rechts abspielen
 void SoundManager::playSound(const Soundss id, const float position){
-	ISound* stereoSound = createIrrKlangDevice()->play3D(Sounds[id],vec3df(0,0,position*3));
+	ISound* stereoSound = irrklang::createIrrKlangDevice()->play3D(Sounds[id],vec3df(0,0,position*3));
 }
