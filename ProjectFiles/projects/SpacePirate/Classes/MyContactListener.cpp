@@ -76,8 +76,8 @@ bool MyContactListener::remContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int
 }
 
 void MyContactListener::BeginContact(b2Contact* contact) {
-    // We need to copy out the data because the b2Contact passed in
-    // is reused.
+	// We need to copy out the data because the b2Contact passed in
+	// is reused.
 
 	if((int)contact->GetFixtureA()->GetUserData() == BULLET){
 		//Tell FuxtureB that he got Hit
@@ -156,12 +156,12 @@ void MyContactListener::EndContact(b2Contact* contact) {
 		return;
 	}
 
-    MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };
-    std::vector<MyContact>::iterator pos;
-    pos = std::find(_contacts.begin(), _contacts.end(), myContact);
-    if (pos != _contacts.end()) {
-        _contacts.erase(pos);
-    }
+	MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };
+	std::vector<MyContact>::iterator pos;
+	pos = std::find(_contacts.begin(), _contacts.end(), myContact);
+	if (pos != _contacts.end()) {
+		_contacts.erase(pos);
+	}
 }
 
 void MyContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold) {

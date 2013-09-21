@@ -17,7 +17,9 @@
 #define BOX2D_DEBUG false
 
 //Umrechnung von Box2D Metern (Box2D Einheit) zu CoCos2D Points (Pixeln)
-#define PTM_RATIO 64.0f
+//Minimum: 3.2px/PTM_RATIO = 0.1 Meter
+//Maximum: 320px/PTM_RATIO = 10 Meter
+#define PTM_RATIO 32.0f
 
 #define GRAVITY_Y 18.0f
 
