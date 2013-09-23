@@ -22,6 +22,12 @@
     <Filter Include="Classes\Stefan">
       <UniqueIdentifier>{34d4b9de-3ecd-48ce-aaf8-ca8b4661fe91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Entity">
+      <UniqueIdentifier>{ce283b8c-6efd-446e-a299-cdd5a02d1267}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Interface">
+      <UniqueIdentifier>{050e9800-2d71-442a-893c-7930ee6250fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,9 +42,6 @@
     <ClCompile Include="..\Classes\GameScene.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Impulse.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\MainMenuScene.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
@@ -46,12 +49,6 @@
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\ParallaxLayer.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Part.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\DropAble.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Manuel\SoundManager.cpp">
@@ -81,12 +78,20 @@
     <ClCompile Include="..\Classes\TinyXML\tinyxmlparser.cpp">
       <Filter>Classes\TinyXML</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\CCSpriterX.cpp">
-      <Filter>Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="GameGUI.cpp">
       <Filter>Classes\Stefan</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Classes\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\DropAble.cpp">
+      <Filter>Classes\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Impulse.cpp">
+      <Filter>Classes\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Part.cpp">
+      <Filter>Classes\Interface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -99,19 +104,7 @@
     <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\DropAble.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Effect.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\GameScene.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\ImageFiles.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Impulse.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Konstanten.h">
@@ -123,25 +116,10 @@
     <ClInclude Include="..\Classes\MouseListener.h">
       <Filter>Classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\MoveAble.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\MyContactListener.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\ParallaxLayer.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Part.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Collider.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\DamageAble.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\DestroyAble.h">
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Manuel\SoundManager.h">
@@ -165,15 +143,38 @@
     <ClInclude Include="..\Classes\TinyXML\tinyxml.h">
       <Filter>Classes\TinyXML</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\SpriterNode.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\CCSpriterX.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h" />
     <ClInclude Include="GameGUI.h">
       <Filter>Classes\Stefan</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Classes\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Collider.h">
+      <Filter>Classes\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\DamageAble.h">
+      <Filter>Classes\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\DestroyAble.h">
+      <Filter>Classes\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\DropAble.h">
+      <Filter>Classes\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Effect.h">
+      <Filter>Classes\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Impulse.h">
+      <Filter>Classes\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MoveAble.h">
+      <Filter>Classes\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Part.h">
+      <Filter>Classes\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ImageFiles.h">
+      <Filter>Classes\Interface</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

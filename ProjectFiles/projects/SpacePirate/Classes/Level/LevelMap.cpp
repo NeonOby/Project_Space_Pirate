@@ -20,9 +20,6 @@
 
 #include "LevelMap.h"
 
-#define MATH_PI 3.14159265359f
-#define MATH_TO_RADIANS 0.0174532925f
-
 USING_NS_CC;
 
 /* 

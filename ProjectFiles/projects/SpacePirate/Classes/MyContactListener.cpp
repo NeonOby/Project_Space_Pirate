@@ -84,7 +84,8 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 		//e.g. Do Damage/Apply Forces
 		//Make some fancy effects
 		//Tell Logik to do things, because we can't delete Bodies while listening !!
-		BulletHit myHit = { contact->GetFixtureA(), contact->GetFixtureB(), b2Vec2(0,0), b2Vec2(0,0) };
+
+		BulletHit myHit = { contact->GetFixtureA(), contact->GetFixtureB() };
 		mBulletHits.push_back(myHit);
 
 		return;
@@ -93,7 +94,8 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 		//e.g. Do Damage/Apply Forces
 		//Make some fancy effects
 		//Tell Logik to do things, because we can't delete Bodies while listening !!
-		BulletHit myHit = { contact->GetFixtureB(), contact->GetFixtureA(), b2Vec2(0,0), b2Vec2(0,0) };
+
+		BulletHit myHit = { contact->GetFixtureB(), contact->GetFixtureA() };
 		mBulletHits.push_back(myHit);
 		return;
 	}

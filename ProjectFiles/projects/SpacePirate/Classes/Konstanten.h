@@ -1,6 +1,9 @@
 #ifndef __KONSTANTEN_H__
 #define __KONSTANTEN_H__
 
+#define MATH_PI 3.14159265359f
+#define MATH_TO_RADIANS 0.0174532925f
+
 #define PLAYER 1
 #define ENEMY 2
 #define BULLET 3
@@ -27,6 +30,17 @@
 #define MIN_KAMERA_POS 0
 #define MAX_KAMERA_POS 480
 #define MAX_MAP_HEIGHT 1280
+
+//Bullets
+
+//Wichtig, Gewicht = Kraft die später auf andere Körper übertragen wird
+#define BULLET_DENSITY 50.0f
+
+//Ja die Speed halt
+#define BULLET_SPEED 35.0f
+
+//In sekunden
+#define BULLET_SHOOT_SPEED 0.2f
 
 //So Zeug wie maximale Geschwindigkeit \
 //Das man geduckt langsamer läuft

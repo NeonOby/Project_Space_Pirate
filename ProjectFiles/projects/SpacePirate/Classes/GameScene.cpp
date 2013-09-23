@@ -58,6 +58,8 @@ bool GameScene::init()
 	holdingLeft = false;
 	_Player = NULL;
 	Player = NULL;
+
+	shootCooldown = 0.0f;
 	level1 = new Layer();
 	level2 = new Layer();
 	level3 = new Layer();
@@ -226,76 +228,65 @@ bool GameScene::init()
 
 
 
-
-
-
-
 	//Its the DEBUG Layer for Box2D which draws Debug Thingies
 	if(BOX2D_DEBUG)
 		level3->addChild(B2DebugDrawLayer::create(_world, PTM_RATIO),999);
-	//
 
-	// add a "close" icon to exit the progress. it's an autorelease object
-	MenuItemImage *closeItem = MenuItemImage::create(
-										"CloseNormal.png",
-										"CloseSelected.png",
-										CC_CALLBACK_1(GameScene::menuCloseCallback, this));
-	
-	closeItem->setPosition(Point(origin.x + visibleSize.width - closeItem->getContentSize().width/2 ,
-								origin.y + closeItem->getContentSize().height/2));
-
-	// create menu, it's an autorelease object
-	Menu* menu = Menu::create(closeItem, NULL);
-	menu->setPosition(Point::ZERO);
-	this->addChild(menu, 5);
-
-	
-	LabelTTF* label = LabelTTF::create("Hello World", "Arial", 24);
-	
-	// position the label on the center of the screen
-	label->setPosition(Point(origin.x + visibleSize.width/2,
-							origin.y + visibleSize.height - label->getContentSize().height));
-
-	// add the label as a child to this layer
-	this->addChild(label, 1);
-
+	//Updates b2World
+	//? Do things here that need to be done when physic has updated
+	//? That means, every physic object only moves when this is called
 	this->schedule(schedule_selector(GameScene::step), BOX2D_STEP);
 
 	this->schedule(schedule_selector(GameScene::update), 0.01F);
 
-	_world->SetContinuousPhysics(false);
-
-	//This follows the Player !!
-	//this->runAction(Follow::create(_ball));
+	//? ContinuousPhysics
+	_world->SetContinuousPhysics(true);
 
 	return true;
 }
 
-void GameScene::ShootBullet(){
-	Sprite* Player = (Sprite*)_Player->GetUserData();
-	b2Body * tmpBody = createBullet((Player->getPositionX()+walkDirection*48),Player->getPositionY()+32,8.0f,8.0f);
-
+Point GameScene::GetMousePos(){
 	Point tmpPoint = MouseListener().getMousePos();
-
-	float dX = tmpPoint.x-(Player->getPositionX()+walkDirection);
-	float dY = tmpPoint.y-Player->getPositionY();
-
-	tmpBody->ApplyForceToCenter(b2Vec2(dX,dY));
-
+	tmpPoint.operator-(Point(level2->getPositionX(), level2->getPositionY()));
+	return tmpPoint;
 }
 
-void GameScene::grappleHook(){
+void GameScene::ShootBullet(){
+	Sprite *bullet = Sprite::create("Bullet.png");
+	level2->addChild(bullet);
 
+	Point tmpPoint = GetMousePos();
+	Point ShootPos = level2->convertToWorldSpace(Player->getPosition());
+	ShootPos = ShootPos.operator+(Point(walkDirection*48, 64));
+
+	float dX = tmpPoint.x-ShootPos.x;
+	float dY = tmpPoint.y-ShootPos.y;
+
+	ShootPos = ShootPos.operator-(level2->getPosition());
+
+	b2Body * tmpBody = createBullet(ShootPos.x,ShootPos.y,6.0f,6.0f, bullet);
+
+	b2Vec2 vec = b2Vec2(dX,dY);
+
+	//Normalize Vector
+	float length = vec.Length();
+	vec.x = vec.x / length;
+	vec.y = vec.y / length;
+
+	vec.operator*=(BULLET_SPEED);
+	tmpBody->SetLinearVelocity(vec);
 }
 
-b2Body * GameScene::createBullet(float x, float y, float width, float height){
+b2Body * GameScene::createBullet(float x, float y, float width, float height, Sprite *sprite){
 	//Floor2 Body only (no Sprite yet)
 	b2Body *_body;
 	
 
 	b2BodyDef BodyDef;
 	BodyDef.type = b2_dynamicBody;
+	BodyDef.gravityScale = 0.0f;
 	BodyDef.bullet = true;
+	BodyDef.userData = sprite;
 	
 	BodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
 	_body = _world->CreateBody(&BodyDef);
@@ -305,7 +296,8 @@ b2Body * GameScene::createBullet(float x, float y, float width, float height){
  
 	b2FixtureDef ballShapeDef;
 	ballShapeDef.shape = &shapeDef;
-	ballShapeDef.isSensor = true;
+	ballShapeDef.density = BULLET_DENSITY;
+	ballShapeDef.isSensor = false;
 	b2Fixture* leftSideSensorFixture =_body->CreateFixture(&ballShapeDef);
 	leftSideSensorFixture->SetUserData((void*)BULLET);
 
@@ -314,12 +306,13 @@ b2Body * GameScene::createBullet(float x, float y, float width, float height){
 
 void GameScene::step(float dt){
 	if (GetAsyncKeyState(VK_RBUTTON)){
-		grappleHook();
+		//grappleHook();
 	}
 
-
-	if(GetAsyncKeyState(VK_LBUTTON)){
+	shootCooldown-= dt;
+	if(shootCooldown<=0 && GetAsyncKeyState(VK_LBUTTON)){
 		ShootBullet();
+		shootCooldown = BULLET_SHOOT_SPEED;
 	}
 
 	_world->Step(dt, 10, 10);
@@ -334,8 +327,17 @@ void GameScene::step(float dt){
 		//For now delete Shot
 		if(std::find(destroy->begin(), destroy->end(), it->bulletFixture->GetBody()) == destroy->end()){
 			destroy->push_back(it->bulletFixture->GetBody());
+			
+			//TODO: Should work, delete Bullet Sprite vom level2 Layer
+			if(it->bulletFixture->GetBody()->GetUserData())
+				level2->removeChild((Node*)it->bulletFixture->GetBody()->GetUserData());
 		}
 		if(std::find(destroy->begin(), destroy->end(), it->hitFixture->GetBody()) == destroy->end()){
+			//TODO: Add Some Force to Body2
+			//it->hitFixture->GetBody()->ApplyForce(it->hitForce,it->hitPoint);
+
+			//TODO: Do Some Damage to Body2, if its DamageAble
+
 			//destroy->push_back(it->hitFixture->mPlayerBody);
 		}
 	}
@@ -359,7 +361,7 @@ void GameScene::step(float dt){
 	for(b2Body *b = _world->GetBodyList(); b; b=b->GetNext()) {
 		if (b->GetUserData() != NULL) {
 			Sprite *ballData = (Sprite*)b->GetUserData();
-			if(ballData){
+			if(ballData && b){
 				ballData->setPosition(Point(b->GetPosition().x * PTM_RATIO,
 					b->GetPosition().y * PTM_RATIO));
 				ballData->setRotation(-1 * CC_RADIANS_TO_DEGREES(b->GetAngle())); 
@@ -370,7 +372,9 @@ void GameScene::step(float dt){
 
 void GameScene::update(float dt){
 
-	
+	Point mousePos = GetMousePos();
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Point playerPos = level2->convertToWorldSpace(Player->getPosition());
 
 	//Test
 
@@ -517,10 +521,18 @@ void GameScene::update(float dt){
 		maxSpeed *= PLAYER_SLOW_FLYING;
 	}
 
-	//Get KeyInput, will be outcoded in InputManager
-	if(canMove && !climbingRight && GetAsyncKeyState(VK_RIGHT)){
+	//Walk Direction based on Mouse Position
+	
+	if(mousePos.x < playerPos.x){
+		Player->setScaleX(-1);
+		walkDirection = -1;
+	}else{
 		Player->setScaleX(1);
 		walkDirection = 1;
+	}
+
+	//Get KeyInput, will be outcoded in InputManager
+	if(canMove && !climbingRight && GetAsyncKeyState(VK_RIGHT)){
 		if(!climbingRight && !holdingRight && myContactListenerInstance.playerRightStartClimbContacts>0){
 			holdingRight = true;
 		}
@@ -539,8 +551,6 @@ void GameScene::update(float dt){
 		}
 			
 	}else if(canMove && !climbingLeft && GetAsyncKeyState(VK_LEFT)){
-		Player->setScaleX(-1);
-		walkDirection = -1;
 		if(!climbingLeft && !holdingLeft && myContactListenerInstance.playerLeftStartClimbContacts>0){
 			holdingLeft = true;
 		}
@@ -586,9 +596,6 @@ void GameScene::update(float dt){
 
 
 	//Update MainLayer Position to scroll with player:
-
-	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Point playerPos = level2->convertToWorldSpace(Player->getPosition());
 
 	//0.1 is ne art damping: damits net immer zum spieler springt
 	float playerDiffToCenterX = (visibleSize.width/2-playerPos.x)*0.1f;

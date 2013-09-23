@@ -24,20 +24,22 @@ private:
 	MyContactListener myContactListenerInstance;
 
 	b2Body * createPlatform(float x, float y, float width, float height);
-	b2Body * createBullet(float x, float y, float width, float height);
+	b2Body * createBullet(float x, float y, float width, float height, cocos2d::Sprite *sprite);
 	b2Body * createKiste(float x, float y, float width, float height);
 	
 	void ShootBullet();
-	void grappleHook();
 	
 	bool jumping;
 	bool climbingRight, climbingLeft, holdingRight, holdingLeft;
 	float fallTime, waitTime, slowTime, jumpStart, jumpTimer;
 	int walkDirection;
+	float shootCooldown;
 
 	cocos2d::Point PlayerSpawn;
 
 	b2Body *_Player;
+
+	cocos2d::Point GetMousePos();
 
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone

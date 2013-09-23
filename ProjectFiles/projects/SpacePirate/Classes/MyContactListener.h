@@ -8,29 +8,26 @@
 #include "cocos2d.h"
 
 struct MyContact {
-    b2Fixture *fixtureA;
-    b2Fixture *fixtureB;
-    bool operator==(const MyContact& other) const
-    {
-        return (fixtureA == other.fixtureA) && (fixtureB == other.fixtureB);
-    }
+	b2Fixture *fixtureA;
+	b2Fixture *fixtureB;
+	bool operator==(const MyContact& other) const
+	{
+		return (fixtureA == other.fixtureA) && (fixtureB == other.fixtureB);
+	}
 };
 
+//Bullet, HitBody, Point, Force
 struct BulletHit {
 	b2Fixture *bulletFixture;
 	b2Fixture *hitFixture;
 
-	b2Vec2 hitPoint;
-	b2Vec2 hitForce;
-
 	bool operator==(const BulletHit& other) const
-    {
+	{
 		//Just for better readability
-        return (\
+		return (\
 				bulletFixture == other.bulletFixture) \
-			&& (hitFixture == other.hitFixture) \
-			&& (hitPoint == other.hitPoint);
-    }
+			&& (hitFixture == other.hitFixture);
+	}
 };
 
 class MyContactListener : public b2ContactListener {
@@ -44,8 +41,8 @@ private:
 	cocos2d::Sprite *mPlayer;
 
 public:
-    std::vector<MyContact>_contacts;
-    
+	std::vector<MyContact>_contacts;
+	
 	std::vector<BulletHit>mBulletHits;
 
 	int playerFootContacts;
@@ -55,15 +52,15 @@ public:
 	int playerLeftSideContacts;
 	int playerLeftStartClimbContacts;
 
-    MyContactListener(cocos2d::Sprite * pPlayer);
+	MyContactListener(cocos2d::Sprite * pPlayer);
 	MyContactListener();
-    ~MyContactListener();
-    
+	~MyContactListener();
+	
 	virtual void BeginContact(b2Contact* contact);
 	virtual void EndContact(b2Contact* contact);
 	virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);    
 	virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
-    
+	
 };
 
 #endif //__MY_CONTACT_LISTENER_H__
