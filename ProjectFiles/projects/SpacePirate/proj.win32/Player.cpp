@@ -79,6 +79,7 @@ bool Player::init(Point *pSpawn){
 
 	//If b2World is NULL we can't create a b2Body
 	if(!mWorld){
+		log("Couldn't create Player");
 		return false;
 	}
 	

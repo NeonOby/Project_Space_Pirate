@@ -26,8 +26,10 @@ private:
 public:
 	 virtual bool init();  
 
-	void moveX(float dt, int direction);
-	void moveY(float dt, int direction);
+	 void resetX();
+	 void resetY(float pY);
+	void moveX(float dt, float direction);
+	void moveY(float dt, float direction);
 
 	cocos2d::Layer* getLayer(int i);
 

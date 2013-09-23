@@ -16,7 +16,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     AppDelegate app;
     EGLView* eglView = EGLView::getInstance();
     eglView->setViewName("SpacePirate");
-    eglView->setFrameSize(1600, 900);
+    eglView->setFrameSize(1440, 900);
 
 
     return Application::getInstance()->run();

@@ -20,6 +20,9 @@
 
 #include "LevelMap.h"
 
+#define MATH_PI 3.14159265359f
+#define MATH_TO_RADIANS 0.0174532925f
+
 USING_NS_CC;
 
 /* 
@@ -42,7 +45,7 @@ Point LevelMap::getSpawnPoint(){
 Create node
 ====================================== 
 */
-void LevelMap::CreateNode (int pX, int pY, int pZ, float pAngle, Color3B pColor, GLubyte pOpacity, int pLayer, float pScale, char *pFileName)
+void LevelMap::CreateNode (int pX, int pY, int pZ, float pAngle, Color3B pColor, GLubyte pOpacity, int pLayer, float pScale, char *pFileName, bool pFlipX, bool pFlipY)
 {
 
 	if(strcmp(pFileName,"resources\\images\\set1\\SpawnPoint.png")==0){
@@ -61,18 +64,38 @@ void LevelMap::CreateNode (int pX, int pY, int pZ, float pAngle, Color3B pColor,
 	tmpSprite->setRotation(pAngle);
 	tmpSprite->setColor(pColor);
 	tmpSprite->setOpacity(pOpacity);
+	
+
+	//Set Flip
+	if(pFlipX)
+		tmpSprite->setScaleX(-pScale);
+	if(pFlipY)
+		tmpSprite->setScaleY(-pScale);
 
 	if(pLayer==4){
 		//If bestimmtes Bild mach dazu Body etc.
 		if(strcmp(pFileName,"resources\\images\\set1\\Astgabelung_v3_256px.png")==0){
 			//Normale Platform
-			createPlatform(pX,pY+(tmpSprite->getContentSize().height*pScale/7.0f),tmpSprite->getContentSize().width*pScale/2,8*pScale, pAngle);
+			float diffY = (tmpSprite->getContentSize().height*pScale/7.0f);
+			if(pFlipY)
+				diffY = -diffY;
+			createPlatform(pX,pY+diffY,tmpSprite->getContentSize().width*pScale/2,8*pScale, pAngle, pFlipX, pFlipY);
 		}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste.png")==0){
 			//Normale Platform
-			createKiste(pX,pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite, true, pAngle);
+			createKiste(pX,pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite, true, pAngle, pFlipX, pFlipY);
 		}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste-static.png")==0 || strcmp(pFileName,"resources\\images\\set1\\classic_box_v1_64px.png")==0){
 			//Normale Platform
-			createKiste(pX,pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite, true, pAngle);
+			createKiste(pX,pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite, false, pAngle, pFlipX, pFlipY);
+		}else if(strcmp(pFileName,"resources\\images\\set6\\FelsPlatform.png")==0){
+			float diffY = (tmpSprite->getContentSize().height*pScale/3.0f);
+			if(pFlipY)
+				diffY = -diffY;
+			createPlatform(pX,pY+diffY,tmpSprite->getContentSize().width*pScale/2,8*pScale, pAngle, pFlipX, pFlipY);
+		}else if(strcmp(pFileName,"resources\\images\\set6\\decke.png")==0){
+			float diffY = (tmpSprite->getContentSize().height*pScale/2.0f);
+			if(pFlipY)
+				diffY = -diffY;
+			createPlatform(pX,pY+diffY,tmpSprite->getContentSize().width*pScale/2,8*pScale, pAngle, pFlipX, pFlipY);
 		}
 	}
 
@@ -82,14 +105,14 @@ void LevelMap::CreateNode (int pX, int pY, int pZ, float pAngle, Color3B pColor,
 	mLayerArray[pLayer]->addChild(tmpSprite, pZ);
 }
 
-b2Body * LevelMap::createPlatform(float x, float y, float width, float height, float pAngle){
+b2Body * LevelMap::createPlatform(float x, float y, float width, float height, float pAngle, bool pFlipX, bool pFlipY){
 	//Floor2 Body only (no Sprite yet)
 	b2Body *_body;
 
 	b2BodyDef ballBodyDef;
 	//ballBodyDef2.type = b2_staticBody;
 	ballBodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
-	ballBodyDef.angle = pAngle;
+	ballBodyDef.angle = -pAngle*MATH_TO_RADIANS;
 	_body = _world->CreateBody(&ballBodyDef);
 
 	b2PolygonShape shapeDef;
@@ -105,7 +128,7 @@ b2Body * LevelMap::createPlatform(float x, float y, float width, float height, f
 	return _body;
 }
 
-b2Body * LevelMap::createKiste(float x, float y, float width, float height, Sprite* pSprite, bool dynamic, float pAngle){
+b2Body * LevelMap::createKiste(float x, float y, float width, float height, Sprite* pSprite, bool dynamic, float pAngle, bool pFlipX, bool pFlipY){
 	//Floor2 Body only (no Sprite yet)
 	b2Body *_body;
 
@@ -113,7 +136,7 @@ b2Body * LevelMap::createKiste(float x, float y, float width, float height, Spri
 	if(dynamic)
 		ballBodyDef.type = b2_dynamicBody;
 	ballBodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
-	ballBodyDef.angle = pAngle;
+	ballBodyDef.angle = -pAngle*MATH_TO_RADIANS;
 	_body = _world->CreateBody(&ballBodyDef);
 
 	_body->SetUserData(pSprite);
@@ -329,7 +352,7 @@ bool LevelMap::LoadMap (char* pMapXMLPath)
 		// Mirror y
 		if (mXNode->Attribute("mirror_y"))
 		{
-			mMirrorY = atoi ((char *)mXNode->Attribute("mirror_y"));
+			mMirrorY = (bool) atoi ((char *)mXNode->Attribute("mirror_y"));
 		}
 		else
 		{
@@ -398,7 +421,7 @@ bool LevelMap::LoadMap (char* pMapXMLPath)
 
 		//Load Sprite etc.
 
-		CreateNode(mX,-mY,mZ,mAngle, Color3B(mTintR, mTintG, mTintB), mTrans,mLayer,mScale,pResources->GetImagePath(mSurfaceId));
+		CreateNode(mX,-mY,mZ,mAngle, Color3B(mTintR, mTintG, mTintB), mTrans,mLayer,mScale,pResources->GetImagePath(mSurfaceId), mMirrorX, mMirrorY);
 	
 		// Move to the next declaration
 		mXNode = mXNode->NextSiblingElement("node");

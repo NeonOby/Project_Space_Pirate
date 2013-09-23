@@ -17,7 +17,7 @@ const int backgroundSequence[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1};
 const int midground1Sequence[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1};
 const int midground2Sequence[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1};
 
-const float speed = 5.0f;
+
 
 /*
 Test
@@ -34,9 +34,9 @@ CCSprite* sprite = CCSprite::createWithSpriteFrameName(img);
 bool ParallaxLayer::init(){
 
 	if ( !Layer::init() )
-    {
-        return false;
-    }
+	{
+		return false;
+	}
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
@@ -130,27 +130,39 @@ void ParallaxLayer::InitSprites(Layer* layer, const char** spriteNames, const in
 	}
 }
 
+//!+ Diese Variablen sind auf den tiless MapEditor abgestimmt, NICHT ÄNDERN
+const float mSpeedX = 60.0f;
+const float mSpeedY = 65.0f;
 
-
-void ParallaxLayer::moveX(float dt, int direction){
+void ParallaxLayer::moveX(float dt, float direction){
 	
-	backgroundLayer->setPositionX(backgroundLayer->getPositionX() - dt * direction  * 50.0f);
+	backgroundLayer->setPositionX(backgroundLayer->getPositionX() + dt * direction *0.25f * mSpeedX);
 
-	midground1Layer->setPositionX(midground1Layer->getPositionX() - dt * direction  * 45.0f);
+	midground1Layer->setPositionX(midground1Layer->getPositionX() + dt * direction *0.50f * mSpeedX);
 
-	//Has to move abit against the move direction !!
-	midground2Layer->setPositionX(midground2Layer->getPositionX() - dt * direction  * 30.0f);
+	midground2Layer->setPositionX(midground2Layer->getPositionX() + dt * direction *0.75f * mSpeedX);
 
 }
 
-void ParallaxLayer::moveY(float dt, int direction){
+void ParallaxLayer::moveY(float dt, float direction){
 	
-	backgroundLayer->setPositionY(backgroundLayer->getPositionY() - dt * direction  * 50.0f);
+	backgroundLayer->setPositionY(backgroundLayer->getPositionY() + dt * direction *0.20f * mSpeedY);
 
-	midground1Layer->setPositionY(midground1Layer->getPositionY() - dt * direction  * 40.0f);
+	midground1Layer->setPositionY(midground1Layer->getPositionY() + dt * direction *0.45f * mSpeedY);
 
-	//Has to move abit against the move direction !!
-	midground2Layer->setPositionY(midground2Layer->getPositionY() - dt * direction  * 30.0f);
+	midground2Layer->setPositionY(midground2Layer->getPositionY() + dt * direction *0.70f * mSpeedY);
 
+}
+
+void ParallaxLayer::resetX(){
+	backgroundLayer->setPositionX(0);
+	midground1Layer->setPositionX(0);
+	midground2Layer->setPositionX(0);
+}
+
+void ParallaxLayer::resetY(float pY){
+	backgroundLayer->setPositionY(pY);
+	midground1Layer->setPositionY(pY);
+	midground2Layer->setPositionY(pY);
 }
 

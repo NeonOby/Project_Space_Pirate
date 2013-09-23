@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- surfaces declaration -->
+	<surfaces>	
+		<surface id="0" image="resources\images\set1\Astgabelung_v3_256px.png" />
+		<surface id="1" image="resources\images\set1\Kiste.png" />
+		<surface id="2" image="resources\images\set1\Kiste-static.png" />
+		<surface id="3" image="resources\images\set1\classic_box_v1_64px.png" />
+		<surface id="4" image="resources\images\set1\SpawnPoint.png" />
+		<surface id="5" image="resources\images\set6\BG1.png" />
+		<surface id="6" image="resources\images\set6\Lampe.png" />
+		<surface id="7" image="resources\images\set6\Laser.png" />
+		<surface id="8" image="resources\images\set6\Door.png" />
+		<surface id="9" image="resources\images\set6\Saeule.png" />
+		<surface id="10" image="resources\images\set6\Schaltpult_klein.png" />
+		<surface id="11" image="resources\images\set6\decke.png" />
+		<surface id="12" image="resources\images\set6\Pattern_Wand.png" />
+		<surface id="13" image="resources\images\set6\Fels1.png" />
+		<surface id="14" image="resources\images\set6\Stalakmit1.png" />
+		<surface id="15" image="resources\images\set6\Stalakmit2.png" />
+		<surface id="16" image="resources\images\set6\Stalakmit3.png" />
+		<surface id="17" image="resources\images\set6\FelsPlatform.png" />
+	</surfaces>
+</resources>

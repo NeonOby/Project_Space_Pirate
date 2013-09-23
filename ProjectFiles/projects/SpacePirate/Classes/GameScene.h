@@ -6,7 +6,6 @@
 #include "Box2D\Box2D.h"
 #include <vector>
 #include "MyContactListener.h"
-#include "Player.h"
 
 class GameScene : public cocos2d::Layer {
 private:
@@ -16,7 +15,7 @@ private:
 	cocos2d::Layer* level2;
 	cocos2d::Layer* level3;
 
-	cocos2d::Sprite* player;
+	cocos2d::Sprite* Player;
 
 	cocos2d::Sprite** blocks;
 
@@ -38,7 +37,7 @@ private:
 
 	cocos2d::Point PlayerSpawn;
 
-	Player *mPlayer;
+	b2Body *_Player;
 
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone

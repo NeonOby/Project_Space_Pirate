@@ -12,7 +12,7 @@
 #define CLIMBFIXTURE 9
 #define KISTE 10
 
-#define BOX2D_STEP 0.02f
+#define BOX2D_STEP 0.015f
 
 #define BOX2D_DEBUG false
 
@@ -21,11 +21,11 @@
 //Maximum: 320px/PTM_RATIO = 10 Meter
 #define PTM_RATIO 32.0f
 
-#define GRAVITY_Y 18.0f
+#define GRAVITY_Y 25.0f
 
 //Das hier ist schon mim MapEditor abgestimmt!
-#define MIN_KAMERA_POS 200
-#define MAX_KAMERA_POS 280
+#define MIN_KAMERA_POS 0
+#define MAX_KAMERA_POS 480
 #define MAX_MAP_HEIGHT 1280
 
 //So Zeug wie maximale Geschwindigkeit \
@@ -36,7 +36,7 @@
 #define PLAYER_DENITY 10.0f
 
 //Maximale Geschwindigkeit (Wird mit Gewicht multipliziert)
-#define PLAYER_MAX_SPEED 0.5f
+#define PLAYER_MAX_SPEED 0.4f
 
 //Geschwindigkeits-Änderung, also wie schnell man die Richtung wechselt etc.
 #define PLAYER_SPEED_CHANGE 1.0f
@@ -45,7 +45,7 @@
 #define PLAYER_SLOW_MULTIPLIER 2.5f
 
 //Sprung Kraft des Spielers
-#define PLAYER_JUMP_SPEED 0.8f
+#define PLAYER_JUMP_SPEED 0.4f
 
 #define PLAYER_START_JUMP_TIME 0.00f
 
@@ -76,19 +76,19 @@
 //Normal Jump 0,45sec
 
 //Fallzeit * this = Zeit in Sekunden für den Debuff (Langsamer Laufen)
-#define FALL_DEBUF_TIME_MULTIPLIER 0.7f
+#define FALL_DEBUF_TIME_MULTIPLIER 0.5f
 //MaxSpeed * this = Maximale Geschwindigkeit die der Spieler noch haben kann mit Debuff (Langsamer Laufen)
 #define FALL_DEBUF_SPEED_MULTIPLIER 0.4f
 //Nicht zu klein einstellen, sonst schwebt der Spieler nur noch rum
-#define FALL_MAX_SPEED_WITHOUT_DEBUFF 0.3f
+#define FALL_MAX_SPEED_WITHOUT_DEBUFF 0.4f
 
 //Fall-Geschwindigkeit ab wann der Spieler schaden bekommt und stehen bleibt
 //3 ist ZIEMLICH schnell
-#define FALL_MAX_SPEED_WITHOUT_DAMAGE 0.8f
+#define FALL_MAX_SPEED_WITHOUT_DAMAGE 0.7f
 //FallZeit * this = Damage
 #define FALL_DAMAGE_MULTIPLIER 2.0f
 //Fallzeit * this = Zeit in Sekunden die der Spieler stehen bleibt;
-#define FALL_STOP_TIME_MULTIPLIER 0.5f
+#define FALL_STOP_TIME_MULTIPLIER 0.4f
 
 #pragma endregion
 

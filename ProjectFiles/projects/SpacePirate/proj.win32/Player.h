@@ -9,6 +9,8 @@ class Player : public cocos2d::Layer {
 private:
 	//!+ Private Variables
 
+	
+
 	//Part of wiki:Player---Steuerung
 	//https://github.com/ADoby/Project_Space_Pirate/wiki/Player---Steuerung
 	//Extension/Plugin: SourceLinks
@@ -50,17 +52,17 @@ private:
 		 mHoldingRight, \
 		 mHoldingLeft;
 
-	//The current b2World
-	//? Gets set in Constructor
-	b2World * mWorld;
-
 	//The Player b2Body (Pointer only)
 	//? You can get e.g. speed from it
-	b2Body*mPlayerBody;
+	b2Body *mPlayerBody;
 
 	//The Player CCSprite
 	//? Just one Sprite, because bone animation takes to long, gets animated
 	cocos2d::Sprite *mPlayerSprite;
+
+	//The current b2World
+	//? Gets set in Constructor
+	b2World * mWorld;
 
 	//!+ Private Functions
 
@@ -95,13 +97,7 @@ public:
 
 	bool IsGrounded(){ return mGrounded; };
 
-	b2Body *GetBody(){ return mPlayerBody; };
-
-	cocos2d::Sprite *GetSprite(){ return mPlayerSprite; };
-
 	void update(float dt);
 };
-
-float mJumpStartTimer = 0;
 
 #endif
