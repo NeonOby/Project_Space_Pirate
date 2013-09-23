@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- surfaces declaration -->
+	<surfaces>	
+		<surface id="0" image="resources\images\setSP\alien_complete_prototype.png" />
+		<surface id="1" image="resources\images\setSP\Alien-Gegner-Ranger-Small-Recolor_II.png" />
+		<surface id="2" image="resources\images\setSP\Alien_crate_v2.5_64px.png" />
+		<surface id="3" image="resources\images\setSP\classic_box_v1_64px.png" />
+		<surface id="4" image="resources\images\setSP\Kiste.png" />
+		<surface id="5" image="resources\images\setSP\Kiste-static.png" />
+		<surface id="6" image="resources\images\setSP\treasure_chest_v1_64px.png" />
+		<surface id="7" image="resources\images\setSP\wooden_box_gras_v1_64pw.png" />
+		<surface id="8" image="resources\images\setSP\Astgabelung_v1_256px.png" />
+		<surface id="9" image="resources\images\setSP\Astgabelung_v3_256px.png" />
+		<surface id="10" image="resources\images\setSP\bg-light-0001.png" />
+		<surface id="11" image="resources\images\setSP\bg-light-0002.png" />
+		<surface id="12" image="resources\images\setSP\bg-light-0003.png" />
+		<surface id="13" image="resources\images\setSP\dark-full.png" />
+		<surface id="14" image="resources\images\setSP\dark-little.png" />
+		<surface id="15" image="resources\images\setSP\darkness-0001.png" />
+		<surface id="16" image="resources\images\setSP\darkness-0002.png" />
+		<surface id="17" image="resources\images\setSP\darkness-0003.png" />
+		<surface id="18" image="resources\images\setSP\darkness-0004.png" />
+		<surface id="19" image="resources\images\setSP\dark-partial.png" />
+		<surface id="20" image="resources\images\setSP\SpawnPoint.png" />
+		<surface id="21" image="resources\images\setSP\Fels 1.png" />
+		<surface id="22" image="resources\images\setSP\Stalakmit 1.png" />
+		<surface id="23" image="resources\images\setSP\Stalakmit 2.png" />
+		<surface id="24" image="resources\images\setSP\Stalaktit 1.png" />
+		<surface id="25" image="resources\images\setSP\Seamless_Pattern_Wald.png" />
+	</surfaces>
+</resources>
