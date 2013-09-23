@@ -14,6 +14,8 @@
 #define PLAYER_LEFT_START_CLIMB 8
 #define CLIMBFIXTURE 9
 #define KISTE 10
+#define ANKER 11
+#define DYNAMIC_KISTE 12
 
 #define BOX2D_STEP 0.015f
 
@@ -31,10 +33,19 @@
 #define MAX_KAMERA_POS 480
 #define MAX_MAP_HEIGHT 1280
 
+//Ja die Speed halt
+#define ANKER_SPEED 30.0f
+
+#define CAN_JUMP_WHILE_HOOKING true
+#define CAN_MOVE_WHILE_HOOKING true
+#define CAN_SHOOT_WHILE_HOOKING true
+
+#define PLAYER_SLOW_HOOKING 0.6f
+
 //Bullets
 
 //Wichtig, Gewicht = Kraft die später auf andere Körper übertragen wird
-#define BULLET_DENSITY 50.0f
+#define BULLET_DENSITY 75.0f
 
 //Ja die Speed halt
 #define BULLET_SPEED 35.0f

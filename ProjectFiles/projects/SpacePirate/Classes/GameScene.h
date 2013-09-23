@@ -27,6 +27,10 @@ private:
 	b2Body * createBullet(float x, float y, float width, float height, cocos2d::Sprite *sprite);
 	b2Body * createKiste(float x, float y, float width, float height);
 	
+	b2Body * ShootAnker();
+	b2Body * createAnker(float x, float y, float width, float height, cocos2d::Sprite *sprite);
+	b2Body * Anker;
+
 	void ShootBullet();
 	
 	bool jumping;
@@ -34,6 +38,11 @@ private:
 	float fallTime, waitTime, slowTime, jumpStart, jumpTimer;
 	int walkDirection;
 	float shootCooldown;
+
+	bool hooking;
+	bool hookLanding;
+
+	b2Body *HookingObject;
 
 	cocos2d::Point PlayerSpawn;
 

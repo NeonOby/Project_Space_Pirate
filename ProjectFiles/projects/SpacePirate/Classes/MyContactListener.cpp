@@ -136,6 +136,7 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 		}
 	}
 
+
 	MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };
 	_contacts.push_back(myContact);
 }

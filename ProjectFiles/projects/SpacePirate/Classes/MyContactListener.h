@@ -40,6 +40,8 @@ private:
 
 	cocos2d::Sprite *mPlayer;
 
+	
+
 public:
 	std::vector<MyContact>_contacts;
 	

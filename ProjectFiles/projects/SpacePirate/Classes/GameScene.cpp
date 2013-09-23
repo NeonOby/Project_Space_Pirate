@@ -58,7 +58,9 @@ bool GameScene::init()
 	holdingLeft = false;
 	_Player = NULL;
 	Player = NULL;
-
+	Anker = NULL;
+	hooking = false;
+	hookLanding = false;
 	shootCooldown = 0.0f;
 	level1 = new Layer();
 	level2 = new Layer();
@@ -251,6 +253,7 @@ Point GameScene::GetMousePos(){
 	return tmpPoint;
 }
 
+//Part Of: git: 17
 void GameScene::ShootBullet(){
 	Sprite *bullet = Sprite::create("Bullet.png");
 	level2->addChild(bullet);
@@ -304,18 +307,148 @@ b2Body * GameScene::createBullet(float x, float y, float width, float height, Sp
 	return _body;
 }
 
+b2Body* GameScene::ShootAnker(){
+	Sprite *bullet = Sprite::create("Anker.png");
+	level2->addChild(bullet);
+
+	Point tmpPoint = GetMousePos();
+	Point ShootPos = level2->convertToWorldSpace(Player->getPosition());
+	ShootPos = ShootPos.operator+(Point(walkDirection*48, 64));
+
+	float dX = tmpPoint.x-ShootPos.x;
+	float dY = tmpPoint.y-ShootPos.y;
+
+	ShootPos = ShootPos.operator-(level2->getPosition());
+
+	b2Body * tmpBody = createAnker(ShootPos.x,ShootPos.y,6.0f,6.0f, bullet);
+
+	b2Vec2 vec = b2Vec2(dX,dY);
+
+	//Normalize Vector
+	float length = vec.Length();
+	vec.x = vec.x / length;
+	vec.y = vec.y / length;
+
+	vec.operator*=(ANKER_SPEED);
+	tmpBody->SetLinearVelocity(vec);
+
+	return tmpBody;
+}
+
+b2Body * GameScene::createAnker(float x, float y, float width, float height, Sprite *sprite){
+	//Floor2 Body only (no Sprite yet)
+	b2Body *_body;
+
+	b2BodyDef BodyDef;
+	BodyDef.type = b2_dynamicBody;
+	BodyDef.gravityScale = 0.3f;
+	BodyDef.bullet = true;
+	BodyDef.userData = sprite;
+	
+	BodyDef.position.Set(x/PTM_RATIO, y/PTM_RATIO);
+	_body = _world->CreateBody(&BodyDef);
+
+	b2PolygonShape shapeDef;
+	shapeDef.SetAsBox(width/PTM_RATIO, height/PTM_RATIO);
+ 
+	b2FixtureDef ballShapeDef;
+	ballShapeDef.shape = &shapeDef;
+	ballShapeDef.density = BULLET_DENSITY;
+	ballShapeDef.isSensor = true;
+	b2Fixture* leftSideSensorFixture =_body->CreateFixture(&ballShapeDef);
+	leftSideSensorFixture->SetUserData((void*)ANKER);
+
+	return _body;
+}
+
 void GameScene::step(float dt){
+	_world->Step(dt, 10, 10);
+
 	if (GetAsyncKeyState(VK_RBUTTON)){
-		//grappleHook();
+		if(!hooking){
+			hooking = true;
+			HookingObject = NULL;
+			hookLanding = false;
+			Anker = ShootAnker();
+		}else if(hooking && !hookLanding){
+
+			vector<MyContact> *Contactlist = &myContactListenerInstance._contacts;
+	
+			for (std::vector<MyContact>::iterator it = Contactlist->begin() ; it != Contactlist->end(); ++it){
+				if((int)(*it).fixtureA->GetUserData() == ANKER){
+					//We have a hit, do something
+					if((int)(*it).fixtureB->GetUserData() == DYNAMIC_KISTE){
+						HookingObject = (*it).fixtureB->GetBody();
+						Anker->SetTransform(HookingObject->GetPosition(),Anker->GetAngle());
+					}
+					
+					Anker->SetActive(false);
+					Anker->SetLinearVelocity(b2Vec2(0,0));
+					hookLanding = true;
+					break;
+				}else if((int)(*it).fixtureB->GetUserData() == ANKER){
+					//We have a hit, do something
+
+					if((int)(*it).fixtureA->GetUserData() == DYNAMIC_KISTE){
+						HookingObject = (*it).fixtureA->GetBody();
+						Anker->SetTransform(HookingObject->GetPosition(),Anker->GetAngle());
+					}
+
+					Anker->SetActive(false);
+					Anker->SetLinearVelocity(b2Vec2(0,0));
+					hookLanding = true;
+					break;
+				}
+			}
+		}else if(hookLanding){
+			if(Anker){
+				if(HookingObject){
+					//Hook it To Player
+					b2Vec2 vec = _Player->GetPosition();
+					vec.operator-=(HookingObject->GetPosition());
+
+					float length = vec.Length();
+					vec.x = vec.x / length;
+					vec.y = vec.y / length;
+
+					vec.operator*=(2000.0f);
+
+					HookingObject->ApplyForceToCenter(vec);
+
+					Anker->SetTransform(HookingObject->GetPosition(), Anker->GetAngle());
+				}else{
+					b2Vec2 vec = Anker->GetPosition();
+					vec.operator-=(_Player->GetPosition());
+
+					float length = vec.Length();
+					vec.x = vec.x / length;
+					vec.y = vec.y / length;
+
+					vec.operator*=(2000.0f);
+
+					_Player->ApplyForceToCenter(vec);
+				}
+			}
+		}
+		
+	}else{
+		if(Anker){
+			//Stop ankering:
+			level2->removeChild((Node*)Anker->GetUserData());
+			_world->DestroyBody(Anker);
+			Anker=NULL;
+		}
+
+		hooking = false;
+		hookLanding = false;
+		HookingObject = NULL;
 	}
 
 	shootCooldown-= dt;
-	if(shootCooldown<=0 && GetAsyncKeyState(VK_LBUTTON)){
+	if((!(!CAN_SHOOT_WHILE_HOOKING && !hooking)) && shootCooldown<=0 && GetAsyncKeyState(VK_LBUTTON)){
 		ShootBullet();
 		shootCooldown = BULLET_SHOOT_SPEED;
 	}
-
-	_world->Step(dt, 10, 10);
 
 	//Get List from Contact Listener and delete those
 	vector<BulletHit> *list = &myContactListenerInstance.mBulletHits;
@@ -402,13 +535,15 @@ void GameScene::update(float dt){
 	if(GetAsyncKeyState(VK_SPACE))
 		JUMP_PRESSED = true;
 
-	if(waitTime<=0 && !jumping && jumpTimer<=0 && myContactListenerInstance.playerFootContacts>0){
+	if(!(!CAN_JUMP_WHILE_HOOKING && !hooking) && waitTime<=0 && !jumping && jumpTimer<=0 && myContactListenerInstance.playerFootContacts>0){
 		canJump = true;
 	}
 
 	float maxSpeed = PLAYER_MAX_SPEED*_Player->GetMass();
 	float speed = PLAYER_SPEED_CHANGE*_Player->GetMass();
 	
+	if((!CAN_MOVE_WHILE_HOOKING && hooking))
+		canMove = false;
 
 	//Jump
 	if(canJump && JUMP_PRESSED){
@@ -521,6 +656,11 @@ void GameScene::update(float dt){
 		maxSpeed *= PLAYER_SLOW_FLYING;
 	}
 
+	if(hooking){
+		speed *= PLAYER_SLOW_HOOKING;
+		maxSpeed *= PLAYER_SLOW_HOOKING;
+	}
+
 	//Walk Direction based on Mouse Position
 	
 	if(mousePos.x < playerPos.x){
@@ -532,7 +672,7 @@ void GameScene::update(float dt){
 	}
 
 	//Get KeyInput, will be outcoded in InputManager
-	if(canMove && !climbingRight && GetAsyncKeyState(VK_RIGHT)){
+	if(canMove && !climbingRight && (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(0x44))){
 		if(!climbingRight && !holdingRight && myContactListenerInstance.playerRightStartClimbContacts>0){
 			holdingRight = true;
 		}
@@ -550,7 +690,7 @@ void GameScene::update(float dt){
 			}
 		}
 			
-	}else if(canMove && !climbingLeft && GetAsyncKeyState(VK_LEFT)){
+	}else if(canMove && !climbingLeft && (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(0x41))){
 		if(!climbingLeft && !holdingLeft && myContactListenerInstance.playerLeftStartClimbContacts>0){
 			holdingLeft = true;
 		}

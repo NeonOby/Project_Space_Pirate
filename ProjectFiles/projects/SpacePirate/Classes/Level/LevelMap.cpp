@@ -147,7 +147,10 @@ b2Body * LevelMap::createKiste(float x, float y, float width, float height, Spri
 	ballShapeDef.density = 13.0f;
 	ballShapeDef.friction = 1.0f;
 	ballShapeDef.restitution = 0.15f;
-	_body->CreateFixture(&ballShapeDef)->SetUserData((void*)KISTE);
+	if(dynamic)
+		_body->CreateFixture(&ballShapeDef)->SetUserData((void*)DYNAMIC_KISTE);
+	else
+		_body->CreateFixture(&ballShapeDef)->SetUserData((void*)KISTE);
 
 	return _body;
 }
