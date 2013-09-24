@@ -88,7 +88,7 @@ bool GameScene::init()
 
 	//Try to play sound here
 
-	SoundManager::playMusic(COMPLEX);
+	//SoundManager::playMusic(COMPLEX);
 
 	// Define the gravity vector.
 	b2Vec2 gravity;
@@ -362,11 +362,13 @@ b2Body * GameScene::createAnker(float x, float y, float width, float height, Spr
 }
 
 void GameScene::step(float dt){
+
 	_world->Step(dt, 10, 10);
 
 	if (GetAsyncKeyState(VK_RBUTTON)){
 		if(!hooking){
 			hooking = true;
+			_Player->SetLinearDamping(3.0f);
 			HookingObject = NULL;
 			hookLanding = false;
 			Anker = ShootAnker();
@@ -392,6 +394,9 @@ void GameScene::step(float dt){
 					if((int)(*it).fixtureA->GetUserData() == DYNAMIC_KISTE){
 						HookingObject = (*it).fixtureA->GetBody();
 						Anker->SetTransform(HookingObject->GetPosition(),Anker->GetAngle());
+					}else if((int)(*it).fixtureA->GetUserData() == ENEMY){
+						HookingObject = (*it).fixtureA->GetBody();
+						Anker->SetTransform(HookingObject->GetPosition(),Anker->GetAngle());
 					}
 
 					Anker->SetActive(false);
@@ -404,27 +409,40 @@ void GameScene::step(float dt){
 			if(Anker){
 				if(HookingObject){
 					//Hook it To Player
+					float MASS_SUM = HookingObject->GetMass() + _Player->GetMass();
+
+					float pP = 1.0f-_Player->GetMass()/MASS_SUM;
+					float pHO = 1.0f-HookingObject->GetMass()/MASS_SUM;
+
 					b2Vec2 vec = _Player->GetPosition();
 					vec.operator-=(HookingObject->GetPosition());
 
-					float length = vec.Length();
-					vec.x = vec.x / length;
-					vec.y = vec.y / length;
+					if(NORMALIZE_ANKER_PULL){
+						float length = vec.Length();
+						vec.x = vec.x / length;
+						vec.y = vec.y / length;
+					}
 
-					vec.operator*=(2000.0f);
+					vec.operator*=(500.0f*pHO);
 
 					HookingObject->ApplyForceToCenter(vec);
+
+					vec.operator*=(-1.0f/pHO*pP);
+
+					_Player->ApplyForceToCenter(vec);
 
 					Anker->SetTransform(HookingObject->GetPosition(), Anker->GetAngle());
 				}else{
 					b2Vec2 vec = Anker->GetPosition();
 					vec.operator-=(_Player->GetPosition());
 
-					float length = vec.Length();
-					vec.x = vec.x / length;
-					vec.y = vec.y / length;
+					if(NORMALIZE_ANKER_PULL){
+						float length = vec.Length();
+						vec.x = vec.x / length;
+						vec.y = vec.y / length;
+					}
 
-					vec.operator*=(2000.0f);
+					vec.operator*=(500.0f);
 
 					_Player->ApplyForceToCenter(vec);
 				}
@@ -442,6 +460,8 @@ void GameScene::step(float dt){
 		hooking = false;
 		hookLanding = false;
 		HookingObject = NULL;
+
+		_Player->SetLinearDamping(0.0f);
 	}
 
 	shootCooldown-= dt;

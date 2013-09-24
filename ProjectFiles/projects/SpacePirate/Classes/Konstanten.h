@@ -36,6 +36,8 @@
 //Ja die Speed halt
 #define ANKER_SPEED 30.0f
 
+#define NORMALIZE_ANKER_PULL false
+
 #define CAN_JUMP_WHILE_HOOKING true
 #define CAN_MOVE_WHILE_HOOKING true
 #define CAN_SHOOT_WHILE_HOOKING true
@@ -61,16 +63,16 @@
 #define PLAYER_DENITY 10.0f
 
 //Maximale Geschwindigkeit (Wird mit Gewicht multipliziert)
-#define PLAYER_MAX_SPEED 0.4f
+#define PLAYER_MAX_SPEED 0.6f
 
 //Geschwindigkeits-Änderung, also wie schnell man die Richtung wechselt etc.
-#define PLAYER_SPEED_CHANGE 1.0f
+#define PLAYER_SPEED_CHANGE 2.0f
 
 //Slow wenn der Spieler sich nicht bewegt (Simuliert Reibung)
 #define PLAYER_SLOW_MULTIPLIER 2.5f
 
 //Sprung Kraft des Spielers
-#define PLAYER_JUMP_SPEED 0.4f
+#define PLAYER_JUMP_SPEED 0.8f
 
 #define PLAYER_START_JUMP_TIME 0.00f
 
@@ -101,7 +103,7 @@
 //Normal Jump 0,45sec
 
 //Fallzeit * this = Zeit in Sekunden für den Debuff (Langsamer Laufen)
-#define FALL_DEBUF_TIME_MULTIPLIER 0.5f
+#define FALL_DEBUF_TIME_MULTIPLIER 0.0f
 //MaxSpeed * this = Maximale Geschwindigkeit die der Spieler noch haben kann mit Debuff (Langsamer Laufen)
 #define FALL_DEBUF_SPEED_MULTIPLIER 0.4f
 //Nicht zu klein einstellen, sonst schwebt der Spieler nur noch rum
@@ -113,7 +115,7 @@
 //FallZeit * this = Damage
 #define FALL_DAMAGE_MULTIPLIER 2.0f
 //Fallzeit * this = Zeit in Sekunden die der Spieler stehen bleibt;
-#define FALL_STOP_TIME_MULTIPLIER 0.4f
+#define FALL_STOP_TIME_MULTIPLIER 0.0f
 
 #pragma endregion
 
