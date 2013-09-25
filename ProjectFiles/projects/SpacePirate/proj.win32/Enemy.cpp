@@ -8,20 +8,20 @@ USING_NS_CC;
 //! World
 //! CurrentSpawn
 Enemy* Enemy::create(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer)
-	{
+{
 	Enemy *pRet = new Enemy(pWorld, pSpawn, pPlayer);
 	if (pRet && pRet->init(pSpawn))
-		{
+	{
 		pRet->autorelease();
 		return pRet;
-		}
+	}
 	else
-		{
+	{
 		delete pRet;
 		pRet = NULL;
 		return NULL;
-		}
 	}
+}
 
 Enemy::Enemy(): \
 	mEnemyBody(NULL),\
@@ -35,9 +35,9 @@ Enemy::Enemy(): \
 	mGrounded(false),\
 	mPlayer(NULL),\
 	footContacts(NULL)
-	{
+{
 	mWorld = NULL;
-	}
+}
 
 Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	mEnemyBody(NULL),\
@@ -50,16 +50,16 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	mDirection(1),\
 	mGrounded(false),\
 	footContacts(NULL)
-	{
+{
 
-	
+
 
 	mWorld = pWorld;
 	mPlayer = pPlayer;
 	//If b2World is NULL we can't create a b2Body
 	if(!mWorld){
 		log("Couldn't create Enemy");
-		}
+	}
 
 	//! Cache Animations
 	CacheAnimations();
@@ -75,7 +75,7 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 
 	footContacts = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT);
 	log("My Pointer to Contacts %p", footContacts);
-	}
+}
 
 Enemy::~Enemy(){
 	//! We don't need to delete anything
@@ -86,18 +86,19 @@ Enemy::~Enemy(){
 	mEnemyBody = NULL;
 	//! Sprite is autorelease (CoCos2D-X)
 	mEnemySprite = NULL;
-	}
+}
 
 bool Enemy::init(Point *pSpawn){
 	//////////////////////////////
 	// 1. super init first
 	if ( !Layer::init() )
-		{
+	{
 		return false;
-		}
+	}
 
 	return true;
-	}
+}
+
 
 void Enemy::update(float dt){
 	//! Here will be all Logic we can do
@@ -112,35 +113,36 @@ void Enemy::update(float dt){
 	float lengthInPixls = length * PTM_RATIO;
 
 	vec.x = vec.x / length;
-	vec.y = vec.y / length;
+	vec.y = 0;
 
-	vec.operator*=(2000.0f);
+	vec.operator*=(5);
 
 
-
-	if (lengthInPixls > 256 && lengthInPixls < 1400)
-		{
-		mEnemyBody->ApplyForceToCenter(vec);
-		}else{
-			mEnemyBody->ApplyForceToCenter(b2Vec2(-(20*(mEnemyBody->GetLinearVelocity().x*PLAYER_SLOW_MULTIPLIER)), 0.0f));
-			
-			if(*footContacts>0)
-				mEnemyBody->ApplyForceToCenter(b2Vec2(((mEnemyBody->GetLinearVelocity().x)/10), PLAYER_JUMP_SPEED*mEnemyBody->GetMass()));
-		}
-	//! Just like the Enemy itself
+	//TODO: enemyJump
+	if (lengthInPixls < Director::getInstance()->getVisibleSize().width/2)
+	{
+		mEnemyBody->SetLinearVelocity(vec);
 	}
+	if(*footContacts>0 && lengthInPixls < 256 && lengthInPixls > 300)
+	{
+		//mEnemyBody->ApplyForceToCenter(b2Vec2(-(20*(mEnemyBody->GetLinearVelocity().x*PLAYER_SLOW_MULTIPLIER)), 0.0f));
+		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 30*mEnemyBody->GetMass()));		
+	}
+	
+	//! Just like the Enemy itself
+}
 
 void Enemy::CacheAnimations(){
 	//! Try to load all Frames into Cached Animations
 	//! This needs some time, But I can't write the Code without
 	//! Knowing how much frames, animations we have etc.
-	}
+}
 
 void Enemy::CreateSprite(){
 	//! Later we take the Sprite from AnimationFrameCache
 	//! Because why should we load it 2 times
 	//mEnemySprite = Sprite::create("melee_left.PNG");
-	}
+}
 
 void Enemy::CreateBody(Point *pSpawn){
 
@@ -185,7 +187,7 @@ void Enemy::CreateBody(Point *pSpawn){
 	tmpFixtureDef.friction = 0.08f;
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData((void*)ENEMY);
 	//! EndOf Circle for Feet
-	}
+}
 
 void Enemy::CreateSensors(){
 
@@ -202,9 +204,20 @@ void Enemy::CreateSensors(){
 	//? Width  : same as player collider (16 Pixel)
 	//? Height : Not to height (8 Pixel)
 
-	tmpPolygonShape.SetAsBox(16/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO+16.0f/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO+16.0f/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_FOOT );
 
 	//! EndOf Foot Sensor
 
-	}
+	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 8/PTM_RATIO, b2Vec2(-24.0f/PTM_RATIO, 16.0f/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_FRONT_FOOT );
+
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-88.0f/PTM_RATIO, 192/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_OVER_HEAD_1 );
+
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-88.0f/PTM_RATIO, 256/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_OVER_HEAD_2 );
+
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-88.0f/PTM_RATIO, 320/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_OVER_HEAD_3 );
+}
