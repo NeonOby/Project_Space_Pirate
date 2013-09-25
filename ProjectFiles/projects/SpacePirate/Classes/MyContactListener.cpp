@@ -2,19 +2,18 @@
 
 USING_NS_CC;
 
-MyContactListener::MyContactListener(cocos2d::Sprite * pPlayer) : _contacts() {
-	playerFootContacts=0;
+static MyContactListener *ListenerInstance;
 
-	playerRightSideContacts=0;
-	playerRightStartClimbContacts=0;
+MyContactListener * MyContactListener::GetInstance(){
+	if (!ListenerInstance)
+	{
+		ListenerInstance = new MyContactListener();
+	}
 
-	playerLeftSideContacts=0;
-	playerLeftStartClimbContacts=0;
-
-	mPlayer = pPlayer;
+	return ListenerInstance;
 }
 
-MyContactListener::MyContactListener() : _contacts() {
+MyContactListener::MyContactListener() : _contacts(), EnemyFootContacts() {
 	playerFootContacts=0;
 
 	playerRightSideContacts=0;
@@ -23,10 +22,30 @@ MyContactListener::MyContactListener() : _contacts() {
 	playerLeftSideContacts=0;
 	playerLeftStartClimbContacts=0;
 
-	mPlayer = NULL;
+	//EnemyFootContacts = map<b2Body*, int*>();
 }
 
 MyContactListener::~MyContactListener() {
+}
+
+int *MyContactListener::AddListener(b2Body * pBody, int pFIXTURE_TAG){
+	int *i = new int();
+	*i = 0;
+	if(pFIXTURE_TAG == ENEMY_FOOT)
+		EnemyFootContacts.emplace(pBody, i);
+
+	return i;
+}
+
+void MyContactListener::RemoveListener(b2Body * pBody, int pFIXTURE_TAG, int *pInt){
+	if(pFIXTURE_TAG == ENEMY_FOOT)
+		EnemyFootContacts.erase(pBody);
+	
+	//EnemyFootContacts.erase(std::remove(EnemyFootContacts.begin(), EnemyFootContacts.end(), pBody), EnemyFootContacts.end());
+	
+	
+	delete pInt;
+	pInt = NULL;
 }
 
 bool MyContactListener::addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum){
@@ -79,6 +98,25 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 	// We need to copy out the data because the b2Contact passed in
 	// is reused.
 
+	if((int)contact->GetFixtureA()->GetUserData() == ENEMY_FOOT){
+		for (std::map<b2Body *, int *>::iterator it = EnemyFootContacts.begin(); it != EnemyFootContacts.end(); ++it)
+		{
+		if((*it).first==contact->GetFixtureA()->GetBody()){
+			(*(*it).second)+=1;
+			}
+			
+		}
+		return;
+	}else if((int)contact->GetFixtureB()->GetUserData() == ENEMY_FOOT){
+		for (std::map<b2Body *, int *>::iterator it = EnemyFootContacts.begin(); it != EnemyFootContacts.end(); ++it)
+		{
+		if((*it).first==contact->GetFixtureB()->GetBody()){
+			(*(*it).second)+=1;
+			}
+		}
+		return;
+	}
+
 	if((int)contact->GetFixtureA()->GetUserData() == BULLET){
 		//Tell FuxtureB that he got Hit
 		//e.g. Do Damage/Apply Forces
@@ -118,6 +156,8 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 	}
 
 	if(mPlayer){
+		//TODO: remove Player Instance and use Extra Sensor Fixture
+		/*
 		if((int)contact->GetFixtureA()->GetUserData() == KISTE && contact->GetFixtureB()->GetBody()->GetUserData() == mPlayer){
 			b2Body * chest = contact->GetFixtureA()->GetBody();
 			b2Body * player = contact->GetFixtureB()->GetBody();
@@ -134,6 +174,7 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 
 			chest->ApplyForceToCenter(b2Vec2(diffX*chest->GetMass()*PLAYER_MAGNETIK_OBJECT_REJECT,0));
 		}
+		*/
 	}
 
 
@@ -142,6 +183,27 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 }
 
 void MyContactListener::EndContact(b2Contact* contact) {
+
+	if((int)contact->GetFixtureA()->GetUserData() == ENEMY_FOOT){
+		for (std::map<b2Body *, int *>::iterator it = EnemyFootContacts.begin(); it != EnemyFootContacts.end(); ++it)
+		{
+		if((*it).first==contact->GetFixtureA()->GetBody()){
+			(*(*it).second)-=1;
+			}
+			
+		}
+		return;
+	}else if((int)contact->GetFixtureB()->GetUserData() == ENEMY_FOOT){
+		for (std::map<b2Body *, int *>::iterator it = EnemyFootContacts.begin(); it != EnemyFootContacts.end(); ++it)
+		{
+		
+		if((*it).first==contact->GetFixtureB()->GetBody()){
+			(*(*it).second)-=1;
+			}
+		}
+		return;
+	}
+
 	//If contact is with playerFoot don't save it, just remove 1 to playerFootContacts
 	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_FOOD, playerFootContacts)){
 		return;

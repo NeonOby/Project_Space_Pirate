@@ -1,6 +1,8 @@
 #ifndef __KONSTANTEN_H__
 #define __KONSTANTEN_H__
 
+#include "Box2D\Box2D.h"
+
 #define MATH_PI 3.14159265359f
 #define MATH_TO_RADIANS 0.0174532925f
 
@@ -16,10 +18,11 @@
 #define KISTE 10
 #define ANKER 11
 #define DYNAMIC_KISTE 12
+#define ENEMY_FOOT 13
 
 #define BOX2D_STEP 0.015f
 
-#define BOX2D_DEBUG false
+#define BOX2D_DEBUG true
 
 //Umrechnung von Box2D Metern (Box2D Einheit) zu CoCos2D Points (Pixeln)
 //Minimum: 3.2px/PTM_RATIO = 0.1 Meter
@@ -129,7 +132,55 @@ enum EntityGroups {
 	IMPULSE =			0x0008
 };
 
+struct MyContact {
+	b2Fixture *fixtureA;
+	b2Fixture *fixtureB;
+	bool operator==(const MyContact& other) const
+	{
+		return (fixtureA == other.fixtureA) && (fixtureB == other.fixtureB);
+	}
+};
+
+//Bullet, HitBody, Point, Force
+struct BulletHit {
+	b2Fixture *bulletFixture;
+	b2Fixture *hitFixture;
+
+	bool operator==(const BulletHit& other) const
+	{
+		//Just for better readability
+		return (\
+				bulletFixture == other.bulletFixture) \
+			&& (hitFixture == other.hitFixture);
+	}
+};
+
 class Konstanten{
 };
+
+//Create new Animation und speichern in Cache
+//Get Animation:
+//CCAnimate::create(CCAnimationCache::sharedAnimationCache()->animationByName(NAME))
+float registerAction(char *spriteFrames[], float delay, char*name, bool goBack, bool cache){
+	Animation * anim;
+
+	cocos2d::Array * array = new cocos2d::Array();
+	anim = Animation::create();
+
+	for(int i=0;spriteFrames[i] != NULL; i++){
+		if(cache){
+			anim->addSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->spriteFrameByName(spriteFrames[i]));
+		}else{
+			anim->addSpriteFrameWithFileName(spriteFrames[i]);
+		}
+	}
+	
+	anim->setDelayPerUnit(delay);
+	anim->setRestoreOriginalFrame(goBack);
+
+	AnimationCache::getInstance()->addAnimation(anim,name);
+
+	return anim->getDuration();
+}
 
 #endif

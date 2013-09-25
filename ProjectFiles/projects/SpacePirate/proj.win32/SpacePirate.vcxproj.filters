@@ -93,6 +93,7 @@
     <ClCompile Include="..\Classes\Part.cpp">
       <Filter>Classes\Interface</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -176,6 +177,7 @@
     <ClInclude Include="..\Classes\ImageFiles.h">
       <Filter>Classes\Interface</Filter>
     </ClInclude>
+    <ClInclude Include="Enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Classes\Physic\README.md">

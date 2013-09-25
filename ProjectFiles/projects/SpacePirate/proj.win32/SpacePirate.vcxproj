@@ -149,6 +149,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClCompile Include="..\Classes\TinyXML\tinyxml.cpp" />
     <ClCompile Include="..\Classes\TinyXML\tinyxmlerror.cpp" />
     <ClCompile Include="..\Classes\TinyXML\tinyxmlparser.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameGUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -178,6 +179,7 @@ xcopy /Y /Q "$(ProjectDir)..\..\..\external\libwebsockets\win32\lib\*.*" "$(OutD
     <ClInclude Include="..\Classes\Physic\GLES-Render.h" />
     <ClInclude Include="..\Classes\TinyXML\tinystr.h" />
     <ClInclude Include="..\Classes\TinyXML\tinyxml.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameGUI.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Player.h" />

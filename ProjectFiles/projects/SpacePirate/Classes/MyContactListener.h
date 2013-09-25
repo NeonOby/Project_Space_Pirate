@@ -7,28 +7,6 @@
 #include "Konstanten.h"
 #include "cocos2d.h"
 
-struct MyContact {
-	b2Fixture *fixtureA;
-	b2Fixture *fixtureB;
-	bool operator==(const MyContact& other) const
-	{
-		return (fixtureA == other.fixtureA) && (fixtureB == other.fixtureB);
-	}
-};
-
-//Bullet, HitBody, Point, Force
-struct BulletHit {
-	b2Fixture *bulletFixture;
-	b2Fixture *hitFixture;
-
-	bool operator==(const BulletHit& other) const
-	{
-		//Just for better readability
-		return (\
-				bulletFixture == other.bulletFixture) \
-			&& (hitFixture == other.hitFixture);
-	}
-};
 
 class MyContactListener : public b2ContactListener {
 private:
@@ -40,9 +18,15 @@ private:
 
 	cocos2d::Sprite *mPlayer;
 
-	
+	std::map<b2Body*, int*> EnemyFootContacts;
 
 public:
+	
+	static MyContactListener * GetInstance();
+
+	int *AddListener(b2Body * pBody, int pFIXTURE_TAG);
+	void RemoveListener(b2Body * pBody, int pFIXTURE_TAG, int *pInt);
+
 	std::vector<MyContact>_contacts;
 	
 	std::vector<BulletHit>mBulletHits;
@@ -54,7 +38,6 @@ public:
 	int playerLeftSideContacts;
 	int playerLeftStartClimbContacts;
 
-	MyContactListener(cocos2d::Sprite * pPlayer);
 	MyContactListener();
 	~MyContactListener();
 	

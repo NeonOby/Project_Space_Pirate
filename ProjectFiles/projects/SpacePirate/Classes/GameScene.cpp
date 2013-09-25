@@ -44,6 +44,8 @@ bool GameScene::init()
 		return false;
 	}
 
+	myContactListenerInstance = MyContactListener::GetInstance();
+
 	//Init Variables:
 	climbingLeft = false;
 	climbingRight = false;
@@ -123,8 +125,8 @@ bool GameScene::init()
 	Player = Sprite::create("Pirate.PNG");
 	level2->addChild(Player);
 
-	myContactListenerInstance = MyContactListener(Player);
-	_world->SetContactListener(&myContactListenerInstance);
+	
+	_world->SetContactListener(myContactListenerInstance);
 
 	//Player BOdy !!
 
@@ -229,6 +231,10 @@ bool GameScene::init()
 	leftSideSensorFixture->SetUserData( (void*)PLAYER_LEFT_SIDE );
 
 
+	//TODO: add Enemy
+	Enemy* tmpEnemy = new Enemy(_world, new Point(3000, 300), _Player);
+	enemies = new Enemy*[1]();
+	enemies[0] = tmpEnemy;
 
 	//Its the DEBUG Layer for Box2D which draws Debug Thingies
 	if(BOX2D_DEBUG)
@@ -363,6 +369,12 @@ b2Body * GameScene::createAnker(float x, float y, float width, float height, Spr
 
 void GameScene::step(float dt){
 
+	for (int i = 0; i < 1; i++)
+	{
+		enemies[i]->update(dt);
+	}
+
+
 	_world->Step(dt, 10, 10);
 
 	if (GetAsyncKeyState(VK_RBUTTON)){
@@ -374,7 +386,7 @@ void GameScene::step(float dt){
 			Anker = ShootAnker();
 		}else if(hooking && !hookLanding){
 
-			vector<MyContact> *Contactlist = &myContactListenerInstance._contacts;
+			vector<MyContact> *Contactlist = &myContactListenerInstance->_contacts;
 	
 			for (std::vector<MyContact>::iterator it = Contactlist->begin() ; it != Contactlist->end(); ++it){
 				if((int)(*it).fixtureA->GetUserData() == ANKER){
@@ -471,7 +483,7 @@ void GameScene::step(float dt){
 	}
 
 	//Get List from Contact Listener and delete those
-	vector<BulletHit> *list = &myContactListenerInstance.mBulletHits;
+	vector<BulletHit> *list = &myContactListenerInstance->mBulletHits;
 	vector<b2Body*> *destroy = new vector<b2Body*>();
 
 	for (std::vector<BulletHit>::iterator it = list->begin() ; it != list->end(); ++it){
@@ -499,7 +511,7 @@ void GameScene::step(float dt){
 		_world->DestroyBody(*tmpBody);
 	}
 
-	myContactListenerInstance.mBulletHits.clear();
+	myContactListenerInstance->mBulletHits.clear();
 
 	//Update Position of every Sprite to its b2Body Referenz
 	//Why?
@@ -555,7 +567,7 @@ void GameScene::update(float dt){
 	if(GetAsyncKeyState(VK_SPACE))
 		JUMP_PRESSED = true;
 
-	if(!(!CAN_JUMP_WHILE_HOOKING && !hooking) && waitTime<=0 && !jumping && jumpTimer<=0 && myContactListenerInstance.playerFootContacts>0){
+	if(!(!CAN_JUMP_WHILE_HOOKING && !hooking) && waitTime<=0 && !jumping && jumpTimer<=0 && myContactListenerInstance->playerFootContacts>0){
 		canJump = true;
 	}
 
@@ -595,7 +607,7 @@ void GameScene::update(float dt){
 	}else{
 	
 		//Wenn wir gerade Fallen
-		if(_Player->GetLinearVelocity().y < 0 && myContactListenerInstance.playerFootContacts<=0){
+		if(_Player->GetLinearVelocity().y < 0 && myContactListenerInstance->playerFootContacts<=0){
 			falling = true;
 			fallTime+=dt;
 		}else if(_Player->GetLinearVelocity().y > 0){
@@ -603,7 +615,7 @@ void GameScene::update(float dt){
 		}
 
 		//Unter Player ist was
-		if(myContactListenerInstance.playerFootContacts>0){
+		if(myContactListenerInstance->playerFootContacts>0){
 			//Hit the Ground, look if we where falling
 			if(fallTime > FALL_MAX_SPEED_WITHOUT_DEBUFF){
 				//Hit the ground for first time after falling
@@ -620,7 +632,7 @@ void GameScene::update(float dt){
 		}
 
 		//Right site climbing
-		if(climbingRight && myContactListenerInstance.playerRightSideContacts>0){
+		if(climbingRight && myContactListenerInstance->playerRightSideContacts>0){
 			//Continuing Climbing
 			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, PLAYER_CLIMBING_SPEED*_Player->GetMass()));
 			_Player->ApplyLinearImpulse(b2Vec2(1.0f*_Player->GetMass(), 0.0f), _Player->GetWorldCenter());
@@ -632,7 +644,7 @@ void GameScene::update(float dt){
 		}
 		
 		//Left site climbing		
-		if(climbingLeft && myContactListenerInstance.playerLeftSideContacts>0){
+		if(climbingLeft && myContactListenerInstance->playerLeftSideContacts>0){
 			//Continuing Climbing
 			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, PLAYER_CLIMBING_SPEED*_Player->GetMass()));
 			_Player->ApplyLinearImpulse(b2Vec2(-1.0f*_Player->GetMass(), 0.0f), _Player->GetWorldCenter());
@@ -693,7 +705,7 @@ void GameScene::update(float dt){
 
 	//Get KeyInput, will be outcoded in InputManager
 	if(canMove && !climbingRight && (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(0x44))){
-		if(!climbingRight && !holdingRight && myContactListenerInstance.playerRightStartClimbContacts>0){
+		if(!climbingRight && !holdingRight && myContactListenerInstance->playerRightStartClimbContacts>0){
 			holdingRight = true;
 		}
 		if(holdingLeft){
@@ -711,7 +723,7 @@ void GameScene::update(float dt){
 		}
 			
 	}else if(canMove && !climbingLeft && (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(0x41))){
-		if(!climbingLeft && !holdingLeft && myContactListenerInstance.playerLeftStartClimbContacts>0){
+		if(!climbingLeft && !holdingLeft && myContactListenerInstance->playerLeftStartClimbContacts>0){
 			holdingLeft = true;
 		}
 		if(holdingRight){

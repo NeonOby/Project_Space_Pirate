@@ -6,6 +6,7 @@
 #include "Box2D\Box2D.h"
 #include <vector>
 #include "MyContactListener.h"
+#include "Enemy.h"
 
 class GameScene : public cocos2d::Layer {
 private:
@@ -21,7 +22,7 @@ private:
 
 	cocos2d::Sprite* himmel;
 
-	MyContactListener myContactListenerInstance;
+	MyContactListener *myContactListenerInstance;
 
 	b2Body * createPlatform(float x, float y, float width, float height);
 	b2Body * createBullet(float x, float y, float width, float height, cocos2d::Sprite *sprite);
@@ -49,6 +50,8 @@ private:
 	b2Body *_Player;
 
 	cocos2d::Point GetMousePos();
+
+	Enemy** enemies;
 
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
