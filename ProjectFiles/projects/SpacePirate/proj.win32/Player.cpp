@@ -179,7 +179,7 @@ void Player::CreateSensors(){
 	//? Height : Not to height (8 Pixel)
 
 	tmpPolygonShape.SetAsBox(16/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO+16.0f/PTM_RATIO), 0);
-	mPlayerBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)PLAYER_FOOD );
+	mPlayerBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)PLAYER_FOOT );
 
 	//! EndOf Food Sensor
 

@@ -43,6 +43,13 @@ private:
 	bool hooking;
 	bool hookLanding;
 
+	int *playerFootContacts;
+	int *playerRightSideContacts;
+	int *playerRightStartClimbContacts;
+
+	int *playerLeftSideContacts;
+	int *playerLeftStartClimbContacts;
+
 	b2Body *HookingObject;
 
 	cocos2d::Point PlayerSpawn;

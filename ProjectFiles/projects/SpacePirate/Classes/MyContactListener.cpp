@@ -14,25 +14,54 @@ MyContactListener * MyContactListener::GetInstance(){
 	}
 
 MyContactListener::MyContactListener() : _contacts(), ContactList() {
-	playerFootContacts=0;
-
-	playerRightSideContacts=0;
-	playerRightStartClimbContacts=0;
-
-	playerLeftSideContacts=0;
-	playerLeftStartClimbContacts=0;
 }
 
 MyContactListener::~MyContactListener() {
 }
 
-int *MyContactListener::AddListener(b2Body * pBody, int pFIXTURE_TAG){
+bool MyContactListener::addContact(b2Body *pBody, int pFixture, int pOtherFixture){
+	if(!ContactList.count(pFixture)){
+		return false;
+	}
+	if(!ContactList.at(pFixture)->count(pBody)){
+		return false;
+	}
+	if((pOtherFixture & ContactList.at(pFixture)->at(pBody)->mFixtureMask)){
+		//Here should be what we look for
+		ContactList.at(pFixture)->at(pBody)->mCount++;
+		return true;
+	}
+	return false;
+}
+
+bool MyContactListener::removeContact(b2Body *pBody, int pFixture, int pOtherFixture){
+	if(!ContactList.count(pFixture)){
+		return false;
+	}
+	if(!ContactList.at(pFixture)->count(pBody)){
+		return false;
+	}
+	if((pOtherFixture & ContactList.at(pFixture)->at(pBody)->mFixtureMask)){
+		//Here should be what we look for
+		ContactList.at(pFixture)->at(pBody)->mCount--;
+		return true;
+	}
+	return false;
+}
+
+int *MyContactListener::AddListener(b2Body * pBody, int pFIXTURE_TAG, int pFixtureMask){
 	//Wenn noch keine Map für diese Fixture gemacht wurde, erstell sie
 	if(!ContactList.count(pFIXTURE_TAG)){
-		ContactList.emplace(pFIXTURE_TAG, new map<b2Body*, int*>());
+		ContactList.emplace(pFIXTURE_TAG, new map<b2Body*, ContactCounter*>());
 	}
 
-	int *contactCount(0);
+	if(pFIXTURE_TAG == PLAYER_FOOT)
+		log("Add Food Listener");
+
+	ContactCounter *contactCount = new ContactCounter();
+	contactCount->mCount = 0;
+	contactCount->mFixtureMask = pFixtureMask;
+
 	if(!ContactList.at(pFIXTURE_TAG)->count(pBody))
 		ContactList.at(pFIXTURE_TAG)->emplace(pBody, contactCount);
 	else{
@@ -40,24 +69,24 @@ int *MyContactListener::AddListener(b2Body * pBody, int pFIXTURE_TAG){
 		log("You just wanted to add a Listener for the second time:\
 			Adress Body: %p\
 			Adress Int: %p", pBody, contactCount);
+		}
+
+	return &(contactCount->mCount);
 	}
 
-	return contactCount;
-	}
-
-void MyContactListener::RemoveListener(b2Body * pBody, int pFIXTURE_TAG, int *pInt){		
+void MyContactListener::RemoveListener(b2Body * pBody, int pFIXTURE_TAG){		
 	//Wenn es diesen Listener gibt, lösche Ihn
-	if(ContactList.at(pFIXTURE_TAG)->count(pBody))
+	if(ContactList.at(pFIXTURE_TAG)->count(pBody)){
+		delete ContactList.at(pFIXTURE_TAG)->at(pBody);
 		ContactList.at(pFIXTURE_TAG)->erase(pBody);
+	}
 
 	//Lösche die MAP aus dem HEAP, wenn sie leer ist
 	if(ContactList.at(pFIXTURE_TAG)->empty()){
-		map<b2Body*, int*> *mapPTR = ContactList.at(pFIXTURE_TAG);
+		map<b2Body*, ContactCounter*> *mapPTR = ContactList.at(pFIXTURE_TAG);
 		ContactList.erase(pFIXTURE_TAG);
 		delete mapPTR;
-	}
-
-	delete pInt;
+		}
 	}
 
 bool MyContactListener::addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum){
@@ -110,62 +139,29 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 	// We need to copy out the data because the b2Contact passed in
 	// is reused.
 
-	if((int)contact->GetFixtureA()->GetUserData() == ENEMY_FOOT){
-		for (std::map<b2Body *, int *>::iterator it = EnemyFootContacts.begin(); it != EnemyFootContacts.end(); ++it)
-			{
-			if((*it).first==contact->GetFixtureA()->GetBody()){
-				(*(*it).second)+=1;
-				}
+	bool ContactListUsed(false);
 
-			}
+	if(addContact(contact->GetFixtureA()->GetBody(), (int)contact->GetFixtureA()->GetUserData(), (int)contact->GetFixtureB()->GetUserData())){
+		ContactListUsed=true;
+	}
+	if(addContact(contact->GetFixtureB()->GetBody(), (int)contact->GetFixtureB()->GetUserData(), (int)contact->GetFixtureA()->GetUserData())){
+		ContactListUsed=true;
+	}
+
+	if(ContactListUsed)
 		return;
-		}else if((int)contact->GetFixtureB()->GetUserData() == ENEMY_FOOT){
-			for (std::map<b2Body *, int *>::iterator it = EnemyFootContacts.begin(); it != EnemyFootContacts.end(); ++it)
-				{
-				if((*it).first==contact->GetFixtureB()->GetBody()){
-					(*(*it).second)+=1;
-					}
-				}
-			return;
-		}
 
 	if((int)contact->GetFixtureA()->GetUserData() == BULLET){
-		//Tell FuxtureB that he got Hit
-		//e.g. Do Damage/Apply Forces
-		//Make some fancy effects
-		//Tell Logik to do things, because we can't delete Bodies while listening !!
-
 		BulletHit myHit = { contact->GetFixtureA(), contact->GetFixtureB() };
 		mBulletHits.push_back(myHit);
-
 		return;
-		}else if((int)contact->GetFixtureB()->GetUserData() == BULLET){
-			//Tell FuxtureB that he got Hit
-			//e.g. Do Damage/Apply Forces
-			//Make some fancy effects
-			//Tell Logik to do things, because we can't delete Bodies while listening !!
-
-			BulletHit myHit = { contact->GetFixtureB(), contact->GetFixtureA() };
-			mBulletHits.push_back(myHit);
-			return;
-		}
+	}else if((int)contact->GetFixtureB()->GetUserData() == BULLET){
+		BulletHit myHit = { contact->GetFixtureB(), contact->GetFixtureA() };
+		mBulletHits.push_back(myHit);
+		return;
+	}
 
 	//If contact is with playerFoot don't save it, just add 1 to playerFootContacts
-	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_FOOD, playerFootContacts)){
-		return;
-		}
-	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_SIDE, playerRightSideContacts)){
-		return;
-		}
-	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_START_CLIMB, CLIMBFIXTURE, playerRightStartClimbContacts)){
-		return;
-		}
-	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_SIDE, playerLeftSideContacts)){
-		return;
-		}
-	if(addContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_START_CLIMB, CLIMBFIXTURE, playerLeftStartClimbContacts)){
-		return;
-		}
 
 	if(mPlayer){
 		//TODO: remove Player Instance and use Extra Sensor Fixture
@@ -196,42 +192,17 @@ void MyContactListener::BeginContact(b2Contact* contact) {
 
 void MyContactListener::EndContact(b2Contact* contact) {
 
-	if((int)contact->GetFixtureA()->GetUserData() == ENEMY_FOOT){
-		for (std::map<b2Body *, int *>::iterator it = EnemyFootContacts.begin(); it != EnemyFootContacts.end(); ++it)
-			{
-			if((*it).first==contact->GetFixtureA()->GetBody()){
-				(*(*it).second)-=1;
-				}
+	bool ContactListUsed(false);
 
-			}
-		return;
-		}else if((int)contact->GetFixtureB()->GetUserData() == ENEMY_FOOT){
-			for (std::map<b2Body *, int *>::iterator it = EnemyFootContacts.begin(); it != EnemyFootContacts.end(); ++it)
-				{
+	if(removeContact(contact->GetFixtureA()->GetBody(), (int)contact->GetFixtureA()->GetUserData(), (int)contact->GetFixtureB()->GetUserData())){
+		ContactListUsed=true;
+	}
+	if(removeContact(contact->GetFixtureB()->GetBody(), (int)contact->GetFixtureB()->GetUserData(), (int)contact->GetFixtureA()->GetUserData())){
+		ContactListUsed=true;
+	}
 
-				if((*it).first==contact->GetFixtureB()->GetBody()){
-					(*(*it).second)-=1;
-					}
-				}
-			return;
-		}
-
-	//If contact is with playerFoot don't save it, just remove 1 to playerFootContacts
-	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_FOOD, playerFootContacts)){
+	if(ContactListUsed)
 		return;
-		}
-	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_SIDE, playerRightSideContacts)){
-		return;
-		}
-	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_RIGHT_START_CLIMB, CLIMBFIXTURE, playerRightStartClimbContacts)){
-		return;
-		}
-	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_SIDE, playerLeftSideContacts)){
-		return;
-		}
-	if(remContact(contact->GetFixtureA(),contact->GetFixtureB(), PLAYER_LEFT_START_CLIMB, CLIMBFIXTURE, playerLeftStartClimbContacts)){
-		return;
-		}
 
 	MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };
 	std::vector<MyContact>::iterator pos;

@@ -7,7 +7,6 @@
 #include "Konstanten.h"
 #include "cocos2d.h"
 
-
 class MyContactListener : public b2ContactListener {
 private:
 	bool addContact(b2Fixture *fixtureA, b2Fixture *fixtureB, int data_filter, int &sum);
@@ -18,25 +17,21 @@ private:
 
 	cocos2d::Sprite *mPlayer;
 
-	std::map<int, std::map<b2Body*, int*>*> ContactList;
+	std::map<int, std::map<b2Body*, ContactCounter*>*> ContactList;
 
+	bool addContact(b2Body* pBody, int pFixture, int pOtherFixture);
+	bool removeContact(b2Body* pBody, int pFixture, int pOtherFixture);
 public:
 	
 	static MyContactListener * GetInstance();
 
-	int *AddListener(b2Body * pBody, int pFIXTURE_TAG);
-	void RemoveListener(b2Body * pBody, int pFIXTURE_TAG, int *pInt);
+	int *AddListener(b2Body * pBody, int pFIXTURE_TAG, int pFixtureMask);
+	void RemoveListener(b2Body * pBody, int pFIXTURE_TAG);
 
 	std::vector<MyContact>_contacts;
 	
 	std::vector<BulletHit>mBulletHits;
 
-	int playerFootContacts;
-	int playerRightSideContacts;
-	int playerRightStartClimbContacts;
-
-	int playerLeftSideContacts;
-	int playerLeftStartClimbContacts;
 
 	MyContactListener();
 	~MyContactListener();

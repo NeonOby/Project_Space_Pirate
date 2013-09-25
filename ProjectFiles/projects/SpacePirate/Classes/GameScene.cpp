@@ -46,6 +46,7 @@ bool GameScene::init()
 
 	myContactListenerInstance = MyContactListener::GetInstance();
 
+
 	//Init Variables:
 	climbingLeft = false;
 	climbingRight = false;
@@ -64,6 +65,14 @@ bool GameScene::init()
 	hooking = false;
 	hookLanding = false;
 	shootCooldown = 0.0f;
+
+	playerFootContacts = NULL;
+	playerRightSideContacts = NULL;
+	playerRightStartClimbContacts = NULL;
+
+	playerLeftSideContacts = NULL;
+	playerLeftStartClimbContacts = NULL;
+
 	level1 = new Layer();
 	level2 = new Layer();
 	level3 = new Layer();
@@ -188,7 +197,7 @@ bool GameScene::init()
 	myFixtureDef.friction = 0.0f;
 	myFixtureDef.isSensor = true;
 	b2Fixture* footSensorFixture = _Player->CreateFixture(&myFixtureDef);
-	footSensorFixture->SetUserData( (void*)PLAYER_FOOD );
+	footSensorFixture->SetUserData( (void*)PLAYER_FOOT );
 
 	//Start Climbing:
 
@@ -230,7 +239,14 @@ bool GameScene::init()
 	b2Fixture* leftSideSensorFixture = _Player->CreateFixture(&myFixtureDef);
 	leftSideSensorFixture->SetUserData( (void*)PLAYER_LEFT_SIDE );
 
-
+	//Player Listener:
+	playerFootContacts = myContactListenerInstance->AddListener(_Player, PLAYER_FOOT, ALL_COLLIDING);
+	playerRightSideContacts = myContactListenerInstance->AddListener(_Player, PLAYER_RIGHT_SIDE, ALL_COLLIDING);
+	playerRightStartClimbContacts = myContactListenerInstance->AddListener(_Player, PLAYER_RIGHT_START_CLIMB, ALL_COLLIDING);
+	playerLeftSideContacts = myContactListenerInstance->AddListener(_Player, PLAYER_LEFT_SIDE, ALL_COLLIDING);
+	playerLeftStartClimbContacts = myContactListenerInstance->AddListener(_Player, PLAYER_LEFT_START_CLIMB, ALL_COLLIDING);
+	
+	
 	//TODO: add Enemy
 	Enemy* tmpEnemy = new Enemy(_world, new Point(3000, 300), _Player);
 	enemies = new Enemy*[1]();
@@ -567,7 +583,8 @@ void GameScene::update(float dt){
 	if(GetAsyncKeyState(VK_SPACE))
 		JUMP_PRESSED = true;
 
-	if(!(!CAN_JUMP_WHILE_HOOKING && !hooking) && waitTime<=0 && !jumping && jumpTimer<=0 && myContactListenerInstance->playerFootContacts>0){
+
+	if(!(!CAN_JUMP_WHILE_HOOKING && !hooking) && waitTime<=0 && !jumping && jumpTimer<=0 && *playerFootContacts>0){
 		canJump = true;
 	}
 
@@ -607,7 +624,7 @@ void GameScene::update(float dt){
 	}else{
 	
 		//Wenn wir gerade Fallen
-		if(_Player->GetLinearVelocity().y < 0 && myContactListenerInstance->playerFootContacts<=0){
+		if(_Player->GetLinearVelocity().y < 0 && *playerFootContacts<=0){
 			falling = true;
 			fallTime+=dt;
 		}else if(_Player->GetLinearVelocity().y > 0){
@@ -615,7 +632,7 @@ void GameScene::update(float dt){
 		}
 
 		//Unter Player ist was
-		if(myContactListenerInstance->playerFootContacts>0){
+		if(*playerFootContacts>0){
 			//Hit the Ground, look if we where falling
 			if(fallTime > FALL_MAX_SPEED_WITHOUT_DEBUFF){
 				//Hit the ground for first time after falling
@@ -632,7 +649,7 @@ void GameScene::update(float dt){
 		}
 
 		//Right site climbing
-		if(climbingRight && myContactListenerInstance->playerRightSideContacts>0){
+		if(climbingRight && *playerRightSideContacts>0){
 			//Continuing Climbing
 			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, PLAYER_CLIMBING_SPEED*_Player->GetMass()));
 			_Player->ApplyLinearImpulse(b2Vec2(1.0f*_Player->GetMass(), 0.0f), _Player->GetWorldCenter());
@@ -644,7 +661,7 @@ void GameScene::update(float dt){
 		}
 		
 		//Left site climbing		
-		if(climbingLeft && myContactListenerInstance->playerLeftSideContacts>0){
+		if(climbingLeft && *playerLeftSideContacts>0){
 			//Continuing Climbing
 			_Player->SetLinearVelocity(b2Vec2(_Player->GetLinearVelocity().x, PLAYER_CLIMBING_SPEED*_Player->GetMass()));
 			_Player->ApplyLinearImpulse(b2Vec2(-1.0f*_Player->GetMass(), 0.0f), _Player->GetWorldCenter());
@@ -705,7 +722,7 @@ void GameScene::update(float dt){
 
 	//Get KeyInput, will be outcoded in InputManager
 	if(canMove && !climbingRight && (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState(0x44))){
-		if(!climbingRight && !holdingRight && myContactListenerInstance->playerRightStartClimbContacts>0){
+		if(!climbingRight && !holdingRight && *playerRightStartClimbContacts>0){
 			holdingRight = true;
 		}
 		if(holdingLeft){
@@ -723,7 +740,7 @@ void GameScene::update(float dt){
 		}
 			
 	}else if(canMove && !climbingLeft && (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(0x41))){
-		if(!climbingLeft && !holdingLeft && myContactListenerInstance->playerLeftStartClimbContacts>0){
+		if(!climbingLeft && !holdingLeft && *playerLeftStartClimbContacts>0){
 			holdingLeft = true;
 		}
 		if(holdingRight){

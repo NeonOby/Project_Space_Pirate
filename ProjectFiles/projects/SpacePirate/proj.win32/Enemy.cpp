@@ -73,8 +73,10 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	//! Create Sensors
 	CreateSensors();
 
-	footContacts = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT);
-	log("My Pointer to Contacts %p", footContacts);
+	//Only this fixtures will be affecting contact count
+	int FixtureMask = CLIMBFIXTURE;
+	footContacts = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT, FixtureMask);
+
 }
 
 Enemy::~Enemy(){

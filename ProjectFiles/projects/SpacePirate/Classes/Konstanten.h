@@ -7,23 +7,32 @@
 #define MATH_PI 3.14159265359f
 #define MATH_TO_RADIANS 0.0174532925f
 
-#define PLAYER 1
-#define ENEMY 2
-#define BULLET 3
-#define PLAYER_FOOD 4
-#define PLAYER_RIGHT_SIDE 5
-#define PLAYER_RIGHT_START_CLIMB 6
-#define PLAYER_LEFT_SIDE 7
-#define PLAYER_LEFT_START_CLIMB 8
-#define CLIMBFIXTURE 9
-#define KISTE 10
-#define ANKER 11
-#define DYNAMIC_KISTE 12
-#define ENEMY_FOOT 13
-#define ENEMY_FRONT_FOOT 14
-#define ENEMY_OVER_HEAD_1 15
-#define ENEMY_OVER_HEAD_2 16
-#define ENEMY_OVER_HEAD_3 17
+//(1<<0) ist ein Binary Operator
+//Weitere hinzufügen durch
+//#define NAME (1<<(LetzteZahl+1))
+//Ich benutze die Binary sachen zum maskieren
+//Ist um einiges schneller als arrays zu durchsuchen oder listen oder so
+
+#define PLAYER (1<<0) // 1
+#define ENEMY (1<<1) // 2
+#define BULLET (1<<2) // 4
+#define PLAYER_FOOT (1<<3) // 8
+#define PLAYER_RIGHT_SIDE (1<<4) // 16
+#define PLAYER_RIGHT_START_CLIMB (1<<5) // 32
+#define PLAYER_LEFT_SIDE (1<<6) // 64
+#define PLAYER_LEFT_START_CLIMB (1<<7) // 128
+#define CLIMBFIXTURE (1<<8) // 256
+#define KISTE (1<<9) // 512
+#define ANKER (1<<10) // 1024
+#define DYNAMIC_KISTE (1<<11) // 2048
+#define ENEMY_FOOT (1<<12) // 4096
+#define ENEMY_FRONT_FOOT (1<<13) // 8192
+#define ENEMY_OVER_HEAD_1 (1<<14) // 16xxx
+#define ENEMY_OVER_HEAD_2 (1<<15) // 32xxx
+#define ENEMY_OVER_HEAD_3 (1<<16) // 64xxx
+
+
+#define ALL_COLLIDING KISTE | CLIMBFIXTURE | DYNAMIC_KISTE
 
 #define BOX2D_STEP 0.015f
 
@@ -77,10 +86,10 @@
 #define PLAYER_SPEED_CHANGE 2.0f
 
 //Slow wenn der Spieler sich nicht bewegt (Simuliert Reibung)
-#define PLAYER_SLOW_MULTIPLIER 2.5f
+#define PLAYER_SLOW_MULTIPLIER 0.2f
 
 //Sprung Kraft des Spielers
-#define PLAYER_JUMP_SPEED 0.4f
+#define PLAYER_JUMP_SPEED 0.8f
 
 #define PLAYER_START_JUMP_TIME 0.00f
 
@@ -158,6 +167,11 @@ struct BulletHit {
 			bulletFixture == other.bulletFixture) \
 			&& (hitFixture == other.hitFixture);
 	}
+};
+
+struct ContactCounter{
+	int mCount;
+	int mFixtureMask;
 };
 
 class Konstanten{
