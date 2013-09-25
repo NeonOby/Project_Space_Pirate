@@ -2,6 +2,7 @@
 #define __KONSTANTEN_H__
 
 #include "Box2D\Box2D.h"
+#include "cocos2d.h"
 
 #define MATH_PI 3.14159265359f
 #define MATH_TO_RADIANS 0.0174532925f
@@ -19,6 +20,10 @@
 #define ANKER 11
 #define DYNAMIC_KISTE 12
 #define ENEMY_FOOT 13
+#define ENEMY_FRONT_FOOT 14
+#define ENEMY_OVER_HEAD_1 15
+#define ENEMY_OVER_HEAD_2 16
+#define ENEMY_OVER_HEAD_3 17
 
 #define BOX2D_STEP 0.015f
 
@@ -75,7 +80,7 @@
 #define PLAYER_SLOW_MULTIPLIER 2.5f
 
 //Sprung Kraft des Spielers
-#define PLAYER_JUMP_SPEED 0.8f
+#define PLAYER_JUMP_SPEED 0.4f
 
 #define PLAYER_START_JUMP_TIME 0.00f
 
@@ -150,37 +155,40 @@ struct BulletHit {
 	{
 		//Just for better readability
 		return (\
-				bulletFixture == other.bulletFixture) \
+			bulletFixture == other.bulletFixture) \
 			&& (hitFixture == other.hitFixture);
 	}
 };
 
 class Konstanten{
+public:
+
+	//Create new Animation und speichern in Cache
+	//Get Animation:
+	//CCAnimate::create(CCAnimationCache::sharedAnimationCache()->animationByName(NAME))
+	static float registerAction(char *spriteFrames[], float delay, char*name, bool goBack, bool cache){
+		cocos2d::Animation * anim;
+
+		cocos2d::Array * array = new cocos2d::Array();
+		anim = cocos2d::Animation::create();
+
+		for(int i=0;spriteFrames[i] != NULL; i++){
+			if(cache){
+				anim->addSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->spriteFrameByName(spriteFrames[i]));
+			}else{
+				anim->addSpriteFrameWithFileName(spriteFrames[i]);
+			}
+		}
+
+		anim->setDelayPerUnit(delay);
+		anim->setRestoreOriginalFrame(goBack);
+
+		cocos2d::AnimationCache::getInstance()->addAnimation(anim,name);
+
+		return anim->getDuration();
+	};
 };
 
-//Create new Animation und speichern in Cache
-//Get Animation:
-//CCAnimate::create(CCAnimationCache::sharedAnimationCache()->animationByName(NAME))
-float registerAction(char *spriteFrames[], float delay, char*name, bool goBack, bool cache){
-	Animation * anim;
 
-	cocos2d::Array * array = new cocos2d::Array();
-	anim = Animation::create();
-
-	for(int i=0;spriteFrames[i] != NULL; i++){
-		if(cache){
-			anim->addSpriteFrame(cocos2d::SpriteFrameCache::getInstance()->spriteFrameByName(spriteFrames[i]));
-		}else{
-			anim->addSpriteFrameWithFileName(spriteFrames[i]);
-		}
-	}
-	
-	anim->setDelayPerUnit(delay);
-	anim->setRestoreOriginalFrame(goBack);
-
-	AnimationCache::getInstance()->addAnimation(anim,name);
-
-	return anim->getDuration();
-}
 
 #endif
