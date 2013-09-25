@@ -18,7 +18,7 @@ private:
 
 	cocos2d::Sprite *mPlayer;
 
-	std::map<b2Body*, int*> EnemyFootContacts;
+	std::map<int, std::map<b2Body*, int*>*> ContactList;
 
 public:
 	
