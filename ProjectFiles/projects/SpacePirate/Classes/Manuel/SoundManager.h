@@ -25,6 +25,7 @@ public:
 	static SoundManager *getInstance();
 	static void playMusic(const Musics id);
 	static void playMusic(const Musics id, const float position);
+	static void playMusicVolume(const Musics id, const float volume);
 	static void playMusic(const Musics id, const float position, ISound** pReturn);
 	static void setMusicPos(ISound* steroMusic, const float newPosition);
 	static void playSound(const Soundss id);

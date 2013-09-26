@@ -12,9 +12,13 @@
 
 #include "Konstanten.h"
 #include "GameGUI.h"
+#include <stdlib.h>
 
 USING_NS_CC;
 using namespace irrklang;
+
+char* standing_sounds[] = {"Sounds/Standing1.ogg", "Sounds/Standing2.ogg", "Sounds/Standing3.ogg", "Sounds/Standing4.ogg", "Sounds/Standing5.ogg"};
+int standing_sounds_count = 5;
 
 b2World *_world;
 //The Body of the Sprite, which is the collision shape if you want so
@@ -66,6 +70,13 @@ bool GameScene::init()
 	hookLanding = false;
 	shootCooldown = 0.0f;
 
+	irrklang::createIrrKlangDevice()->addSoundSourceFromFile("Sounds/Standing1.ogg", irrklang::ESM_AUTO_DETECT, true);
+	irrklang::createIrrKlangDevice()->addSoundSourceFromFile("Sounds/Standing2.ogg", irrklang::ESM_AUTO_DETECT, true);
+	irrklang::createIrrKlangDevice()->addSoundSourceFromFile("Sounds/Standing3.ogg", irrklang::ESM_AUTO_DETECT, true);
+	irrklang::createIrrKlangDevice()->addSoundSourceFromFile("Sounds/Standing4.ogg", irrklang::ESM_AUTO_DETECT, true);
+	irrklang::createIrrKlangDevice()->addSoundSourceFromFile("Sounds/Standing5.ogg", irrklang::ESM_AUTO_DETECT, true);
+	playerNotWalkingTimer = 0.0f;
+
 	playerFootContacts = NULL;
 	playerRightSideContacts = NULL;
 	playerRightStartClimbContacts = NULL;
@@ -99,7 +110,7 @@ bool GameScene::init()
 
 	//Try to play sound here
 
-	//SoundManager::playMusic(COMPLEX);
+	SoundManager::playMusicVolume(COMPLEX, 0.2f);
 
 	// Define the gravity vector.
 	b2Vec2 gravity;
@@ -392,6 +403,16 @@ void GameScene::step(float dt){
 
 
 	_world->Step(dt, 10, 10);
+
+	if(abs(_Player->GetLinearVelocity().x + _Player->GetLinearVelocity().y) <= 0.3f){
+		playerNotWalkingTimer+=dt;
+		if(playerNotWalkingTimer>15.0f){
+			//Play Random Sounds
+			irrklang::createIrrKlangDevice()->play2D(standing_sounds[rand()%standing_sounds_count]);
+			playerNotWalkingTimer = 0;
+		}
+	}else
+		playerNotWalkingTimer = 0;
 
 	if (GetAsyncKeyState(VK_RBUTTON)){
 		if(!hooking){

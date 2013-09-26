@@ -30,6 +30,13 @@ void SoundManager::playMusic(const Musics id, const float position){
 }
 
 //Musik von 1 = links über 0 = mitte bis -1 = rechts abspielen
+void SoundManager::playMusicVolume(const Musics id, const float volume){
+	ISound* stereoMusic = irrklang::createIrrKlangDevice()->play2D(BackgroundMusic[id], true,false,true);
+	if(stereoMusic)
+		stereoMusic->setVolume(volume);
+}
+
+//Musik von 1 = links über 0 = mitte bis -1 = rechts abspielen
 //Rückgabe: ISound* um Musikposition später ändern zu können
 void SoundManager::playMusic(const Musics id, const float position, ISound** pReturn){
 	*pReturn = irrklang::createIrrKlangDevice()->play3D(BackgroundMusic[id],vec3df(0, 0, position*3), true, false, true);

@@ -33,7 +33,9 @@ private:
 	b2Body * Anker;
 
 	void ShootBullet();
-	
+
+	float playerNotWalkingTimer;
+
 	bool jumping;
 	bool climbingRight, climbingLeft, holdingRight, holdingLeft;
 	float fallTime, waitTime, slowTime, jumpStart, jumpTimer;
