@@ -37,6 +37,11 @@ Point LevelMap::getSpawnPoint(){
 	return spawnPoint;
 }
 
+bool LevelMap::StringContains(const string &pString, const string &pFind){
+	if(pString.find(pFind) != string::npos) return true;
+	return false;
+}
+
 /* 
 ======================================									
 Create node
@@ -44,10 +49,23 @@ Create node
 */
 void LevelMap::CreateNode (int pX, int pY, int pZ, float pAngle, Color3B pColor, GLubyte pOpacity, int pLayer, float pScale, char *pFileName, bool pFlipX, bool pFlipY)
 {
+	string FileString = string(pFileName);
 
-	if(strcmp(pFileName,"resources\\images\\set1\\SpawnPoint.png")==0){
+	if(StringContains(FileString,"SpawnPoint.png")){
 		log("SpawnPosition");
 		spawnPoint = Point(pX,pY);
+		return;
+	}
+	
+	if(StringContains(FileString,"ParticleLeaf.png")){
+		CCParticleSystemQuad* emitter = CCParticleSystemQuad::create("fallingLeafes.plist");
+		emitter->setEmitterMode(ParticleSystem::Mode::GRAVITY);
+		emitter->setPositionType(ParticleSystem::PositionType::RELATIVE);
+		emitter->setPosition(Point(pX, pY));	
+		if(pLayer > 5){
+			pLayer = 5;
+		}
+		mLayerArray[pLayer]->addChild(emitter, pZ);
 		return;
 	}
 
@@ -71,24 +89,24 @@ void LevelMap::CreateNode (int pX, int pY, int pZ, float pAngle, Color3B pColor,
 
 	if(pLayer==4){
 		//If bestimmtes Bild mach dazu Body etc.
-		if(strcmp(pFileName,"resources\\images\\set1\\Astgabelung_v3_256px.png")==0){
+		if(StringContains(FileString,"Astgabelung_v3_256px.png")){
 			//Normale Platform
 			float diffY = (tmpSprite->getContentSize().height*pScale/7.0f);
 			if(pFlipY)
 				diffY = -diffY;
 			createPlatform(pX,pY+diffY,tmpSprite->getContentSize().width*pScale/2,8*pScale, pAngle, pFlipX, pFlipY);
-		}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste.png")==0){
+		}else if(StringContains(FileString,"Kiste.png")){
 			//Normale Platform
 			createKiste(pX,pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite, true, pAngle, pFlipX, pFlipY);
-		}else if(strcmp(pFileName,"resources\\images\\set1\\Kiste-static.png")==0 || strcmp(pFileName,"resources\\images\\set1\\classic_box_v1_64px.png")==0){
+		}else if(StringContains(FileString,"Kiste-static.png") || StringContains(FileString,"classic_box_v1_64px.png")){
 			//Normale Platform
 			createKiste(pX,pY,tmpSprite->getContentSize().width*pScale/2,tmpSprite->getContentSize().height*pScale/2, tmpSprite, false, pAngle, pFlipX, pFlipY);
-		}else if(strcmp(pFileName,"resources\\images\\set6\\FelsPlatform.png")==0){
+		}else if(StringContains(FileString,"FelsPlatform.png")){
 			float diffY = (tmpSprite->getContentSize().height*pScale/3.0f);
 			if(pFlipY)
 				diffY = -diffY;
 			createPlatform(pX,pY+diffY,tmpSprite->getContentSize().width*pScale/2,8*pScale, pAngle, pFlipX, pFlipY);
-		}else if(strcmp(pFileName,"resources\\images\\set6\\decke.png")==0){
+		}else if(StringContains(FileString,"decke.png")){
 			float diffY = (tmpSprite->getContentSize().height*pScale/2.0f);
 			if(pFlipY)
 				diffY = -diffY;

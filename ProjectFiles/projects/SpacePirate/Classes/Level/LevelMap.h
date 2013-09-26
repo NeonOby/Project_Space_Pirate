@@ -49,6 +49,8 @@ public:
 	cocos2d::Point				getSpawnPoint		();
 private:
 
+	bool StringContains(const string &pString, const string &pFind);
+
 	b2Body * createKiste(float x, float y, float width, float height, cocos2d::Sprite* pSprite, bool dynamic, float pAngle, bool pFlipX, bool pFlipY);
 	b2Body * createPlatform(float x, float y, float width, float height, float pAngle, bool pFlipX, bool pFlipY);
 
