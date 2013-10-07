@@ -82,10 +82,37 @@ private:
 	void CreateBody(cocos2d::Point *pSpawn);
 
 	//Creates the sensors:
-	//? Feet: Jumping, Arms: Climbing
+	//feet: walking/jumping, eyes->Listeners: seeing where to jump
 	void CreateSensors();
 
+<<<<<<< HEAD
 	int* footContacts;
+	int* frontFootContact;
+	int* lowOverHeadContact;
+	int* midOverHeadContact;
+	int* highOverHeadContact;
+=======
+	int* footContact;
+
+	int* leftFrontFootContact;
+
+	int* leftLowBarrierListener;
+	int* leftHighBarrierListener;
+
+	int* leftLowOverHeadListener;
+	int* leftMidOverHeadListener;
+	int* leftHighOverHeadListener;
+
+	int* rightFrontFootContact;
+
+	int* rightLowBarrierListener;
+	int* rightHighBarrierListener;
+
+	int* rightLowOverHeadListener;
+	int* rightMidOverHeadListener;
+	int* rightHighOverHeadListener;
+>>>>>>> low jumps
+
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, 
 	//instead of returning 'id' in cocos2d-iphone

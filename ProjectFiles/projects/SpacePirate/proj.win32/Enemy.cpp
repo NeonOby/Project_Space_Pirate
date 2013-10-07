@@ -34,7 +34,7 @@ Enemy::Enemy(): \
 	mDirection(1),\
 	mGrounded(false),\
 	mPlayer(NULL),\
-	footContacts(NULL)
+	footContact(NULL)
 {
 	mWorld = NULL;
 }
@@ -49,11 +49,16 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	mWaitTimer(0.0f),\
 	mDirection(1),\
 	mGrounded(false),\
-	footContacts(NULL)
+<<<<<<< HEAD
+	footContacts(NULL),\
+	frontFootContact(NULL),\
+	lowOverHeadContact(NULL),\
+	midOverHeadContact(NULL),\
+	highOverHeadContact(NULL)
+=======
+	footContact(NULL)
+>>>>>>> low jumps
 {
-
-
-
 	mWorld = pWorld;
 	mPlayer = pPlayer;
 	//If b2World is NULL we can't create a b2Body
@@ -73,10 +78,43 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	//! Create Sensors
 	CreateSensors();
 
-	//Only this fixtures will be affecting contact count
-	int FixtureMask = CLIMBFIXTURE;
-	footContacts = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT, FixtureMask);
 
+	footContacts = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT);
+	log("My Pointer to Contacts %p", footContacts);
+	frontFootContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FRONT_FOOT);
+	log("My Pointer to Contacts %p", frontFootContact);
+	lowOverHeadContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_OVER_HEAD_1);
+	log("My Pointer to Contacts %p", lowOverHeadContact);
+	midOverHeadContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_OVER_HEAD_2);
+	log("My Pointer to Contacts %p", midOverHeadContact);
+	highOverHeadContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_OVER_HEAD_3);
+	log("My Pointer to Contacts %p", highOverHeadContact);
+
+	//Only this fixtures will be affecting contact count
+	int FixtureMask = CLIMBFIXTURE | KISTE | DYNAMIC_KISTE;
+	footContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT, FixtureMask);
+
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
+	leftFrontFootContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_FRONT_FOOT, FixtureMask);
+
+	leftLowBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_BARRIER_1, FixtureMask);
+	leftHighBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_BARRIER_2, FixtureMask);
+
+	leftLowOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_OVER_HEAD_1, FixtureMask);
+	leftMidOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_OVER_HEAD_2, FixtureMask);
+	leftHighOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_OVER_HEAD_3, FixtureMask);
+
+	rightFrontFootContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_FRONT_FOOT, FixtureMask);
+
+	rightLowBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_BARRIER_1, FixtureMask);
+	rightHighBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_BARRIER_2, FixtureMask);
+
+	rightLowOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_1, FixtureMask);
+	rightMidOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_2, FixtureMask);
+	rightHighOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_3, FixtureMask);
+>>>>>>> low jumps
 }
 
 Enemy::~Enemy(){
@@ -109,28 +147,125 @@ void Enemy::update(float dt){
 	//log("pos %f %f", mPlayer->GetPosition().x, mPlayer->GetPosition().y);
 
 	b2Vec2 vec = mPlayer->GetPosition();
-	vec.operator-=(mEnemyBody->GetPosition());
+	vec.operator -= (mEnemyBody->GetPosition());
 
 	float length = vec.Length();
 	float lengthInPixls = length * PTM_RATIO;
 
 	vec.x = vec.x / length;
-	vec.y = 0;
-
 	vec.operator*=(5);
+<<<<<<< HEAD
 
+	float Masse = mEnemyBody->GetMass();
+	log("My Mass: %f", Masse);
 
 	//TODO: enemyJump
 	if (lengthInPixls < Director::getInstance()->getVisibleSize().width/2)
 	{
 		mEnemyBody->SetLinearVelocity(vec);
 	}
-	if(*footContacts>0 && lengthInPixls < 256 && lengthInPixls > 300)
+	//if(*footContact>0 && lengthInPixls < 256 && lengthInPixls > 300)
+	//{
+	//	//mEnemyBody->ApplyForceToCenter(b2Vec2(-(20*(mEnemyBody->GetLinearVelocity().x*PLAYER_SLOW_MULTIPLIER)), 0.0f));
+	//	mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 30*mEnemyBody->GetMass()));		
+	//}
+	bool readyToJump = true;
+	if (GetAsyncKeyState(VK_SPACE)) {
+	//if (lengthInPixls < Director::getInstance()->getVisibleSize().width/4 && readyToJump /*footContact>0 *&& *frontFootContact>0*/){
+		mEnemyBody->ApplyForceToCenter(b2Vec2( mEnemyBody->GetLinearVelocity().x, 5000 * mEnemyBody->GetMass()));
+		readyToJump = false;
+	}
+
+	if (lengthInPixls > Director::getInstance()->getVisibleSize().width/2){
+		readyToJump = true;
+=======
+	vec.y = mEnemyBody->GetLinearVelocity().y;
+	//log("vec.y %f", vec.y);
+	
+	//TODO: enemyWalk
+	if (lengthInPixls < Director::getInstance()->getVisibleSize().width/2 && *footContact > 0)
 	{
-		//mEnemyBody->ApplyForceToCenter(b2Vec2(-(20*(mEnemyBody->GetLinearVelocity().x*PLAYER_SLOW_MULTIPLIER)), 0.0f));
-		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 30*mEnemyBody->GetMass()));		
+		mEnemyBody->SetLinearVelocity(vec);
+	}
+
+	//TODO: enemyJUMP
+
+	//Sprung über eine kleine Bodenkante links
+	if(*leftFrontFootContact > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	{
+		mEnemyBody->SetLinearVelocity(b2Vec2(mEnemyBody->GetLinearVelocity().x, 0.15f*mEnemyBody->GetMass()));
+	} else if(*leftFrontFootContact > 0)
+	{
+		//add small force nach links
+		mEnemyBody->ApplyLinearImpulse(b2Vec2(-0.1f*mEnemyBody->GetMass(), 0.0f), mEnemyBody->GetWorldCenter());
+>>>>>>> low jumps
 	}
 	
+	//Sprung über eine kleine Bodenkante rechts
+	if(*rightFrontFootContact > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	{
+		mEnemyBody->SetLinearVelocity(b2Vec2(mEnemyBody->GetLinearVelocity().x, 0.15f*mEnemyBody->GetMass()));
+	} else if(*leftFrontFootContact > 0)
+	{
+		//add small force nach links
+		mEnemyBody->ApplyLinearImpulse(b2Vec2(-0.1f*mEnemyBody->GetMass(), 0.0f), mEnemyBody->GetWorldCenter());
+	}
+
+	//Sprung über kleine Hindernisse in 2 Höhen nach links
+	if(*leftLowBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	{
+		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 250*mEnemyBody->GetMass()));
+	}
+
+	if(*leftHighBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	{
+		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 300*mEnemyBody->GetMass()));
+	}
+
+	//Sprung über kleine Hindernisse in 2 Höhen nach rechts
+
+	if(*rightLowBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	{
+		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 250*mEnemyBody->GetMass()));
+	}
+
+	if(*rightHighBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	{
+		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 300*mEnemyBody->GetMass()));
+	}
+
+	//Sprung auf Plattformen in 3 Höhen nach links
+	if(*leftLowOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x < 0 && *footContact > 0)
+	{
+		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 320.0f*mEnemyBody->GetMass()));
+	}
+
+	if(*leftMidOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x < 0 && *footContact > 0)
+	{
+		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 460.0*mEnemyBody->GetMass())); 
+	}
+
+	if(*leftHighOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x < 0 && *footContact > 0)
+	{
+		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 500.0f*mEnemyBody->GetMass())); 
+	}
+
+	//Sprung auf Plattformen in 3 Höhen nach rechts
+	if(*rightLowOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
+	{	
+		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 320.0f*mEnemyBody->GetMass())); 
+	}	
+		
+	if(*rightMidOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
+	{	
+		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 460.0f*mEnemyBody->GetMass())); 
+	}	
+		
+	if(*rightHighOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
+	{
+		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 500.0f*mEnemyBody->GetMass())); 
+	}
+
 	//! Just like the Enemy itself
 }
 
@@ -211,15 +346,49 @@ void Enemy::CreateSensors(){
 
 	//! EndOf Foot Sensor
 
-	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 8/PTM_RATIO, b2Vec2(-24.0f/PTM_RATIO, 16.0f/PTM_RATIO), 0);
-	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_FRONT_FOOT );
+//left sensors
+	
+	//left foot-sensor
+	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(-24.0f/PTM_RATIO, 20/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_FRONT_FOOT );
 
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-88.0f/PTM_RATIO, 192/PTM_RATIO), 0);
-	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_OVER_HEAD_1 );
+	//left barrier-sensors
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(-40.0f/PTM_RATIO, 60/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_BARRIER_1 );
 
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-88.0f/PTM_RATIO, 256/PTM_RATIO), 0);
-	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_OVER_HEAD_2 );
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(-56.0f/PTM_RATIO, 110/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_BARRIER_2 );
 
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-88.0f/PTM_RATIO, 320/PTM_RATIO), 0);
-	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_OVER_HEAD_3 );
+	//left overhead-sensors
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-96.0f/PTM_RATIO, 192/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_OVER_HEAD_1 );
+
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-112.0f/PTM_RATIO, 256/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_OVER_HEAD_2 );
+
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-128.0f/PTM_RATIO, 320/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_OVER_HEAD_3 );
+
+//right sensors
+
+	//right foot-sensor
+	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(24.0f/PTM_RATIO, 20.0f/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_FRONT_FOOT );
+
+	//right barrier-sensors
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(40.0f/PTM_RATIO, 60/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_BARRIER_1 );
+
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(56.0f/PTM_RATIO, 110/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_BARRIER_2 );
+
+	//right overhead-sensors
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(96.0f/PTM_RATIO, 192/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_1 );
+
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(112.0f/PTM_RATIO, 256/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_2 );
+
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(128.0f/PTM_RATIO, 320/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_3 );
 }
