@@ -25,11 +25,22 @@
 #define KISTE (1<<9) // 512
 #define ANKER (1<<10) // 1024
 #define DYNAMIC_KISTE (1<<11) // 2048
+
 #define ENEMY_FOOT (1<<12) // 4096
-#define ENEMY_FRONT_FOOT (1<<13) // 8192
-#define ENEMY_OVER_HEAD_1 (1<<14) // 16xxx
-#define ENEMY_OVER_HEAD_2 (1<<15) // 32xxx
-#define ENEMY_OVER_HEAD_3 (1<<16) // 64xxx
+
+#define LEFT_ENEMY_FRONT_FOOT (1<<13) // 8192
+#define LEFT_ENEMY_BARRIER_1 (1<<14) // 16xxx
+#define LEFT_ENEMY_BARRIER_2 (1<<15) // 32xxx
+#define LEFT_ENEMY_OVER_HEAD_1 (1<<16) // 64xxx
+#define LEFT_ENEMY_OVER_HEAD_2 (1<<17) // 128xxx
+#define LEFT_ENEMY_OVER_HEAD_3 (1<<18) // 256xxx
+
+#define RIGHT_ENEMY_FRONT_FOOT (1<<19) // 512xxx
+#define RIGHT_ENEMY_BARRIER_1 (1<<20) // 1024xxx
+#define RIGHT_ENEMY_BARRIER_2 (1<<21) // 2048xxx
+#define RIGHT_ENEMY_OVER_HEAD_1 (1<<22) // 4096xxx
+#define RIGHT_ENEMY_OVER_HEAD_2 (1<<23) // 8192xxx
+#define RIGHT_ENEMY_OVER_HEAD_3 (1<<24) // 16xxxxxx
 
 
 #define ALL_COLLIDING KISTE | CLIMBFIXTURE | DYNAMIC_KISTE
@@ -89,7 +100,7 @@
 #define PLAYER_SLOW_MULTIPLIER 0.2f
 
 //Sprung Kraft des Spielers
-#define PLAYER_JUMP_SPEED 0.8f
+#define PLAYER_JUMP_SPEED 0.4f
 
 #define PLAYER_START_JUMP_TIME 0.00f
 

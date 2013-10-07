@@ -47,11 +47,11 @@ private:
 	bool mGrounded;
 
 	//Climbing Variables
-//	//? Those return if enemy does currently hold on an edge or climbs up
-//	bool mClimbingRight, \
-//		 mClimbingLeft, \
-//		 mHoldingRight, \
-//		 mHoldingLeft;
+	//	//? Those return if enemy does currently hold on an edge or climbs up
+	//	bool mClimbingRight, \
+	//		 mClimbingLeft, \
+	//		 mHoldingRight, \
+	//		 mHoldingLeft;
 
 	//The current b2World
 	//? Gets set in Constructor
@@ -82,10 +82,29 @@ private:
 	void CreateBody(cocos2d::Point *pSpawn);
 
 	//Creates the sensors:
-	//? Feet: Jumping, Arms: Climbing
+	//feet: walking/jumping, eyes->Listeners: seeing where to jump
 	void CreateSensors();
 
-	int* footContacts;
+	int* footContact;
+
+	int* leftFrontFootContact;
+
+	int* leftLowBarrierListener;
+	int* leftHighBarrierListener;
+
+	int* leftLowOverHeadListener;
+	int* leftMidOverHeadListener;
+	int* leftHighOverHeadListener;
+
+	int* rightFrontFootContact;
+
+	int* rightLowBarrierListener;
+	int* rightHighBarrierListener;
+
+	int* rightLowOverHeadListener;
+	int* rightMidOverHeadListener;
+	int* rightHighOverHeadListener;
+
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, 
 	//instead of returning 'id' in cocos2d-iphone
