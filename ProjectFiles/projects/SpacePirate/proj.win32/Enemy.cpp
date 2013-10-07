@@ -49,15 +49,25 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	mWaitTimer(0.0f),\
 	mDirection(1),\
 	mGrounded(false),\
-<<<<<<< HEAD
-	footContacts(NULL),\
-	frontFootContact(NULL),\
-	lowOverHeadContact(NULL),\
-	midOverHeadContact(NULL),\
-	highOverHeadContact(NULL)
-=======
-	footContact(NULL)
->>>>>>> low jumps
+	footContact(NULL),\
+
+	leftFrontFootContact(NULL),\
+
+	leftLowBarrierListener(NULL),\
+	leftHighBarrierListener(NULL),\
+
+	leftLowOverHeadListener(NULL),\
+	leftMidOverHeadListener(NULL),\
+	leftHighOverHeadListener(NULL),\
+
+	rightFrontFootContact(NULL),\
+
+	rightLowBarrierListener(NULL),\
+	rightHighBarrierListener(NULL),\
+
+	rightLowOverHeadListener(NULL),\
+	rightMidOverHeadListener(NULL),\
+	rightHighOverHeadListener(NULL)
 {
 	mWorld = pWorld;
 	mPlayer = pPlayer;
@@ -79,24 +89,12 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	CreateSensors();
 
 
-	footContacts = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT);
-	log("My Pointer to Contacts %p", footContacts);
-	frontFootContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FRONT_FOOT);
-	log("My Pointer to Contacts %p", frontFootContact);
-	lowOverHeadContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_OVER_HEAD_1);
-	log("My Pointer to Contacts %p", lowOverHeadContact);
-	midOverHeadContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_OVER_HEAD_2);
-	log("My Pointer to Contacts %p", midOverHeadContact);
-	highOverHeadContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_OVER_HEAD_3);
-	log("My Pointer to Contacts %p", highOverHeadContact);
+
 
 	//Only this fixtures will be affecting contact count
 	int FixtureMask = CLIMBFIXTURE | KISTE | DYNAMIC_KISTE;
 	footContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT, FixtureMask);
 
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
 	leftFrontFootContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_FRONT_FOOT, FixtureMask);
 
 	leftLowBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_BARRIER_1, FixtureMask);
@@ -114,7 +112,6 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	rightLowOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_1, FixtureMask);
 	rightMidOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_2, FixtureMask);
 	rightHighOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_3, FixtureMask);
->>>>>>> low jumps
 }
 
 Enemy::~Enemy(){
@@ -153,35 +150,20 @@ void Enemy::update(float dt){
 	float lengthInPixls = length * PTM_RATIO;
 
 	vec.x = vec.x / length;
+	vec.y = 0;
+
 	vec.operator*=(5);
-<<<<<<< HEAD
 
 	float Masse = mEnemyBody->GetMass();
 	log("My Mass: %f", Masse);
 
-	//TODO: enemyJump
-	if (lengthInPixls < Director::getInstance()->getVisibleSize().width/2)
-	{
-		mEnemyBody->SetLinearVelocity(vec);
-	}
-	//if(*footContact>0 && lengthInPixls < 256 && lengthInPixls > 300)
-	//{
-	//	//mEnemyBody->ApplyForceToCenter(b2Vec2(-(20*(mEnemyBody->GetLinearVelocity().x*PLAYER_SLOW_MULTIPLIER)), 0.0f));
-	//	mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 30*mEnemyBody->GetMass()));		
-	//}
-	bool readyToJump = true;
-	if (GetAsyncKeyState(VK_SPACE)) {
-	//if (lengthInPixls < Director::getInstance()->getVisibleSize().width/4 && readyToJump /*footContact>0 *&& *frontFootContact>0*/){
-		mEnemyBody->ApplyForceToCenter(b2Vec2( mEnemyBody->GetLinearVelocity().x, 5000 * mEnemyBody->GetMass()));
-		readyToJump = false;
-	}
+
 
 	if (lengthInPixls > Director::getInstance()->getVisibleSize().width/2){
-		readyToJump = true;
-=======
-	vec.y = mEnemyBody->GetLinearVelocity().y;
-	//log("vec.y %f", vec.y);
-	
+		vec.y = mEnemyBody->GetLinearVelocity().y;
+		//log("vec.y %f", vec.y);
+	}
+
 	//TODO: enemyWalk
 	if (lengthInPixls < Director::getInstance()->getVisibleSize().width/2 && *footContact > 0)
 	{
@@ -198,9 +180,8 @@ void Enemy::update(float dt){
 	{
 		//add small force nach links
 		mEnemyBody->ApplyLinearImpulse(b2Vec2(-0.1f*mEnemyBody->GetMass(), 0.0f), mEnemyBody->GetWorldCenter());
->>>>>>> low jumps
 	}
-	
+
 	//Sprung über eine kleine Bodenkante rechts
 	if(*rightFrontFootContact > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
 	{
@@ -255,12 +236,12 @@ void Enemy::update(float dt){
 	{	
 		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 320.0f*mEnemyBody->GetMass())); 
 	}	
-		
+
 	if(*rightMidOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
 	{	
 		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 460.0f*mEnemyBody->GetMass())); 
 	}	
-		
+
 	if(*rightHighOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
 	{
 		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 500.0f*mEnemyBody->GetMass())); 
@@ -268,6 +249,7 @@ void Enemy::update(float dt){
 
 	//! Just like the Enemy itself
 }
+
 
 void Enemy::CacheAnimations(){
 	//! Try to load all Frames into Cached Animations
@@ -346,8 +328,8 @@ void Enemy::CreateSensors(){
 
 	//! EndOf Foot Sensor
 
-//left sensors
-	
+	//left sensors
+
 	//left foot-sensor
 	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(-24.0f/PTM_RATIO, 20/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_FRONT_FOOT );
@@ -369,7 +351,7 @@ void Enemy::CreateSensors(){
 	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-128.0f/PTM_RATIO, 320/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_OVER_HEAD_3 );
 
-//right sensors
+	//right sensors
 
 	//right foot-sensor
 	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(24.0f/PTM_RATIO, 20.0f/PTM_RATIO), 0);

@@ -47,11 +47,11 @@ private:
 	bool mGrounded;
 
 	//Climbing Variables
-//	//? Those return if enemy does currently hold on an edge or climbs up
-//	bool mClimbingRight, \
-//		 mClimbingLeft, \
-//		 mHoldingRight, \
-//		 mHoldingLeft;
+	//	//? Those return if enemy does currently hold on an edge or climbs up
+	//	bool mClimbingRight, \
+	//		 mClimbingLeft, \
+	//		 mHoldingRight, \
+	//		 mHoldingLeft;
 
 	//The current b2World
 	//? Gets set in Constructor
@@ -85,13 +85,6 @@ private:
 	//feet: walking/jumping, eyes->Listeners: seeing where to jump
 	void CreateSensors();
 
-<<<<<<< HEAD
-	int* footContacts;
-	int* frontFootContact;
-	int* lowOverHeadContact;
-	int* midOverHeadContact;
-	int* highOverHeadContact;
-=======
 	int* footContact;
 
 	int* leftFrontFootContact;
@@ -111,7 +104,6 @@ private:
 	int* rightLowOverHeadListener;
 	int* rightMidOverHeadListener;
 	int* rightHighOverHeadListener;
->>>>>>> low jumps
 
 public:
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, 
