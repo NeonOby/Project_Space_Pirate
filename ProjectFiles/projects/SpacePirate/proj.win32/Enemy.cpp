@@ -157,12 +157,7 @@ void Enemy::update(float dt){
 	float Masse = mEnemyBody->GetMass();
 	log("My Mass: %f", Masse);
 
-
-
-	if (lengthInPixls > Director::getInstance()->getVisibleSize().width/2){
-		vec.y = mEnemyBody->GetLinearVelocity().y;
-		//log("vec.y %f", vec.y);
-	}
+	vec.y = mEnemyBody->GetLinearVelocity().y;
 
 	//TODO: enemyWalk
 	if (lengthInPixls < Director::getInstance()->getVisibleSize().width/2 && *footContact > 0)
@@ -173,7 +168,7 @@ void Enemy::update(float dt){
 	//TODO: enemyJUMP
 
 	//Sprung über eine kleine Bodenkante links
-	if(*leftFrontFootContact > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	if(*leftFrontFootContact > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && *footContact > 0)
 	{
 		mEnemyBody->SetLinearVelocity(b2Vec2(mEnemyBody->GetLinearVelocity().x, 0.15f*mEnemyBody->GetMass()));
 	} else if(*leftFrontFootContact > 0)
@@ -183,7 +178,7 @@ void Enemy::update(float dt){
 	}
 
 	//Sprung über eine kleine Bodenkante rechts
-	if(*rightFrontFootContact > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	if(*rightFrontFootContact > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && *footContact > 0)
 	{
 		mEnemyBody->SetLinearVelocity(b2Vec2(mEnemyBody->GetLinearVelocity().x, 0.15f*mEnemyBody->GetMass()));
 	} else if(*leftFrontFootContact > 0)
@@ -193,24 +188,24 @@ void Enemy::update(float dt){
 	}
 
 	//Sprung über kleine Hindernisse in 2 Höhen nach links
-	if(*leftLowBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	if(*leftLowBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && *footContact > 0)
 	{
 		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 250*mEnemyBody->GetMass()));
 	}
 
-	if(*leftHighBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	if(*leftHighBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && *footContact > 0)
 	{
 		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 300*mEnemyBody->GetMass()));
 	}
 
 	//Sprung über kleine Hindernisse in 2 Höhen nach rechts
 
-	if(*rightLowBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	if(*rightLowBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && *footContact > 0)
 	{
 		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 250*mEnemyBody->GetMass()));
 	}
 
-	if(*rightHighBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y > 0 && *footContact > 0)
+	if(*rightHighBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && *footContact > 0)
 	{
 		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 300*mEnemyBody->GetMass()));
 	}
@@ -323,7 +318,7 @@ void Enemy::CreateSensors(){
 	//? Width  : same as player collider (16 Pixel)
 	//? Height : Not to height (8 Pixel)
 
-	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO+16.0f/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 8/PTM_RATIO, b2Vec2(0,-16/PTM_RATIO+16/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)ENEMY_FOOT );
 
 	//! EndOf Foot Sensor
@@ -354,7 +349,7 @@ void Enemy::CreateSensors(){
 	//right sensors
 
 	//right foot-sensor
-	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(24.0f/PTM_RATIO, 20.0f/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(24.0f/PTM_RATIO, 20/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_FRONT_FOOT );
 
 	//right barrier-sensors
