@@ -50,24 +50,28 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	mDirection(1),\
 	mGrounded(false),\
 	footContact(NULL),\
-
+	\
 	leftFrontFootContact(NULL),\
-
+	\
 	leftLowBarrierListener(NULL),\
 	leftHighBarrierListener(NULL),\
-
+	\
 	leftLowOverHeadListener(NULL),\
 	leftMidOverHeadListener(NULL),\
 	leftHighOverHeadListener(NULL),\
-
+	\
 	rightFrontFootContact(NULL),\
-
+	\
 	rightLowBarrierListener(NULL),\
 	rightHighBarrierListener(NULL),\
-
+	\
 	rightLowOverHeadListener(NULL),\
 	rightMidOverHeadListener(NULL),\
-	rightHighOverHeadListener(NULL)
+	rightHighOverHeadListener(NULL),\
+	\
+	midLowOverHeadListener(NULL),\
+	midMidOverHeadListener(NULL),\
+	midHighOverHeadListener(NULL)\
 {
 	mWorld = pWorld;
 	mPlayer = pPlayer;
@@ -112,6 +116,10 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 	rightLowOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_1, FixtureMask);
 	rightMidOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_2, FixtureMask);
 	rightHighOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_3, FixtureMask);
+
+	midLowOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, MID_ENEMY_OVER_HEAD_1, FixtureMask);
+	midMidOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, MID_ENEMY_OVER_HEAD_2, FixtureMask);
+	midHighOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody,MID_ENEMY_OVER_HEAD_3, FixtureMask);
 }
 
 Enemy::~Enemy(){
@@ -155,7 +163,7 @@ void Enemy::update(float dt){
 	vec.operator*=(5);
 
 	float Masse = mEnemyBody->GetMass();
-	log("My Mass: %f", Masse);
+	//log("My Mass: %f", Masse);
 
 	vec.y = mEnemyBody->GetLinearVelocity().y;
 
@@ -192,7 +200,7 @@ void Enemy::update(float dt){
 	{
 		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 250*mEnemyBody->GetMass()));
 	}
-
+	
 	if(*leftHighBarrierListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && *footContact > 0)
 	{
 		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 300*mEnemyBody->GetMass()));
@@ -209,37 +217,72 @@ void Enemy::update(float dt){
 	{
 		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 300*mEnemyBody->GetMass()));
 	}
+		log("niedrig: %i", *midLowOverHeadListener);
 
 	//Sprung auf Plattformen in 3 Höhen nach links
 	if(*leftLowOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x < 0 && *footContact > 0)
 	{
-		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 320.0f*mEnemyBody->GetMass()));
+		if(*midLowOverHeadListener > 0){
+		} else{
+			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 320.0f*mEnemyBody->GetMass()));
+		}
 	}
+		log("mittel: %i", *midMidOverHeadListener);
 
 	if(*leftMidOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x < 0 && *footContact > 0)
 	{
-		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 460.0*mEnemyBody->GetMass())); 
+		if(*midMidOverHeadListener > 0)
+		{
+		} else
+		{
+			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 460.0*mEnemyBody->GetMass()));
+		}
 	}
+		log("hoch: %i", *midHighOverHeadListener);
 
 	if(*leftHighOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x < 0 && *footContact > 0)
 	{
-		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 500.0f*mEnemyBody->GetMass())); 
+		if(*midHighOverHeadListener > 0)
+		{
+		} else
+		{
+			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 500.0f*mEnemyBody->GetMass()));
+		}
 	}
+		log("niedrig: %i", *midLowOverHeadListener);
 
 	//Sprung auf Plattformen in 3 Höhen nach rechts
 	if(*rightLowOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
-	{	
-		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 320.0f*mEnemyBody->GetMass())); 
-	}	
+	{
+		if(*midLowOverHeadListener > 0)
+		{
+		} else
+		{	
+			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 320.0f*mEnemyBody->GetMass()));
+		}
+	}
+		log("mittel: %i", *midMidOverHeadListener);
 
 	if(*rightMidOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
-	{	
-		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 460.0f*mEnemyBody->GetMass())); 
-	}	
+	{
+		if(*midMidOverHeadListener > 0)
+		{
+		} else
+		{	
+			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 460.0f*mEnemyBody->GetMass()));
+		}
+	}
+		log("hoch: %i", *midHighOverHeadListener);
 
 	if(*rightHighOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
 	{
-		mEnemyBody->ApplyForceToCenter(b2Vec2(0, 500.0f*mEnemyBody->GetMass())); 
+		if(*midHighOverHeadListener > 0)
+		{
+		} else
+		{
+			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 500.0f*mEnemyBody->GetMass()));
+			
+		}
 	}
 
 	//! Just like the Enemy itself
@@ -326,21 +369,21 @@ void Enemy::CreateSensors(){
 	//left sensors
 
 	//left foot-sensor
-	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(-24.0f/PTM_RATIO, 20/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(-24/PTM_RATIO, 20/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_FRONT_FOOT );
 
 	//left barrier-sensors
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(-40.0f/PTM_RATIO, 60/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(-40/PTM_RATIO, 60/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_BARRIER_1 );
 
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(-56.0f/PTM_RATIO, 110/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(-56/PTM_RATIO, 110/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_BARRIER_2 );
 
 	//left overhead-sensors
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-96.0f/PTM_RATIO, 192/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-96/PTM_RATIO, 192/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_OVER_HEAD_1 );
 
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-112.0f/PTM_RATIO, 256/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-112/PTM_RATIO, 256/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)LEFT_ENEMY_OVER_HEAD_2 );
 
 	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(-128.0f/PTM_RATIO, 320/PTM_RATIO), 0);
@@ -349,23 +392,33 @@ void Enemy::CreateSensors(){
 	//right sensors
 
 	//right foot-sensor
-	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(24.0f/PTM_RATIO, 20/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(8/PTM_RATIO, 12/PTM_RATIO, b2Vec2(24/PTM_RATIO, 20/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_FRONT_FOOT );
 
 	//right barrier-sensors
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(40.0f/PTM_RATIO, 60/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(40/PTM_RATIO, 60/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_BARRIER_1 );
 
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(56.0f/PTM_RATIO, 110/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 24/PTM_RATIO, b2Vec2(56/PTM_RATIO, 110/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_BARRIER_2 );
 
 	//right overhead-sensors
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(96.0f/PTM_RATIO, 192/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(96/PTM_RATIO, 192/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_1 );
 
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(112.0f/PTM_RATIO, 256/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(112/PTM_RATIO, 256/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_2 );
 
-	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(128.0f/PTM_RATIO, 320/PTM_RATIO), 0);
+	tmpPolygonShape.SetAsBox(4/PTM_RATIO, 32/PTM_RATIO, b2Vec2(128/PTM_RATIO, 320/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_3 );
+
+	//mid overhead-sensors
+	tmpPolygonShape.SetAsBox(68/PTM_RATIO, 32/PTM_RATIO, b2Vec2(0/PTM_RATIO, 192/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_1 );
+
+	tmpPolygonShape.SetAsBox(84/PTM_RATIO, 32/PTM_RATIO, b2Vec2(0/PTM_RATIO, 256/PTM_RATIO), 0);
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_2 );
+
+	tmpPolygonShape.SetAsBox(100/PTM_RATIO, 32/PTM_RATIO, b2Vec2(0/PTM_RATIO, 320/PTM_RATIO), 0);
 	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_3 );
 }

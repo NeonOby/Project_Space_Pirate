@@ -42,6 +42,10 @@
 #define RIGHT_ENEMY_OVER_HEAD_2 (1<<23) // 8192xxx
 #define RIGHT_ENEMY_OVER_HEAD_3 (1<<24) // 16xxxxxx
 
+#define MID_ENEMY_OVER_HEAD_1 (1<<25) // 32xxxxxx
+#define MID_ENEMY_OVER_HEAD_2 (1<<26) // 64xxxxxx
+#define MID_ENEMY_OVER_HEAD_3 (1<<27) // 128xxxxxx
+
 
 #define ALL_COLLIDING KISTE | CLIMBFIXTURE | DYNAMIC_KISTE
 
