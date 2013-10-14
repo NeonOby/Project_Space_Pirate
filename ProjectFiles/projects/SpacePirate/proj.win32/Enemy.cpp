@@ -96,22 +96,24 @@ Enemy::Enemy(b2World *pWorld, cocos2d::Point *pSpawn, b2Body* pPlayer): \
 
 
 	//Only this fixtures will be affecting contact count
-	int FixtureMask = CLIMBFIXTURE | KISTE | DYNAMIC_KISTE;
-	footContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT, FixtureMask);
+	int FixtureMask = CLIMBFIXTURE;
+	int BoxMask = KISTE | DYNAMIC_KISTE;
+	int FixtureBoxMask = CLIMBFIXTURE | KISTE | DYNAMIC_KISTE;
+	footContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, ENEMY_FOOT, FixtureBoxMask);
 
-	leftFrontFootContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_FRONT_FOOT, FixtureMask);
+	leftFrontFootContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_FRONT_FOOT, FixtureBoxMask);
 
-	leftLowBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_BARRIER_1, FixtureMask);
-	leftHighBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_BARRIER_2, FixtureMask);
+	leftLowBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_BARRIER_1, BoxMask);
+	leftHighBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_BARRIER_2, BoxMask);
 
 	leftLowOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_OVER_HEAD_1, FixtureMask);
 	leftMidOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_OVER_HEAD_2, FixtureMask);
 	leftHighOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, LEFT_ENEMY_OVER_HEAD_3, FixtureMask);
 
-	rightFrontFootContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_FRONT_FOOT, FixtureMask);
+	rightFrontFootContact = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_FRONT_FOOT, FixtureBoxMask);
 
-	rightLowBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_BARRIER_1, FixtureMask);
-	rightHighBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_BARRIER_2, FixtureMask);
+	rightLowBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_BARRIER_1, BoxMask);
+	rightHighBarrierListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_BARRIER_2, BoxMask);
 
 	rightLowOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_1, FixtureMask);
 	rightMidOverHeadListener = MyContactListener::GetInstance()->AddListener(mEnemyBody, RIGHT_ENEMY_OVER_HEAD_2, FixtureMask);
@@ -173,6 +175,17 @@ void Enemy::update(float dt){
 		mEnemyBody->SetLinearVelocity(vec);
 	}
 
+	if (lengthInPixls < 10/PTM_RATIO)
+	{
+		if (mEnemyBody->GetPosition().y < (mPlayer->GetPosition().y-180/PTM_RATIO))
+		{
+			//TODO: Enemy::attack();
+		} else
+		{
+			//TODO: Enemy::findAWayToAttackThePlayer();
+			//mEnemyBody->SetLinearVelocity();
+		}
+	}
 	//TODO: enemyJUMP
 
 	//Sprung über eine kleine Bodenkante links
@@ -217,68 +230,69 @@ void Enemy::update(float dt){
 	{
 		mEnemyBody->ApplyForceToCenter(b2Vec2(mEnemyBody->GetLinearVelocity().x, 300*mEnemyBody->GetMass()));
 	}
-		log("niedrig: %i", *midLowOverHeadListener);
+		//log("niedrig: %i", *midLowOverHeadListener);
 
 	//Sprung auf Plattformen in 3 Höhen nach links
 	if(*leftLowOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x < 0 && *footContact > 0)
 	{
 		if(*midLowOverHeadListener > 0){
-		} else{
+		} else if (mEnemyBody->GetPosition().y < (mPlayer->GetPosition().y-180/PTM_RATIO))
+		{
 			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 320.0f*mEnemyBody->GetMass()));
 		}
 	}
-		log("mittel: %i", *midMidOverHeadListener);
+		//log("mittel: %i", *midMidOverHeadListener);
 
 	if(*leftMidOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x < 0 && *footContact > 0)
 	{
 		if(*midMidOverHeadListener > 0)
 		{
-		} else
+		} else if (mEnemyBody->GetPosition().y < (mPlayer->GetPosition().y-180/PTM_RATIO))
 		{
 			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 460.0*mEnemyBody->GetMass()));
 		}
 	}
-		log("hoch: %i", *midHighOverHeadListener);
+		//log("hoch: %i", *midHighOverHeadListener);
 
 	if(*leftHighOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x < 0 && *footContact > 0)
 	{
 		if(*midHighOverHeadListener > 0)
 		{
-		} else
+		} else if (mEnemyBody->GetPosition().y < (mPlayer->GetPosition().y-180/PTM_RATIO))
 		{
 			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 500.0f*mEnemyBody->GetMass()));
 		}
 	}
-		log("niedrig: %i", *midLowOverHeadListener);
+		//log("niedrig: %i", *midLowOverHeadListener);
 
 	//Sprung auf Plattformen in 3 Höhen nach rechts
 	if(*rightLowOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
 	{
 		if(*midLowOverHeadListener > 0)
 		{
-		} else
+		} else if (mEnemyBody->GetPosition().y < (mPlayer->GetPosition().y-180/PTM_RATIO))
 		{	
 			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 320.0f*mEnemyBody->GetMass()));
 		}
 	}
-		log("mittel: %i", *midMidOverHeadListener);
+		//log("mittel: %i", *midMidOverHeadListener);
 
 	if(*rightMidOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
 	{
 		if(*midMidOverHeadListener > 0)
 		{
-		} else
+		} else if (mEnemyBody->GetPosition().y < (mPlayer->GetPosition().y-180/PTM_RATIO))
 		{	
 			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 460.0f*mEnemyBody->GetMass()));
 		}
 	}
-		log("hoch: %i", *midHighOverHeadListener);
+		//log("hoch: %i", *midHighOverHeadListener);
 
 	if(*rightHighOverHeadListener > 0 && mEnemyBody->GetLinearVelocity().y >= 0 && mEnemyBody->GetLinearVelocity().x > 0 && *footContact > 0)
 	{
 		if(*midHighOverHeadListener > 0)
 		{
-		} else
+		} else if (mEnemyBody->GetPosition().y < (mPlayer->GetPosition().y-180/PTM_RATIO))
 		{
 			mEnemyBody->ApplyForceToCenter(b2Vec2(0, 500.0f*mEnemyBody->GetMass()));
 			
@@ -414,11 +428,11 @@ void Enemy::CreateSensors(){
 
 	//mid overhead-sensors
 	tmpPolygonShape.SetAsBox(68/PTM_RATIO, 32/PTM_RATIO, b2Vec2(0/PTM_RATIO, 192/PTM_RATIO), 0);
-	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_1 );
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)MID_ENEMY_OVER_HEAD_1 );
 
 	tmpPolygonShape.SetAsBox(84/PTM_RATIO, 32/PTM_RATIO, b2Vec2(0/PTM_RATIO, 256/PTM_RATIO), 0);
-	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_2 );
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)MID_ENEMY_OVER_HEAD_2 );
 
 	tmpPolygonShape.SetAsBox(100/PTM_RATIO, 32/PTM_RATIO, b2Vec2(0/PTM_RATIO, 320/PTM_RATIO), 0);
-	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)RIGHT_ENEMY_OVER_HEAD_3 );
+	mEnemyBody->CreateFixture(&tmpFixtureDef)->SetUserData( (void*)MID_ENEMY_OVER_HEAD_3 );
 }
